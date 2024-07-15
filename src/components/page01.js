@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 // APIリクエストを送信してレスポンスを処理する関数
-async function fetchCoincheckTicker() {
+async function fetchCoincheckStatus(pair = 'etc_jpy') {
   try {
-    const response = await axios.get('https://coincheck.com/api/ticker');
-    alert(response)
+    const response = await axios.get(`http://localhost:3001/api/ticker?pair=${pair}`);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -20,15 +20,18 @@ function Page01() {
 
   useEffect(() => {
     // 非同期関数を呼び出してデータを取得
-    fetchCoincheckTicker()
-      .then((data) => {
-        setData(data);
+    const fetchData = async () => {
+      try {
+        const result = await fetchCoincheckStatus();
+        setData(result);
         setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         setError(error);
         setLoading(false);
-      });
+      }
+    };
+
+    fetchData();
   }, []);
 
   if (loading) {
@@ -36,15 +39,21 @@ function Page01() {
   }
 
   if (error) {
+    return <div>Error: {error.message}</div>;
   }
-alert(data)
-  return (
+
+return (
     <div>
       <h1>Page01</h1>
       {data && (
         <div>
-          <p>Last: {data}</p>
-          {/* 必要に応じて他のデータも表示 */}
+          <p>Last: {data.last}</p>
+          <p>Bid: {data.bid}</p>
+          <p>Ask: {data.ask}</p>
+          <p>High: {data.high}</p>
+          <p>Low: {data.low}</p>
+          <p>Volume: {data.volume}</p>
+          <p>Timestamp: {new Date(data.timestamp * 1000).toLocaleString()}</p>
         </div>
       )}
     </div>
