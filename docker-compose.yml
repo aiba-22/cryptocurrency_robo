@@ -10,3 +10,14 @@ services:
     ports:
       - 8000:3000
     tty: true
+
+  backend:
+    build: backend
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./backend:/usr/src/app
+    command: sh -c 'npm start'
+    ports:
+      - 3001:3001
+    tty: true
