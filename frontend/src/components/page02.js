@@ -30,15 +30,28 @@ async function fetchCoincheckStatus(pair = 'btc_jpy') {
   }
 }
 
+// 設定をサーバーに保存する関数
+async function saveSettings(currency_type, target_price) {
+  try {
+    await axios.post('http://localhost:3001/api/settings', {
+      currency_type,
+      target_price: parseInt(target_price, 10)
+    });
+    alert('設定が保存されました。');
+  } catch (error) {
+    console.error('Error saving settings:', error);
+    alert('設定の保存に失敗しました。');
+  }
+}
+
 function Page02() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [pair, setPair] = useState('btc_jpy');
-  const [threshold, setThreshold] = useState(''); // 下限価格の状態を管理するステートを追加
+  const [threshold, setThreshold] = useState(''); // 下限価格の状態を管理するステート
   const [status, setStatus] = useState(''); // 判定結果を表示するためのステート
-
-  const lineToken = 'YOUR_LINE_NOTIFY_TOKEN'; // ここにLINE Notifyのトークンを設定
+  const [lineToken, setLineToken] = useState(''); // LINEトークンの状態を管理するステート
 
   const pairs = [
     'btc_jpy', 'etc_jpy', 'lsk_jpy', 'mona_jpy', 'plt_jpy',
@@ -80,6 +93,10 @@ function Page02() {
     setThreshold(event.target.value);
   };
 
+  const handleLineTokenChange = (event) => {
+    setLineToken(event.target.value);
+  };
+
   const handleSendNotification = async () => {
     if (data && data.last <= parseFloat(threshold)) {
       const message = `現在の価格は下限に達しました: ${data.last}`;
@@ -88,6 +105,10 @@ function Page02() {
     } else {
       alert('現在の価格は下限に達していません。');
     }
+  };
+
+  const handleSaveSettings = async () => {
+    await saveSettings(pair, threshold);
   };
 
   return (
@@ -103,11 +124,22 @@ function Page02() {
       <div>
         <label>
           下限価格を入力してください:
-          <input 
-            type="number" 
-            value={threshold} 
-            onChange={handleThresholdChange} 
-            placeholder="例: 5000000" 
+          <input
+            type="number"
+            value={threshold}
+            onChange={handleThresholdChange}
+            placeholder="例: 5000000"
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          LINEトークンを入力してください:
+          <input
+            type="text"
+            value={lineToken}
+            onChange={handleLineTokenChange}
+            placeholder="例: nuSURsNVn9O2Y4yHf5FwPu3xpmCDKPuc1QIo1yf7dW9"
           />
         </label>
       </div>
@@ -126,6 +158,7 @@ function Page02() {
       )}
       {status && <div>{status}</div>} {/* 判定結果を表示 */}
       <button onClick={handleSendNotification}>LINEに通知を送信</button> {/* 通知送信ボタン */}
+      <button onClick={handleSaveSettings}>設定を保存</button> {/* 設定保存ボタン */}
     </div>
   );
 }

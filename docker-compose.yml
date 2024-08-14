@@ -15,9 +15,25 @@ services:
     build: backend
     environment:
       - NODE_ENV=development
+      - DATABASE_URL=mysql://root:password@db:3306/mydatabase
     volumes:
       - ./backend:/usr/src/app
     command: sh -c 'npm start'
     ports:
       - 3001:3001
     tty: true
+    depends_on:
+      - db
+
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mydatabase
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+volumes:
+  db-data:
