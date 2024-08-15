@@ -10,13 +10,10 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const lineToken = 'nuSURsNVn9O2Y4yHf5FwPu3xpmCDKPuc1QIo1yf7dW9'; // LINE Notifyのトークンをここに設定
-
-// Knexの設定
 const db = knex({
   client: 'mysql2',
   connection: {
-    host: 'db',  // Dockerコンテナ内でMySQLに接続
+    host: 'db',
     user: 'root',
     password: 'password',
     database: 'mydatabase'
@@ -26,7 +23,6 @@ const db = knex({
 app.get('/api/settings', async (req, res) => {
 const id = req.query.id;
   try {
-    // `price_notification` と `line` テーブルを結合して設定情報を取得
     const priceotification = await db('price_notification')
       .where({ id })
       .first()
@@ -44,7 +40,6 @@ app.post('/api/settings/create', async (req, res) => {
   const { id, virtualCurrencyType,targetPrice, lineToken } = req.body;
 
   try {
-    // 新規作成
     await db('price_notification').insert({
       virtual_currency_type: virtualCurrencyType,
       target_price: targetPrice,
@@ -76,7 +71,7 @@ app.put('/api/settings/update', async (req, res) => {
         target_price: targetPrice,
         updated_at: new Date()
       });
-    // `line` テーブルの更新
+
     await db('line')
       .where({ id })
       .update({
@@ -94,7 +89,7 @@ app.put('/api/settings/update', async (req, res) => {
 
 
 app.get('/api/ticker', async (req, res) => {
-  const pair = req.query.pair || 'btc_jpy'; // デフォルトは 'btc_jpy'
+  const pair = req.query.pair || 'btc_jpy';
 
   try {
     const response = await axios.get(`https://coincheck.com/api/ticker?pair=${pair}`);
@@ -110,7 +105,6 @@ app.post('/api/line', async (req, res) => {
   const { id, price} = req.body;
 
   try {
-    // データベースからトークンを取得
     const settings = await db('line')
       .where({ id })
       .first();
@@ -119,14 +113,14 @@ app.post('/api/line', async (req, res) => {
       return res.status(400).json({ success: false, message: 'No token found for the specified currency type.' });
     }
 
-    const token = settings.token; // データベースから取得したトークンを使用
+    const token = settings.token;
 
     await axios.post(
       'https://notify-api.line.me/api/notify',
       `message=${encodeURIComponent(price)}`,
       {
         headers: {
-          Authorization: `Bearer ${token}`, // データベースから取得したトークンを使用
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/x-www-form-urlencoded',
         },
       }
