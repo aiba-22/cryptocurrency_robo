@@ -23,39 +23,75 @@ const db = knex({
   }
 });
 
-// 通知設定のコントローラー
-app.post('/api/settings', async (req, res) => {
-  const { currency_type, target_price } = req.body;
-
+app.get('/api/settings', async (req, res) => {
+const id = req.query.id;
   try {
-    const existingRecord = await db('notification_settings')
-      .where({ currency_type })
-      .first();
+    // `price_notification` と `line` テーブルを結合して設定情報を取得
+    const priceotification = await db('price_notification')
+      .where({ id })
+      .first()
 
-    if (existingRecord) {
-      // 既に存在する場合は更新
-      await db('notification_settings')
-        .where({ id: existingRecord.id })
-        .update({
-          target_price,
-          updated_at: new Date()
-        });
-    } else {
-      // 存在しない場合は新規作成
-      await db('notification_settings').insert({
-        currency_type,
-        target_price,
-        created_at: new Date(),
-        updated_at: new Date()
-      });
-    }
-
-    res.status(200).json({ success: true, message: 'Settings saved successfully' });
+    const lineSettings = await db('line')
+      .where({ id })
+      .first()
+    res.json({virtualCurrencyType: priceotification.virtual_currency_type, targetPrice: priceotification.target_price, lineToken: lineSettings.token});
   } catch (error) {
-    console.error('Error saving settings:', error);
-    res.status(500).json({ success: false, message: 'Failed to save settings' });
+    console.error('システムエラー');
   }
 });
+
+app.post('/api/settings/create', async (req, res) => {
+  const { id, virtualCurrencyType,targetPrice, lineToken } = req.body;
+
+  try {
+    // 新規作成
+    await db('price_notification').insert({
+      virtual_currency_type: virtualCurrencyType,
+      target_price: targetPrice,
+      created_at: new Date(),
+      updated_at: new Date()
+    });
+
+    await db('line').insert({
+      token: lineToken,
+      created_at: new Date(),
+      updated_at: new Date()
+    });
+
+    res.status(200).json({ success: true, message: 'Settings created successfully', id: newId });
+  } catch (error) {
+    console.error('Error creating settings:', error);
+    res.status(500).json({ success: false, message: 'Failed to create settings' });
+  }
+});
+
+app.put('/api/settings/update', async (req, res) => {
+  const { id, virtualCurrencyType,targetPrice, lineToken } = req.body;
+
+  try {
+    await db('price_notification')
+      .where({ id })
+      .update({
+        virtual_currency_type: virtualCurrencyType,
+        target_price: targetPrice,
+        updated_at: new Date()
+      });
+    // `line` テーブルの更新
+    await db('line')
+      .where({ id })
+      .update({
+        token: lineToken,
+        updated_at: new Date()
+      });
+
+    res.status(200).json({ success: true, message: 'Settings updated successfully' });
+  } catch (error) {
+    console.error('Error updating settings:', error);
+    res.status(500).json({ success: false, message: 'Failed to update settings' });
+  }
+});
+
+
 
 app.get('/api/ticker', async (req, res) => {
   const pair = req.query.pair || 'btc_jpy'; // デフォルトは 'btc_jpy'
@@ -68,21 +104,29 @@ app.get('/api/ticker', async (req, res) => {
     res.status(500).send('Error fetching data');
   }
 });
-app.post('/api/line', async (req, res) => {
-  const { message } = req.body;
-  const token = req.headers.authorization; // Authorizationヘッダーからトークンを取得
 
-  if (!token) {
-    return res.status(400).json({ success: false, message: 'Authorization token is required.' });
-  }
+app.post('/api/line', async (req, res) => {
+  console.log("dfsdsdsdsd")
+  const { id, price} = req.body;
 
   try {
+    // データベースからトークンを取得
+    const settings = await db('line')
+      .where({ id })
+      .first();
+
+    if (!settings || !settings.token) {
+      return res.status(400).json({ success: false, message: 'No token found for the specified currency type.' });
+    }
+
+    const token = settings.token; // データベースから取得したトークンを使用
+
     await axios.post(
       'https://notify-api.line.me/api/notify',
-      `message=${encodeURIComponent(message)}`,
+      `message=${encodeURIComponent(price)}`,
       {
         headers: {
-          Authorization: token, // ヘッダーから取得したトークンを使用
+          Authorization: `Bearer ${token}`, // データベースから取得したトークンを使用
           'Content-Type': 'application/x-www-form-urlencoded',
         },
       }
@@ -93,6 +137,7 @@ app.post('/api/line', async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to send notification' });
   }
 });
+
 
 app.listen(port, () => {
   console.log(`Proxy server is running on http://localhost:${port}`);
