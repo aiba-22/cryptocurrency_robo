@@ -12,7 +12,7 @@ async function fetchCoincheckStatus(pair = 'btc_jpy') {
   }
 }
 
-function Page01() {
+function CryptoPriceViewer() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -45,7 +45,7 @@ function Page01() {
 
   return (
     <div>
-      <h1>Page01</h1>
+      <h1>価格情報</h1>
       <select value={pair} onChange={handleChange}>
         {pairs.map((pair) => (
           <option key={pair} value={pair}>
@@ -70,4 +70,4 @@ function Page01() {
   );
 }
 
-export default Page01;
+export default CryptoPriceViewer;

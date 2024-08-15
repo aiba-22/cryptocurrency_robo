@@ -15,9 +15,9 @@ async function fetchCoincheckStatus(pair = 'btc_jpy') {
 }
 
 // 設定をサーバーに保存する関数
-async function saveSettings(setting: Setting) {
+async function saveSettings(displaySetting: Setting) {
   try {
-    await axios.post('http://localhost:3001/api/settings', setting);
+    await axios.post('http://localhost:3001/api/settings/create',  {...displaySetting, id: 1});
     alert('設定が保存されました。');
   } catch (error) {
     console.error('Error saving settings:', error);
@@ -46,17 +46,17 @@ type TickerData = {
 };
 
 type Setting = {
+  id:number|null,
   virtualCurrencyType: string;
   targetPrice: number;
   lineToken: string;
 };
 
-function Page02() {
+function NotificationSettings() {
   const [data, setData] = useState<TickerData | null>(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [setting, setSetting] = useState<Setting>({ virtualCurrencyType: "", targetPrice: 0, lineToken: '' });
-  const [displaySetting, setDisplaySetting] = useState<Setting>({ virtualCurrencyType: "btc_jpy", targetPrice: 0, lineToken: '' });
+  const [setting, setSetting] = useState<Setting>({ id: null, virtualCurrencyType: "", targetPrice: 0 , lineToken: ""});
+  const [displaySetting, setDisplaySetting] = useState<Setting>({ id: null, virtualCurrencyType: "", targetPrice: 0 , lineToken: ""});
 
   const pairs = [
     'btc_jpy', 'etc_jpy', 'lsk_jpy', 'mona_jpy', 'plt_jpy',
@@ -75,7 +75,7 @@ async function sendLineNotification() {
   }
 }
   const handleSaveSettings = async () => {
-    if (JSON.stringify(setting) !== JSON.stringify(displaySetting)) {
+    if (setting.id) {
       // 設定が既に存在する場合は更新
       await updateSettings(displaySetting);
     } else {
@@ -100,19 +100,16 @@ async function sendLineNotification() {
       try {
         const result = await fetchCoincheckStatus(displaySetting.virtualCurrencyType);
         setData(result);
-        setLoading(false);
-        setLoading(true);
         // 設定をデータベースから取得
         const settings = (await fetchSettings());
         if (settings) {
-          setSetting({ virtualCurrencyType: settings.virtualCurrencyType, targetPrice: settings.targetPrice, lineToken: settings.lineToken });
+          setSetting({ id: settings.id, virtualCurrencyType: settings.virtualCurrencyType, targetPrice: settings.targetPrice, lineToken: settings.lineToken });
               setDisplaySetting((prevSetting) => ({
       ...prevSetting, targetPrice: settings.targetPrice, lineToken: settings.lineToken }));
         }
 
       } catch (error) {
         setError("取得に失敗しました。");
-        setLoading(false);
       }
     };
 
@@ -147,7 +144,7 @@ async function sendLineNotification() {
 
   return (
     <div>
-      <h1>Page02</h1>
+      <h1>通知設定</h1>
       <select value={displaySetting.virtualCurrencyType} onChange={handleVirtualCurrencyTypeChange}>
         {pairs.map((pair) => (
           <option key={pair} value={pair}>
@@ -173,11 +170,9 @@ async function sendLineNotification() {
             type="text"
             value={displaySetting.lineToken}
             onChange={handleLineTokenChange}
-            placeholder="例: nuSURsNVn9O2Y4yHf5FwPu3xpmCDKPuc1QIo1yf7dW9"
           />
         </label>
       </div>
-      {loading && <div>Loading...</div>}
       {error && <div>Error: {error}</div>}
       {data && (
         <div>
@@ -196,4 +191,4 @@ async function sendLineNotification() {
   );
 }
 
-export default Page02;
+export default NotificationSettings;

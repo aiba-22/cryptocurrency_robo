@@ -25,6 +25,17 @@ services:
     depends_on:
       - db
 
+  batch:
+    build: backend
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=mysql://root:password@db:3306/mydatabase
+    volumes:
+      - ./backend:/usr/src/app
+    command: sh -c 'node src/batch.js'
+    depends_on:
+      - db
+
   db:
     image: mysql:latest
     environment:

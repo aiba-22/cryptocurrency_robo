@@ -34,7 +34,7 @@ const id = req.query.id;
     const lineSettings = await db('line')
       .where({ id })
       .first()
-    res.json({virtualCurrencyType: priceotification.virtual_currency_type, targetPrice: priceotification.target_price, lineToken: lineSettings.token});
+    res.json({id: priceotification.id, virtualCurrencyType: priceotification.virtual_currency_type, targetPrice: priceotification.target_price, lineToken: lineSettings.token});
   } catch (error) {
     console.error('システムエラー');
   }
@@ -58,7 +58,7 @@ app.post('/api/settings/create', async (req, res) => {
       updated_at: new Date()
     });
 
-    res.status(200).json({ success: true, message: 'Settings created successfully', id: newId });
+    res.status(200).json({ success: true});
   } catch (error) {
     console.error('Error creating settings:', error);
     res.status(500).json({ success: false, message: 'Failed to create settings' });

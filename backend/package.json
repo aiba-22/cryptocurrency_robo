@@ -2,17 +2,18 @@
   "name": "virtual_currency",
   "version": "0.1.0",
   "private": true,
-    "scripts": {
-  "start": "node src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
     "server": "node src/server.js",
     "migrate": "knex migrate:latest",
     "migrate:make": "knex migrate:make"
   },
   "dependencies": {
-    "express": "^4.17.1",
     "axios": "^0.21.1",
     "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "knex": "^0.95.0",
     "mysql2": "^2.3.3",
-    "knex": "^0.95.0"
+    "node-cron": "^3.0.3"
   }
 }
