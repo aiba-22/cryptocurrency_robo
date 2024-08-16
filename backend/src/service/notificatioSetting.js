@@ -10,7 +10,7 @@ const db = knex({
   }
 });
 
-const findNotificatioSetting =async(id)=>{
+export const findNotificatioSetting =async(id)=>{
   try {
     const priceotification = await db('price_notification')
       .where({ id })
@@ -25,8 +25,48 @@ const findNotificatioSetting =async(id)=>{
   }
 };
 
-const createNotificatioSetting=async(id)=>{
-  
+export const createNotificatioSetting=async(virtualCurrencyType, targetPrice, lineToken)=>{
+   try {
+
+    await db('price_notification').insert({
+      virtual_currency_type: virtualCurrencyType,
+      target_price: targetPrice,
+      created_at: new Date(),
+      updated_at: new Date()
+    });
+
+    await db('line').insert({
+      token: lineToken,
+      created_at: new Date(),
+      updated_at: new Date()
+    });
+    return "success"
+  } catch (error) {
+    console.error('システムエラー');
+    return "failure"
+  }
 }
 
-export default findNotificatioSetting;
+export const updateNotificatioSetting=async(id, virtualCurrencyType, targetPrice, lineToken)=>{
+ try {
+    await db('price_notification')
+      .where({ id })
+      .update({
+        virtual_currency_type: virtualCurrencyType,
+        target_price: targetPrice,
+        updated_at: new Date()
+      });
+
+    await db('line')
+      .where({ id })
+      .update({
+        token: lineToken,
+        updated_at: new Date()
+      });
+
+    return "success"
+  } catch (error) {
+    console.error('システムエラー');
+    return "failure"
+  }
+}
