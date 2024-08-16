@@ -1,6 +1,6 @@
-const knex = require('knex');
-const axios = require('axios');
-const cron = require('node-cron');
+import knex from 'knex';
+import axios from 'axios';
+import cron from 'node-cron';
 
 // Knexの設定（server.jsと同様）
 const db = knex({

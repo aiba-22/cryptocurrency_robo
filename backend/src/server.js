@@ -1,8 +1,10 @@
-const express = require('express');
-const axios = require('axios');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const knex = require('knex');
+import express from 'express';
+import axios from 'axios';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import knex from 'knex';
+import findNotificatioSetting from './service/notificatioSetting.js';
+
 const app = express();
 const port = 3001;
 
@@ -22,23 +24,12 @@ const db = knex({
 
 app.get('/api/settings', async (req, res) => {
 const id = req.query.id;
-  try {
-    const priceotification = await db('price_notification')
-      .where({ id })
-      .first()
-
-    const lineSettings = await db('line')
-      .where({ id })
-      .first()
-    res.json({id: priceotification.id, virtualCurrencyType: priceotification.virtual_currency_type, targetPrice: priceotification.target_price, lineToken: lineSettings.token});
-  } catch (error) {
-    console.error('システムエラー');
-  }
+const notificatioSetting =await findNotificatioSetting(id);
+res.json(notificatioSetting)
 });
 
 app.post('/api/settings/create', async (req, res) => {
   const { id, virtualCurrencyType,targetPrice, lineToken } = req.body;
-
   try {
     await db('price_notification').insert({
       virtual_currency_type: virtualCurrencyType,
@@ -56,7 +47,6 @@ app.post('/api/settings/create', async (req, res) => {
     res.status(200).json({ success: true});
   } catch (error) {
     console.error('Error creating settings:', error);
-    res.status(500).json({ success: false, message: 'Failed to create settings' });
   }
 });
 

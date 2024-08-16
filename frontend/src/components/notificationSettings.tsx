@@ -101,7 +101,7 @@ async function sendLineNotification() {
         const result = await fetchCoincheckStatus(displaySetting.virtualCurrencyType);
         setData(result);
         // 設定をデータベースから取得
-        const settings = (await fetchSettings());
+        const settings = await fetchSettings();
         if (settings) {
           setSetting({ id: settings.id, virtualCurrencyType: settings.virtualCurrencyType, targetPrice: settings.targetPrice, lineToken: settings.lineToken });
               setDisplaySetting((prevSetting) => ({
