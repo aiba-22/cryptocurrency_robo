@@ -176,7 +176,7 @@ function NotificationSettings() {
           sendLineNotification({ setInfomation, price: data?.last })
         }
       >
-        LINEに通知を送信
+        LINEに通知テスト
       </button>
       <button onClick={handleSave}>設定を保存</button>
     </div>
