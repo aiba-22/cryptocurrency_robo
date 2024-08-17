@@ -31,7 +31,7 @@ function NotificationSettings() {
   });
   const [displaySetting, setDisplaySetting] = useState<Setting>({
     id: null,
-    virtualCurrencyType: "",
+    virtualCurrencyType: "btc_jpy",
     targetPrice: 0,
     lineToken: "",
   });
