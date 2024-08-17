@@ -7,7 +7,7 @@ import {
   Setting,
 } from "../feature/notificationSettings";
 import { currencyPairs } from "../feature/enums";
-import { z } from "zod";
+import { settingsSchema } from "../feature/notificationSettingsSchema";
 
 type TickerData = {
   last: number;
@@ -18,14 +18,6 @@ type TickerData = {
   volume: number;
   timestamp: number;
 };
-
-const settingsSchema = z.object({
-  virtualCurrencyType: z.string().min(1, "仮想通貨の種類を選択してください"),
-  targetPrice: z
-    .number()
-    .positive("ターゲット価格は正の数である必要があります"),
-  lineToken: z.string().length(43, "LINEトークンは43桁である必要があります"),
-});
 
 function NotificationSettings() {
   const [data, setData] = useState<TickerData | null>(null);
