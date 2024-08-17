@@ -33,21 +33,25 @@ export const createNotificatioSetting = async (
   targetPrice,
   lineToken
 ) => {
+  const transaction = await db.transaction();
   try {
-    await db("price_notification").insert({
+    await transaction("price_notification").insert({
       virtual_currency_type: virtualCurrencyType,
       target_price: targetPrice,
       created_at: new Date(),
       updated_at: new Date(),
     });
 
-    await db("line").insert({
+    await transaction("line").insert({
       token: lineToken,
       created_at: new Date(),
       updated_at: new Date(),
     });
+
+    await transaction.commit();
     return "success";
   } catch (error) {
+    await transaction.rollback();
     console.error("システムエラー");
     return "failure";
   }
@@ -59,20 +63,23 @@ export const updateNotificatioSetting = async (
   targetPrice,
   lineToken
 ) => {
+  const transaction = await db.transaction();
   try {
-    await db("price_notification").where({ id }).update({
+    await transaction("price_notification").where({ id }).update({
       virtual_currency_type: virtualCurrencyType,
       target_price: targetPrice,
       updated_at: new Date(),
     });
 
-    await db("line").where({ id }).update({
+    await transaction("line").where({ id }).update({
       token: lineToken,
       updated_at: new Date(),
     });
 
+    await transaction.commit();
     return "success";
   } catch (error) {
+    await transaction.rollback();
     console.error("システムエラー");
     return "failure";
   }
