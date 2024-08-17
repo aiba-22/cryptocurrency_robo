@@ -160,17 +160,6 @@ function NotificationSettings() {
       </div>
       {infomation && <div>{infomation}</div>}
       {error && <div>{error}</div>}
-      {data && (
-        <div>
-          <p>Last: {data.last}</p>
-          <p>Bid: {data.bid}</p>
-          <p>Ask: {data.ask}</p>
-          <p>High: {data.high}</p>
-          <p>Low: {data.low}</p>
-          <p>Volume: {data.volume}</p>
-          <p>Timestamp: {new Date(data.timestamp * 1000).toLocaleString()}</p>
-        </div>
-      )}
       <button
         onClick={() =>
           sendLineNotification({ setInfomation, price: data?.last })
