@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   frontend:
     build: frontend
@@ -6,7 +6,7 @@ services:
       - NODE_ENV=development
     volumes:
       - ./frontend:/usr/src/app
-    command: sh -c 'npm start'
+    command: npx nodemon src/app.js
     ports:
       - 8000:3000
     tty: true
@@ -18,7 +18,7 @@ services:
       - DATABASE_URL=mysql://root:password@db:3306/mydatabase
     volumes:
       - ./backend:/usr/src/app
-    command: sh -c 'npm start'
+    command: npx nodemon src/server.js
     ports:
       - 3001:3001
     tty: true

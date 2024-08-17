@@ -1,17 +1,15 @@
 FROM node:17.4.0-alpine
 
-# アプリケーションディレクトリを作成
-WORKDIR /usr
+WORKDIR /usr/src/app
 
-# package.jsonとpackage-lock.jsonをコピー
-COPY . .
+COPY package*.json ./
 
-# 依存関係をインストール
 RUN npm install
 
+COPY . .
 
-# アプリケーションのポートを設定
+RUN npm install -g nodemon
+
 EXPOSE 3000
 
-# デフォルトの実行コマンド
-CMD ["npm", "start"]
+CMD ["npx", "nodemon", "src/app.js"]
