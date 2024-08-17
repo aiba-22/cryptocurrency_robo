@@ -12,7 +12,7 @@ type TickerData = {
   timestamp: number;
 };
 
-function CryptoPriceViewer() {
+function CryptoPriceInformation() {
   const [data, setData] = useState<TickerData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -65,4 +65,4 @@ function CryptoPriceViewer() {
   );
 }
 
-export default CryptoPriceViewer;
+export default CryptoPriceInformation;
