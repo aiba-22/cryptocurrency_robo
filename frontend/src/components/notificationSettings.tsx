@@ -5,9 +5,9 @@ import {
   handleSaveSettings,
   sendLineNotification,
   Setting,
+  validateForm,
 } from "../feature/notificationSettings";
 import { currencyPairs } from "../feature/enums";
-import { settingsSchema } from "../feature/notificationSettingsSchema";
 
 type TickerData = {
   last: number;
@@ -96,25 +96,13 @@ function NotificationSettings() {
     }));
   };
 
-  const validateForm = () => {
-    try {
-      settingsSchema.parse(displaySetting);
-      setValidationErrors({});
-      return true;
-    } catch (error: any) {
-      const formattedErrors: Record<string, string> = {};
-      error.errors.forEach((err: any) => {
-        formattedErrors[err.path[0]] = err.message;
-      });
-      setValidationErrors(formattedErrors);
-      return false;
-    }
-  };
-
   const handleSave = () => {
-    if (validateForm()) {
+    const resultValidate = validateForm(displaySetting);
+    if (resultValidate === true) {
       handleSaveSettings({ id: setting.id, displaySetting });
       setInfomation("設定が保存されました。");
+    } else {
+      setValidationErrors(resultValidate);
     }
   };
 

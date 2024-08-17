@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Dispatch, SetStateAction } from "react";
+import { settingsSchema } from "./notificationSettingsSchema";
 
 export type Setting = {
   id: number | null;
@@ -96,5 +97,17 @@ export const handleSaveSettings = async ({
     await updateSettings(displaySetting);
   } else {
     await saveSettings(displaySetting);
+  }
+};
+export const validateForm = (displaySetting: Setting) => {
+  try {
+    settingsSchema.parse(displaySetting);
+    return true;
+  } catch (error: any) {
+    const formattedErrors: Record<string, string> = {};
+    error.errors.forEach((err: any) => {
+      formattedErrors[err.path[0]] = err.message;
+    });
+    return formattedErrors;
   }
 };
