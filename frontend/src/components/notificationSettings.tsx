@@ -114,28 +114,34 @@ function NotificationSettings() {
   const handleSave = () => {
     if (validateForm()) {
       handleSaveSettings({ id: setting.id, displaySetting });
+      setInfomation("設定が保存されました。");
     }
   };
 
   return (
     <div>
       <h1>通知設定</h1>
-      <select
-        value={displaySetting.virtualCurrencyType}
-        onChange={handleVirtualCurrencyTypeChange}
-      >
-        {currencyPairs.map((pair) => (
-          <option key={pair} value={pair}>
-            {pair.toUpperCase()}
-          </option>
-        ))}
-      </select>
-      {validationErrors.virtualCurrencyType && (
-        <div>{validationErrors.virtualCurrencyType}</div>
-      )}
       <div>
         <label>
-          下限価格を入力してください:
+          指定通貨
+          <select
+            value={displaySetting.virtualCurrencyType}
+            onChange={handleVirtualCurrencyTypeChange}
+          >
+            {currencyPairs.map((pair) => (
+              <option key={pair} value={pair}>
+                {pair.toUpperCase()}
+              </option>
+            ))}
+          </select>
+        </label>
+        {validationErrors.virtualCurrencyType && (
+          <div>{validationErrors.virtualCurrencyType}</div>
+        )}
+      </div>
+      <div>
+        <label>
+          下限価格
           <input
             type="number"
             value={displaySetting.targetPrice}
@@ -149,7 +155,7 @@ function NotificationSettings() {
       </div>
       <div>
         <label>
-          LINEトークンを入力してください:
+          LINEトークン
           <input
             type="text"
             value={displaySetting.lineToken}
@@ -158,16 +164,20 @@ function NotificationSettings() {
         </label>
         {validationErrors.lineToken && <div>{validationErrors.lineToken}</div>}
       </div>
-      {infomation && <div>{infomation}</div>}
       {error && <div>{error}</div>}
-      <button
-        onClick={() =>
-          sendLineNotification({ setInfomation, price: data?.last })
-        }
-      >
-        LINEに通知テスト
-      </button>
-      <button onClick={handleSave}>設定を保存</button>
+      <div>
+        <button onClick={handleSave}>設定を保存</button>
+      </div>
+      {infomation && <div>{infomation}</div>}
+      <div>
+        <button
+          onClick={() =>
+            sendLineNotification({ setInfomation, price: data?.last })
+          }
+        >
+          LINEに通知テスト
+        </button>
+      </div>
     </div>
   );
 }
