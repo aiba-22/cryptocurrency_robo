@@ -12,7 +12,10 @@ export default function App() {
 
       <Routes>
         <Route path="/cryptoPriceViewer" element={<CryptoPriceViewer />} />
-        <Route path="/notificationSettings" element={<NotificationSettings />} />
+        <Route
+          path="/notificationSettings"
+          element={<NotificationSettings />}
+        />
       </Routes>
     </div>
   );

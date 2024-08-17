@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node src/server.js",
-    "server": "node src/server.js",
+    "start": "node src/app.js",
+    "server": "node src/app.js",
     "migrate": "knex migrate:latest",
     "migrate:make": "knex migrate:make"
   },

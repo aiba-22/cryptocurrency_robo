@@ -1,27 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect, ChangeEvent } from "react";
+import { fetchCoincheckStatus } from "../feature/notificationSettings";
+import { currencyPairs } from "../feature/enums";
 
-// APIリクエストを送信してレスポンスを処理する関数
-async function fetchCoincheckStatus(pair = 'btc_jpy') {
-  try {
-    const response = await axios.get(`http://localhost:3001/api/ticker?pair=${pair}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    throw error;
-  }
-}
+type TickerData = {
+  last: number;
+  bid: number;
+  ask: number;
+  high: number;
+  low: number;
+  volume: number;
+  timestamp: number;
+};
 
 function CryptoPriceViewer() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<TickerData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [pair, setPair] = useState('btc_jpy');
-
-  const pairs = [
-    'btc_jpy', 'etc_jpy', 'lsk_jpy', 'mona_jpy', 'plt_jpy',
-    'fnct_jpy', 'dai_jpy', 'wbtc_jpy', 'bril_jpy'
-  ];
+  const [error, setError] = useState("");
+  const [pair, setPair] = useState("btc_jpy");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,7 +26,7 @@ function CryptoPriceViewer() {
         setData(result);
         setLoading(false);
       } catch (error) {
-        setError(error);
+        setError("取得に失敗しました。");
         setLoading(false);
       }
     };
@@ -39,7 +34,7 @@ function CryptoPriceViewer() {
     fetchData();
   }, [pair]);
 
-  const handleChange = (event) => {
+  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setPair(event.target.value);
   };
 
@@ -47,14 +42,14 @@ function CryptoPriceViewer() {
     <div>
       <h1>価格情報</h1>
       <select value={pair} onChange={handleChange}>
-        {pairs.map((pair) => (
+        {currencyPairs.map((pair) => (
           <option key={pair} value={pair}>
             {pair.toUpperCase()}
           </option>
         ))}
       </select>
       {loading && <div>Loading...</div>}
-      {error && <div>Error: {error.message}</div>}
+      {error && <div>Error: {error}</div>}
       {data && (
         <div>
           <p>Last: {data.last}</p>

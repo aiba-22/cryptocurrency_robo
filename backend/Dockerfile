@@ -14,5 +14,5 @@ COPY . .
 # アプリケーションのポートを設定
 EXPOSE 3001
 
-# 並列で server.js と batch.js を実行
+# 並列で app.js と batch.js を実行
 CMD npm start &  node src/batch.js
