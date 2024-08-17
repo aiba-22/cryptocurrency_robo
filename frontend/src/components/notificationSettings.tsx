@@ -21,6 +21,7 @@ type TickerData = {
 function NotificationSettings() {
   const [data, setData] = useState<TickerData | null>(null);
   const [error, setError] = useState("");
+  const [infomation, setInfomation] = useState("");
   const [setting, setSetting] = useState<Setting>({
     id: null,
     virtualCurrencyType: "",
@@ -125,7 +126,8 @@ function NotificationSettings() {
           />
         </label>
       </div>
-      {error && <div>Error: {error}</div>}
+      {infomation && <div>{infomation}</div>}
+      {error && <div>{error}</div>}
       {data && (
         <div>
           <p>Last: {data.last}</p>
@@ -137,7 +139,11 @@ function NotificationSettings() {
           <p>Timestamp: {new Date(data.timestamp * 1000).toLocaleString()}</p>
         </div>
       )}
-      <button onClick={() => sendLineNotification(data?.last)}>
+      <button
+        onClick={() =>
+          sendLineNotification({ setInfomation, price: data?.last })
+        }
+      >
         LINEに通知を送信
       </button>
       <button

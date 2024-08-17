@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Dispatch, SetStateAction } from "react";
 
 export type Setting = {
   id: number | null;
@@ -57,17 +58,30 @@ const updateSettings = async (displaySetting: Setting) => {
   }
 };
 
-export const sendLineNotification = async (price?: number) => {
+export const sendLineNotification = async ({
+  setInfomation,
+  price,
+}: {
+  setInfomation: Dispatch<SetStateAction<string>>;
+  price?: number;
+}) => {
   if (price) {
     try {
-      await axios.post("http://localhost:3001/api/line", {
-        id: 1,
-        price: price,
-      });
+      const result = await axios.post<string>(
+        "http://localhost:3001/api/line",
+        {
+          id: 1,
+          price: price,
+        }
+      );
+      if (result.data === "success") {
+        setInfomation("成功しました。");
+      } else if (result.data === "failure") {
+        setInfomation("失敗しました。");
+      }
     } catch (error) {
       console.error("Error sending notification:", error);
     }
-    alert("通知が送信されました。");
   }
 };
 

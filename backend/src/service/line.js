@@ -13,15 +13,12 @@ const db = knex({
 
 export const sendLineNotification = async (id, price) => {
   try {
-    const settings = await db("line").where({ id }).first();
-
-    if (!settings || !settings.token) {
+    const line = await db("line").where({ id }).first();
+    const settings = await db("price_notification").where({ id }).first();
+    if (!line.token || price > settings.target_price) {
       return "failure";
     }
-    if (price < settings.target_price) {
-      return "下限価格に達していません";
-    }
-    const token = settings.token;
+    const token = line.token;
     await axios.post(
       "https://notify-api.line.me/api/notify",
       `message=${encodeURIComponent(price)}`,
