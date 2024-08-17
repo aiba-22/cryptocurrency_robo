@@ -7,6 +7,7 @@ import {
   Setting,
 } from "../feature/notificationSettings";
 import { currencyPairs } from "../feature/enums";
+import { z } from "zod";
 
 type TickerData = {
   last: number;
@@ -17,6 +18,14 @@ type TickerData = {
   volume: number;
   timestamp: number;
 };
+
+const settingsSchema = z.object({
+  virtualCurrencyType: z.string().min(1, "仮想通貨の種類を選択してください"),
+  targetPrice: z
+    .number()
+    .positive("ターゲット価格は正の数である必要があります"),
+  lineToken: z.string().length(43, "LINEトークンは43桁である必要があります"),
+});
 
 function NotificationSettings() {
   const [data, setData] = useState<TickerData | null>(null);
@@ -34,6 +43,9 @@ function NotificationSettings() {
     targetPrice: 0,
     lineToken: "",
   });
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,7 +54,7 @@ function NotificationSettings() {
           displaySetting.virtualCurrencyType
         );
         setData(result);
-        // 設定をデータベースから取得
+
         const settings = await fetchSettings();
         if (settings) {
           setSetting({
@@ -92,6 +104,27 @@ function NotificationSettings() {
     }));
   };
 
+  const validateForm = () => {
+    try {
+      settingsSchema.parse(displaySetting);
+      setValidationErrors({});
+      return true;
+    } catch (error: any) {
+      const formattedErrors: Record<string, string> = {};
+      error.errors.forEach((err: any) => {
+        formattedErrors[err.path[0]] = err.message;
+      });
+      setValidationErrors(formattedErrors);
+      return false;
+    }
+  };
+
+  const handleSave = () => {
+    if (validateForm()) {
+      handleSaveSettings({ id: setting.id, displaySetting });
+    }
+  };
+
   return (
     <div>
       <h1>通知設定</h1>
@@ -105,6 +138,9 @@ function NotificationSettings() {
           </option>
         ))}
       </select>
+      {validationErrors.virtualCurrencyType && (
+        <div>{validationErrors.virtualCurrencyType}</div>
+      )}
       <div>
         <label>
           下限価格を入力してください:
@@ -115,6 +151,9 @@ function NotificationSettings() {
             placeholder="例: 5000000"
           />
         </label>
+        {validationErrors.targetPrice && (
+          <div>{validationErrors.targetPrice}</div>
+        )}
       </div>
       <div>
         <label>
@@ -125,6 +164,7 @@ function NotificationSettings() {
             onChange={handleLineTokenChange}
           />
         </label>
+        {validationErrors.lineToken && <div>{validationErrors.lineToken}</div>}
       </div>
       {infomation && <div>{infomation}</div>}
       {error && <div>{error}</div>}
@@ -146,11 +186,7 @@ function NotificationSettings() {
       >
         LINEに通知を送信
       </button>
-      <button
-        onClick={() => handleSaveSettings({ id: setting.id, displaySetting })}
-      >
-        設定を保存
-      </button>
+      <button onClick={handleSave}>設定を保存</button>
     </div>
   );
 }
