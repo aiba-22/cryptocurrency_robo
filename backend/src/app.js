@@ -2,12 +2,17 @@ import express from "express";
 import axios from "axios";
 import cors from "cors";
 import bodyParser from "body-parser";
+
 import {
   findNotificatioSetting,
   createNotificatioSetting,
   updateNotificatioSetting,
 } from "./service/notificatioSetting.js";
 import { sendLineNotification } from "./service/line.js";
+import {
+  createNotificationSchema,
+  updateNotificationSchema,
+} from "./service/notificatioSettingSchema.js";
 
 const app = express();
 const port = 3001;
@@ -23,24 +28,34 @@ app.get("/api/settings", async (req, res) => {
 });
 
 app.post("/api/settings/create", async (req, res) => {
-  const { virtualCurrencyType, targetPrice, lineToken } = req.body;
-  const result = createNotificatioSetting(
-    virtualCurrencyType,
-    targetPrice,
-    lineToken
-  );
-  res.status(200).json(result);
+  try {
+    const validatedData = createNotificationSchema.parse(req.body);
+    const { virtualCurrencyType, targetPrice, lineToken } = validatedData;
+    const result = await createNotificatioSetting(
+      virtualCurrencyType,
+      targetPrice,
+      lineToken
+    );
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json({ error: error.errors });
+  }
 });
 
 app.put("/api/settings/update", async (req, res) => {
-  const { id, virtualCurrencyType, targetPrice, lineToken } = req.body;
-  const result = updateNotificatioSetting(
-    id,
-    virtualCurrencyType,
-    targetPrice,
-    lineToken
-  );
-  res.status(200).json(result);
+  try {
+    const validatedData = updateNotificationSchema.parse(req.body);
+    const { id, virtualCurrencyType, targetPrice, lineToken } = validatedData;
+    const result = await updateNotificatioSetting(
+      id,
+      virtualCurrencyType,
+      targetPrice,
+      lineToken
+    );
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json({ error: error.errors });
+  }
 });
 
 app.get("/api/ticker", async (req, res) => {
