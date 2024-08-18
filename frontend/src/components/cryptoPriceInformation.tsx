@@ -1,7 +1,19 @@
-import { useState, ChangeEvent } from "react";
+import { useState } from "react";
 import { useQuery } from "react-query";
 import { fetchCoincheckStatus } from "../feature/notificationSettings";
 import { currencyPairs } from "../feature/enums";
+import {
+  Container,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  CircularProgress,
+  Box,
+  Alert,
+  SelectChangeEvent,
+} from "@mui/material";
 
 function CryptoPriceInformation() {
   const [pair, setPair] = useState("btc_jpy");
@@ -12,34 +24,53 @@ function CryptoPriceInformation() {
     keepPreviousData: true,
   });
 
-  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setPair(event.target.value);
+  const handleChange = (event: SelectChangeEvent<string>) => {
+    setPair(event.target.value as string);
   };
 
   return (
-    <div>
-      <h1>価格情報</h1>
-      <select value={pair} onChange={handleChange}>
-        {currencyPairs.map((pair) => (
-          <option key={pair} value={pair}>
-            {pair.toUpperCase()}
-          </option>
-        ))}
-      </select>
-      {isLoading && <div>Loading...</div>}
-      {error && <div>Error: システムエラーが発生しました</div>}
-      {data && (
-        <div>
-          <p>Last: {data.last}</p>
-          <p>Bid: {data.bid}</p>
-          <p>Ask: {data.ask}</p>
-          <p>High: {data.high}</p>
-          <p>Low: {data.low}</p>
-          <p>Volume: {data.volume}</p>
-          <p>Timestamp: {new Date(data.timestamp * 1000).toLocaleString()}</p>
-        </div>
+    <Container maxWidth="sm">
+      <Typography variant="h4" gutterBottom>
+        価格情報
+      </Typography>
+      <FormControl fullWidth margin="normal">
+        <InputLabel id="crypto-pair-select-label">通貨ペア</InputLabel>
+        <Select
+          labelId="crypto-pair-select-label"
+          value={pair}
+          onChange={handleChange}
+        >
+          {currencyPairs.map((pair) => (
+            <MenuItem key={pair} value={pair}>
+              {pair.toUpperCase()}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
+      {isLoading && (
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <CircularProgress />
+        </Box>
       )}
-    </div>
+
+      {error && <Alert severity="error">システムエラーが発生しました</Alert>}
+
+      {data && (
+        <Box mt={2}>
+          <Typography variant="h6">価格詳細</Typography>
+          <Typography>最終価格: {data.last}</Typography>
+          <Typography>買い価格: {data.bid}</Typography>
+          <Typography>売り価格: {data.ask}</Typography>
+          <Typography>高値: {data.high}</Typography>
+          <Typography>安値: {data.low}</Typography>
+          <Typography>取引量: {data.volume}</Typography>
+          <Typography>
+            タイムスタンプ: {new Date(data.timestamp * 1000).toLocaleString()}
+          </Typography>
+        </Box>
+      )}
+    </Container>
   );
 }
 
