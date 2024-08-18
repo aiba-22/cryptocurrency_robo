@@ -87,27 +87,13 @@ const updateSettings = async (displaySetting: Setting) => {
 };
 
 export const saveSettings = async ({
-  id,
   displaySetting,
 }: {
-  id: number | null;
   displaySetting: Setting;
 }) => {
-  if (id) {
+  if (displaySetting.id) {
     await updateSettings(displaySetting);
   } else {
     await createSettings(displaySetting);
-  }
-};
-export const validateForm = (displaySetting: Setting) => {
-  try {
-    settingsSchema.parse(displaySetting);
-    return true;
-  } catch (error: any) {
-    const formattedErrors: Record<string, string> = {};
-    error.errors.forEach((err: any) => {
-      formattedErrors[err.path[0]] = err.message;
-    });
-    return formattedErrors;
   }
 };
