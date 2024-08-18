@@ -33,33 +33,7 @@ export const fetchSettings = async () => {
   }
 };
 
-const saveSettings = async (displaySetting: Setting) => {
-  try {
-    await axios.post("http://localhost:3001/api/settings/create", {
-      ...displaySetting,
-      id: 1,
-    });
-    alert("設定が保存されました。");
-  } catch (error) {
-    console.error("Error saving settings:", error);
-    alert("設定の保存に失敗しました。");
-  }
-};
-
-const updateSettings = async (displaySetting: Setting) => {
-  try {
-    await axios.put("http://localhost:3001/api/settings/update", {
-      ...displaySetting,
-      id: 1,
-    });
-    alert("設定が更新されました。");
-  } catch (error) {
-    console.error("Error updating settings:", error);
-    alert("設定の更新に失敗しました。");
-  }
-};
-
-export const sendLineNotification = async ({
+export const hundleLineNotificationTestButton = async ({
   setInfomation,
   price,
 }: {
@@ -86,7 +60,33 @@ export const sendLineNotification = async ({
   }
 };
 
-export const handleSaveSettings = async ({
+const createSettings = async (displaySetting: Setting) => {
+  try {
+    await axios.post("http://localhost:3001/api/settings/create", {
+      ...displaySetting,
+      id: 1,
+    });
+    alert("設定が保存されました。");
+  } catch (error) {
+    console.error("Error saving settings:", error);
+    alert("設定の保存に失敗しました。");
+  }
+};
+
+const updateSettings = async (displaySetting: Setting) => {
+  try {
+    await axios.put("http://localhost:3001/api/settings/update", {
+      ...displaySetting,
+      id: 1,
+    });
+    alert("設定が更新されました。");
+  } catch (error) {
+    console.error("Error updating settings:", error);
+    alert("設定の更新に失敗しました。");
+  }
+};
+
+export const saveSettings = async ({
   id,
   displaySetting,
 }: {
@@ -96,7 +96,7 @@ export const handleSaveSettings = async ({
   if (id) {
     await updateSettings(displaySetting);
   } else {
-    await saveSettings(displaySetting);
+    await createSettings(displaySetting);
   }
 };
 export const validateForm = (displaySetting: Setting) => {

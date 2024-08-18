@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import {
   fetchCoincheckStatus,
   fetchSettings,
-  handleSaveSettings,
-  sendLineNotification,
+  saveSettings,
+  hundleLineNotificationTestButton,
   Setting,
   validateForm,
 } from "../feature/notificationSettings";
@@ -96,10 +96,10 @@ function NotificationSettings() {
     }));
   };
 
-  const handleSave = () => {
+  const handleSettingSaveButton = () => {
     const resultValidate = validateForm(displaySetting);
     if (resultValidate === true) {
-      handleSaveSettings({ id: setting.id, displaySetting });
+      saveSettings({ id: setting.id, displaySetting });
       setInfomation("設定が保存されました。");
     } else {
       setValidationErrors(resultValidate);
@@ -154,13 +154,16 @@ function NotificationSettings() {
       </div>
       {error && <div>{error}</div>}
       <div>
-        <button onClick={handleSave}>設定を保存</button>
+        <button onClick={handleSettingSaveButton}>設定を保存</button>
       </div>
       {infomation && <div>{infomation}</div>}
       <div>
         <button
           onClick={() =>
-            sendLineNotification({ setInfomation, price: data?.last })
+            hundleLineNotificationTestButton({
+              setInfomation,
+              price: data?.last,
+            })
           }
         >
           LINEに通知テスト
