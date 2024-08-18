@@ -19,9 +19,10 @@ export const sendLineNotification = async (id, price) => {
       return "failure";
     }
     const token = line.token;
+    const message = `目標価格に達しました。現在の価格は${price}円です。`;
     await axios.post(
       "https://notify-api.line.me/api/notify",
-      `message=${encodeURIComponent(price)}`,
+      `message=${encodeURIComponent(message)}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
