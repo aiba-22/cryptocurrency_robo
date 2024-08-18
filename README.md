@@ -37,3 +37,5 @@ http://localhost:8000
 ### 通知設定画面
 <img width="1438" alt="スクリーンショット 0006-08-18 19 12 32" src="https://github.com/user-attachments/assets/e5d8e993-2774-40c9-8ac6-d6453e1abd8c">
 
+### LINE画面（通知時）
+<img width="677" alt="スクリーンショット 0006-08-18 22 12 54" src="https://github.com/user-attachments/assets/325af46a-5619-40d4-8b4b-298826d4bd43">
