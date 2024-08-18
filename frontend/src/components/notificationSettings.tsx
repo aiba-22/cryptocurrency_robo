@@ -9,6 +9,20 @@ import {
 } from "../feature/notificationSettings";
 import { currencyPairs } from "../feature/enums";
 import { settingsSchema } from "../feature/notificationSettingsSchema";
+import {
+  Container,
+  Typography,
+  TextField,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  CircularProgress,
+  Box,
+  Alert,
+  SelectChangeEvent, // 追加
+} from "@mui/material";
 
 function NotificationSettings() {
   const [infomation, setInfomation] = useState("");
@@ -50,11 +64,11 @@ function NotificationSettings() {
   };
 
   const handleVirtualCurrencyTypeChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
+    event: SelectChangeEvent<string> // 型を変更
   ) => {
     setDisplaySetting((prevSetting) => ({
       ...prevSetting,
-      virtualCurrencyType: event.target.value,
+      virtualCurrencyType: event.target.value as string,
     }));
   };
 
@@ -82,68 +96,74 @@ function NotificationSettings() {
   };
 
   return (
-    <div>
-      <h1>通知設定</h1>
+    <Container maxWidth="sm">
+      <Typography variant="h4" gutterBottom>
+        通知設定
+      </Typography>
       {settingsLoading || tickerLoading ? (
-        <div>Loading...</div>
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <CircularProgress />
+        </Box>
       ) : (
         <>
-          <div>
-            <label>
-              指定通貨
-              <select
-                value={displaySetting.virtualCurrencyType}
-                onChange={handleVirtualCurrencyTypeChange}
-              >
-                {currencyPairs.map((pair) => (
-                  <option key={pair} value={pair}>
-                    {pair.toUpperCase()}
-                  </option>
-                ))}
-              </select>
-            </label>
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="virtual-currency-type-label">指定通貨</InputLabel>
+            <Select
+              labelId="virtual-currency-type-label"
+              value={displaySetting.virtualCurrencyType}
+              onChange={handleVirtualCurrencyTypeChange}
+            >
+              {currencyPairs.map((pair) => (
+                <MenuItem key={pair} value={pair}>
+                  {pair.toUpperCase()}
+                </MenuItem>
+              ))}
+            </Select>
             {validationErrors.virtualCurrencyType && (
-              <div>{validationErrors.virtualCurrencyType}</div>
+              <Alert severity="error">
+                {validationErrors.virtualCurrencyType}
+              </Alert>
             )}
-          </div>
-          <div>
-            <label>
-              下限価格
-              <input
-                type="number"
-                value={displaySetting.targetPrice}
-                onChange={handleTargetPriceChange}
-                placeholder="例: 5000000"
-              />
-            </label>
-            {validationErrors.targetPrice && (
-              <div>{validationErrors.targetPrice}</div>
-            )}
-          </div>
-          <div>
-            <label>
-              LINEトークン
-              <input
-                type="text"
-                value={displaySetting.lineToken}
-                onChange={handleLineTokenChange}
-              />
-            </label>
-            {validationErrors.lineToken && (
-              <div>{validationErrors.lineToken}</div>
-            )}
-          </div>
+          </FormControl>
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="下限価格"
+            type="number"
+            value={displaySetting.targetPrice}
+            onChange={handleTargetPriceChange}
+            placeholder="例: 5000000"
+            error={!!validationErrors.targetPrice}
+            helperText={validationErrors.targetPrice}
+          />
+
+          <TextField
+            fullWidth
+            margin="normal"
+            label="LINEトークン"
+            type="password" // ここを "password" に変更
+            value={displaySetting.lineToken}
+            onChange={handleLineTokenChange}
+            error={!!validationErrors.lineToken}
+            helperText={validationErrors.lineToken}
+          />
+
           {(settingsError || tickerError) && (
-            <div>システムエラーが発生しました</div>
+            <Alert severity="error">システムエラーが発生しました</Alert>
           )}
-          <div>
-            <button onClick={() => handleSettingSaveButton()}>
+
+          <Box display="flex" justifyContent="space-between" mt={2}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSettingSaveButton}
+            >
               設定を保存
-            </button>
-          </div>
-          {infomation && <div>{infomation}</div>}
-          <div>
-            <button
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
               onClick={() =>
                 hundleLineNotificationTestButton({
                   setInfomation,
@@ -152,11 +172,17 @@ function NotificationSettings() {
               }
             >
               LINEに通知テスト
-            </button>
-          </div>
+            </Button>
+          </Box>
+
+          {infomation && (
+            <Box mt={2}>
+              <Alert severity="success">{infomation}</Alert>
+            </Box>
+          )}
         </>
       )}
-    </div>
+    </Container>
   );
 }
 
