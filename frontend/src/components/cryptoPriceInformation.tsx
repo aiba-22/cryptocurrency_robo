@@ -1,38 +1,16 @@
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, ChangeEvent } from "react";
+import { useQuery } from "react-query";
 import { fetchCoincheckStatus } from "../feature/notificationSettings";
 import { currencyPairs } from "../feature/enums";
 
-type TickerData = {
-  last: number;
-  bid: number;
-  ask: number;
-  high: number;
-  low: number;
-  volume: number;
-  timestamp: number;
-};
-
 function CryptoPriceInformation() {
-  const [data, setData] = useState<TickerData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [pair, setPair] = useState("btc_jpy");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const result = await fetchCoincheckStatus(pair);
-        setData(result);
-        setLoading(false);
-      } catch (error) {
-        setError("取得に失敗しました。");
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [pair]);
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["cryptoPrice", pair],
+    queryFn: () => fetchCoincheckStatus(pair),
+    keepPreviousData: true,
+  });
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setPair(event.target.value);
@@ -48,8 +26,8 @@ function CryptoPriceInformation() {
           </option>
         ))}
       </select>
-      {loading && <div>Loading...</div>}
-      {error && <div>Error: {error}</div>}
+      {isLoading && <div>Loading...</div>}
+      {error && <div>Error: システムエラーが発生しました</div>}
       {data && (
         <div>
           <p>Last: {data.last}</p>
