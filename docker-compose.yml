@@ -1,23 +1,50 @@
-version: '3'
+version: "3"
 services:
   frontend:
-    build: ./frontend
+    build: frontend
     environment:
       - NODE_ENV=development
     volumes:
       - ./frontend:/usr/src/app
-    command: sh -c 'npm start'
+    command: npx nodemon src/app.js
     ports:
       - 8000:3000
     tty: true
 
   backend:
-    build: ./backend
+    build: backend
     environment:
       - NODE_ENV=development
+      - DATABASE_URL=mysql://root:password@db:3306/mydatabase
     volumes:
       - ./backend:/usr/src/app
-    command: sh -c 'npm start'
+    command: npx nodemon src/server.js
     ports:
       - 3001:3001
     tty: true
+    depends_on:
+      - db
+
+  batch:
+    build: backend
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=mysql://root:password@db:3306/mydatabase
+    volumes:
+      - ./backend:/usr/src/app
+    command: sh -c 'node src/batch.js'
+    depends_on:
+      - db
+
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mydatabase
+    volumes:
+      - db-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+volumes:
+  db-data:

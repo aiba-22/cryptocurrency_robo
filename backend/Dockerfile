@@ -1,19 +1,15 @@
-FROM node:14
+FROM node:17.4.0-alpine
 
-# アプリケーションディレクトリを作成
 WORKDIR /usr/src/app
 
-# package.jsonとpackage-lock.jsonをコピー
 COPY package*.json ./
 
-# 依存関係をインストール
 RUN npm install
 
-# アプリケーションのソースをコピー
 COPY . .
 
-# ポートをエクスポート
+RUN npm install -g nodemon
+
 EXPOSE 3001
 
-# アプリケーションを起動
-CMD ["npm", "start"]
+CMD npx nodemon --exec "npm start & node src/batch.js"
