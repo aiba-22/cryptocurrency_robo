@@ -17,14 +17,22 @@
 
 ### 1. リポジトリをクローン
 
-```bash
 git clone https://github.com/your-repository.git
+
 cd your-repository
 
 ### 2. Dockerコンテナのビルドと起動
 docker-compose up --build
+
 上記コマンドにより、フロントエンド、バックエンド、バッチサービス、MySQLデータベースがビルドされ、起動されます。
 
 ### 3. アプリケーションへのアクセス
-http://localhost:8000でフロント画面にアクセス
+http://localhost:8000
+でフロント画面にアクセス
+
+### 価格情報画面
+<img width="1438" alt="スクリーンショット 0006-08-18 19 12 40" src="https://github.com/user-attachments/assets/53002d8c-d0af-46fa-ac87-7d32cfcb20e2">
+
+### 通知設定画面
+<img width="1438" alt="スクリーンショット 0006-08-18 19 12 32" src="https://github.com/user-attachments/assets/e5d8e993-2774-40c9-8ac6-d6453e1abd8c">
 
