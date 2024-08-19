@@ -50,7 +50,9 @@ function NotificationSettings() {
     queryKey: ["settings"],
     queryFn: fetchSettings,
     onSuccess: (settings) => {
-      setDisplaySetting(settings);
+      if (settings) {
+        setDisplaySetting(settings);
+      }
     },
   });
 

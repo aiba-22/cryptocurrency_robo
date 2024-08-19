@@ -8,8 +8,6 @@ RUN npm install
 
 COPY . .
 
-RUN npm install -g nodemon
-
 EXPOSE 3001
 
-CMD npx nodemon --exec "npm start & node src/batch.js"
+CMD ["npx", "nodemon", "--exec", "npm start & node src/batch.js"]
