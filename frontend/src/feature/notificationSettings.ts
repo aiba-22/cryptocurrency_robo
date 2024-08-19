@@ -66,10 +66,8 @@ const createSettings = async (displaySetting: Setting) => {
       ...displaySetting,
       id: 1,
     });
-    alert("設定が保存されました。");
   } catch (error) {
     console.error("Error saving settings:", error);
-    alert("設定の保存に失敗しました。");
   }
 };
 
@@ -77,12 +75,9 @@ const updateSettings = async (displaySetting: Setting) => {
   try {
     await axios.put("http://localhost:3001/api/settings/update", {
       ...displaySetting,
-      id: 1,
     });
-    alert("設定が更新されました。");
   } catch (error) {
     console.error("Error updating settings:", error);
-    alert("設定の更新に失敗しました。");
   }
 };
 
