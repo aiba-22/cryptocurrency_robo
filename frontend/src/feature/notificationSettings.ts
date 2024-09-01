@@ -1,6 +1,5 @@
 import axios from "axios";
 import { Dispatch, SetStateAction } from "react";
-import { settingsSchema } from "./notificationSettingsSchema";
 
 export type Setting = {
   id: number | null;

@@ -11,13 +11,13 @@ services:
     ports:
       - 3000:3000
 
-  backend:
-    build: backend
+  api:
+    build: api
     environment:
       - NODE_ENV=development
       - DATABASE_URL=mysql://root:password@db:3306/mydatabase
     volumes:
-      - ./backend:/usr/src/app
+      - ./api:/usr/src/app
       - /usr/src/app/node_modules
     command: ["npx", "nodemon", "src/app.js"]
     ports:
@@ -26,12 +26,12 @@ services:
       - db
 
   batch:
-    build: backend
+    build: api
     environment:
       - NODE_ENV=development
       - DATABASE_URL=mysql://root:password@db:3306/mydatabase
     volumes:
-      - ./backend:/usr/src/app
+      - ./api:/usr/src/app
     command: ["sh", "-c", "node src/batch.js"]
     depends_on:
       - db
