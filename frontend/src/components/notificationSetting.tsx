@@ -21,7 +21,7 @@ import {
   CircularProgress,
   Box,
   Alert,
-  SelectChangeEvent, // 追加
+  SelectChangeEvent,
 } from "@mui/material";
 
 function NotificationSetting() {
@@ -66,11 +66,11 @@ function NotificationSetting() {
   };
 
   const handleVirtualCurrencyTypeChange = (
-    event: SelectChangeEvent<string> // 型を変更
+    event: SelectChangeEvent<string>
   ) => {
     setDisplaySetting((prevSetting) => ({
       ...prevSetting,
-      virtualCurrencyType: event.target.value as string,
+      virtualCurrencyType: event.target.value,
     }));
   };
 
@@ -144,7 +144,7 @@ function NotificationSetting() {
             fullWidth
             margin="normal"
             label="LINEトークン"
-            type="password" // ここを "password" に変更
+            type="password"
             value={displaySetting.lineToken}
             onChange={handleLineTokenChange}
             error={!!validationErrors.lineToken}

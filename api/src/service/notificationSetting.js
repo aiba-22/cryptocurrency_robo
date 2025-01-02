@@ -11,21 +11,15 @@ const db = knex({
 });
 
 export const findNotificationSetting = async (id) => {
-  try {
-    const priceotification = await db("price_notification")
-      .where({ id })
-      .first();
+  const priceotification = await db("price_notification").where({ id }).first();
 
-    const lineSettings = await db("line").where({ id }).first();
-    return {
-      id: priceotification.id,
-      virtualCurrencyType: priceotification.virtual_currency_type,
-      targetPrice: priceotification.target_price,
-      lineToken: lineSettings.token,
-    };
-  } catch (error) {
-    console.error("システムエラー");
-  }
+  const lineSettings = await db("line").where({ id }).first();
+  return {
+    id: priceotification.id,
+    virtualCurrencyType: priceotification.virtual_currency_type,
+    targetPrice: priceotification.target_price,
+    lineToken: lineSettings.token,
+  };
 };
 
 export const createNotificationSetting = async (
@@ -52,7 +46,6 @@ export const createNotificationSetting = async (
     return "success";
   } catch (error) {
     await transaction.rollback();
-    console.error("システムエラー");
     return "failure";
   }
 };
@@ -80,7 +73,6 @@ export const updateNotificationSetting = async (
     return "success";
   } catch (error) {
     await transaction.rollback();
-    console.error("システムエラー");
     return "failure";
   }
 };
