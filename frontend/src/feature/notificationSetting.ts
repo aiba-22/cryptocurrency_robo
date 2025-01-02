@@ -23,7 +23,7 @@ export const fetchCoincheckStatus = async (pair = "btc_jpy") => {
 export const fetchSettings = async () => {
   try {
     const response = await axios.get(
-      `http://localhost:3001/api/settings?id=${1}`
+      `http://localhost:3001/api/notificationSetting?id=${1}`
     );
     return response.data;
   } catch (error) {
@@ -61,7 +61,7 @@ export const hundleLineNotificationTestButton = async ({
 
 const createSettings = async (displaySetting: Setting) => {
   try {
-    await axios.post("http://localhost:3001/api/settings/create", {
+    await axios.post("http://localhost:3001/api/notificationSetting/create", {
       ...displaySetting,
       id: 1,
     });
@@ -72,7 +72,7 @@ const createSettings = async (displaySetting: Setting) => {
 
 const updateSettings = async (displaySetting: Setting) => {
   try {
-    await axios.put("http://localhost:3001/api/settings/update", {
+    await axios.put("http://localhost:3001/api/notificationSetting/update", {
       ...displaySetting,
     });
   } catch (error) {

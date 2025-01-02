@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
-import { fetchCoincheckStatus } from "../feature/notificationSettings";
+import { fetchCoincheckStatus } from "../feature/notificationSetting";
 import { currencyPairs } from "../feature/enums";
 import {
   Container,

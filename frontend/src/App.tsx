@@ -1,7 +1,7 @@
 import "./App.css";
 import { Routes, Route, Link as RouterLink } from "react-router-dom";
 import CryptoPriceInformation from "./components/cryptoPriceInformation";
-import NotificationSettings from "./components/notificationSettings";
+import NotificationSetting from "./components/notificationSetting";
 import {
   AppBar,
   Toolbar,
@@ -29,7 +29,7 @@ export default function App() {
           <Button
             color="inherit"
             component={RouterLink}
-            to="/notificationSettings"
+            to="/notificationSetting"
           >
             通知設定
           </Button>
@@ -44,8 +44,8 @@ export default function App() {
               element={<CryptoPriceInformation />}
             />
             <Route
-              path="/notificationSettings"
-              element={<NotificationSettings />}
+              path="/notificationSetting"
+              element={<NotificationSetting />}
             />
           </Routes>
         </Box>

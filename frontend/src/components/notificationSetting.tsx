@@ -6,9 +6,9 @@ import {
   saveSettings,
   hundleLineNotificationTestButton,
   Setting,
-} from "../feature/notificationSettings";
+} from "../feature/notificationSetting";
 import { currencyPairs } from "../feature/enums";
-import { settingsSchema } from "../feature/notificationSettingsSchema";
+import { settingsSchema } from "../feature/notificationSettingSchema";
 import {
   Container,
   Typography,
@@ -18,13 +18,12 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  CircularProgress,
   Box,
   Alert,
-  SelectChangeEvent, // 追加
+  SelectChangeEvent,
 } from "@mui/material";
 
-function NotificationSettings() {
+function NotificationSetting() {
   const [infomation, setInfomation] = useState("");
   const [displaySetting, setDisplaySetting] = useState<Setting>({
     id: null,
@@ -38,7 +37,7 @@ function NotificationSettings() {
 
   const {
     data: tickerData,
-    error: tickerError,
+    isError: tickerIsError,
     isLoading: tickerLoading,
   } = useQuery({
     queryKey: ["ticker", displaySetting.virtualCurrencyType],
@@ -46,7 +45,7 @@ function NotificationSettings() {
     keepPreviousData: true,
   });
 
-  const { error: settingsError, isLoading: settingsLoading } = useQuery({
+  const { isError: settingIsError, isLoading: settingsLoading } = useQuery({
     queryKey: ["settings"],
     queryFn: fetchSettings,
     onSuccess: (settings) => {
@@ -66,11 +65,11 @@ function NotificationSettings() {
   };
 
   const handleVirtualCurrencyTypeChange = (
-    event: SelectChangeEvent<string> // 型を変更
+    event: SelectChangeEvent<string>
   ) => {
     setDisplaySetting((prevSetting) => ({
       ...prevSetting,
-      virtualCurrencyType: event.target.value as string,
+      virtualCurrencyType: event.target.value,
     }));
   };
 
@@ -102,12 +101,8 @@ function NotificationSettings() {
       <Typography variant="h4" gutterBottom>
         通知設定
       </Typography>
-      {settingsLoading || tickerLoading ? (
-        <Box display="flex" justifyContent="center" alignItems="center">
-          <CircularProgress />
-        </Box>
-      ) : (
-        <>
+      {!settingsLoading && !tickerLoading && (
+        <div>
           <FormControl fullWidth margin="normal">
             <InputLabel id="virtual-currency-type-label">指定通貨</InputLabel>
             <Select
@@ -144,15 +139,17 @@ function NotificationSettings() {
             fullWidth
             margin="normal"
             label="LINEトークン"
-            type="password" // ここを "password" に変更
+            type="password"
             value={displaySetting.lineToken}
             onChange={handleLineTokenChange}
             error={!!validationErrors.lineToken}
             helperText={validationErrors.lineToken}
           />
 
-          {(settingsError || tickerError) && (
-            <Alert severity="error">システムエラーが発生しました</Alert>
+          {(settingIsError || tickerIsError) && (
+            <div>
+              <Alert severity="error">データ取得に失敗しました</Alert>
+            </div>
           )}
 
           <Box display="flex" justifyContent="space-between" mt={2}>
@@ -182,10 +179,10 @@ function NotificationSettings() {
               <Alert severity="success">{infomation}</Alert>
             </Box>
           )}
-        </>
+        </div>
       )}
     </Container>
   );
 }
 
-export default NotificationSettings;
+export default NotificationSetting;
