@@ -1,5 +1,5 @@
 import axios from "axios";
-import { sendLineNotification } from "../service/line.js";
+import { LineService } from "../service/line.js";
 
 export const getTicker = async (req, res) => {
   const response = await axios.get(
@@ -9,7 +9,8 @@ export const getTicker = async (req, res) => {
 };
 
 export const sendNotification = async (req, res) => {
+  const lineService = new LineService();
   const { id, price } = req.body;
-  const result = await sendLineNotification(id, price);
+  const result = await lineService.sendNotification(id, price);
   res.status(200).json(result);
 };

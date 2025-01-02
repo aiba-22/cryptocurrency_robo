@@ -18,7 +18,6 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  CircularProgress,
   Box,
   Alert,
   SelectChangeEvent,
@@ -38,7 +37,7 @@ function NotificationSetting() {
 
   const {
     data: tickerData,
-    error: tickerError,
+    isError: tickerIsError,
     isLoading: tickerLoading,
   } = useQuery({
     queryKey: ["ticker", displaySetting.virtualCurrencyType],
@@ -46,7 +45,7 @@ function NotificationSetting() {
     keepPreviousData: true,
   });
 
-  const { error: settingsError, isLoading: settingsLoading } = useQuery({
+  const { isError: settingIsError, isLoading: settingsLoading } = useQuery({
     queryKey: ["settings"],
     queryFn: fetchSettings,
     onSuccess: (settings) => {
@@ -102,12 +101,8 @@ function NotificationSetting() {
       <Typography variant="h4" gutterBottom>
         通知設定
       </Typography>
-      {settingsLoading || tickerLoading ? (
-        <Box display="flex" justifyContent="center" alignItems="center">
-          <CircularProgress />
-        </Box>
-      ) : (
-        <>
+      {!settingsLoading && !tickerLoading && (
+        <div>
           <FormControl fullWidth margin="normal">
             <InputLabel id="virtual-currency-type-label">指定通貨</InputLabel>
             <Select
@@ -151,8 +146,10 @@ function NotificationSetting() {
             helperText={validationErrors.lineToken}
           />
 
-          {(settingsError || tickerError) && (
-            <Alert severity="error">システムエラーが発生しました</Alert>
+          {(settingIsError || tickerIsError) && (
+            <div>
+              <Alert severity="error">データ取得に失敗しました</Alert>
+            </div>
           )}
 
           <Box display="flex" justifyContent="space-between" mt={2}>
@@ -182,7 +179,7 @@ function NotificationSetting() {
               <Alert severity="success">{infomation}</Alert>
             </Box>
           )}
-        </>
+        </div>
       )}
     </Container>
   );
