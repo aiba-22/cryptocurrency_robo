@@ -2,10 +2,10 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import {
-  getSettings,
-  createSettings,
-  updateSettings,
-} from "./controllers/settingsController.js";
+  get,
+  create,
+  update,
+} from "./controllers/notificationSettingController.js";
 import { getTicker, sendNotification } from "./controllers/lineController.js";
 
 const app = express();
@@ -15,9 +15,9 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.get("/api/settings", getSettings);
-app.post("/api/settings/create", createSettings);
-app.put("/api/settings/update", updateSettings);
+app.get("/api/notificationSetting", get);
+app.post("/api/notificationSetting/create", create);
+app.put("/api/notificationSetting/update", update);
 app.get("/api/ticker", getTicker);
 app.post("/api/line", sendNotification);
 

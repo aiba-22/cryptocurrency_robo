@@ -10,7 +10,7 @@ const db = knex({
   },
 });
 
-export const findNotificatioSetting = async (id) => {
+export const findNotificationSetting = async (id) => {
   try {
     const priceotification = await db("price_notification")
       .where({ id })
@@ -28,7 +28,7 @@ export const findNotificatioSetting = async (id) => {
   }
 };
 
-export const createNotificatioSetting = async (
+export const createNotificationSetting = async (
   virtualCurrencyType,
   targetPrice,
   lineToken
@@ -57,7 +57,7 @@ export const createNotificatioSetting = async (
   }
 };
 
-export const updateNotificatioSetting = async (
+export const updateNotificationSetting = async (
   id,
   virtualCurrencyType,
   targetPrice,

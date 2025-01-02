@@ -6,9 +6,9 @@ import {
   saveSettings,
   hundleLineNotificationTestButton,
   Setting,
-} from "../feature/notificationSettings";
+} from "../feature/notificationSetting";
 import { currencyPairs } from "../feature/enums";
-import { settingsSchema } from "../feature/notificationSettingsSchema";
+import { settingsSchema } from "../feature/notificationSettingSchema";
 import {
   Container,
   Typography,
@@ -24,7 +24,7 @@ import {
   SelectChangeEvent, // 追加
 } from "@mui/material";
 
-function NotificationSettings() {
+function NotificationSetting() {
   const [infomation, setInfomation] = useState("");
   const [displaySetting, setDisplaySetting] = useState<Setting>({
     id: null,
@@ -188,4 +188,4 @@ function NotificationSettings() {
   );
 }
 
-export default NotificationSettings;
+export default NotificationSetting;
