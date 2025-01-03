@@ -1,4 +1,3 @@
-import axios from "axios";
 import cron from "node-cron";
 import { NotificationSettingService } from "./service/notificationSetting.js";
 import { LineService } from "./service/line.js";

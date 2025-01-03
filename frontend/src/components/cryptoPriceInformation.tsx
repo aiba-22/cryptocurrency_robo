@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { fetchCoincheckStatus } from "../feature/notificationSetting";
-import { currencyPairs } from "../feature/enums";
+import { VIRTUAL_CURRENCIES, virtualCurrencyList } from "../feature/constants";
 import {
   Container,
   Typography,
@@ -16,16 +16,18 @@ import {
 } from "@mui/material";
 
 function CryptoPriceInformation() {
-  const [pair, setPair] = useState("btc_jpy");
+  const [virtualCurrency, setVirtualCurrency] = useState(
+    VIRTUAL_CURRENCIES.BTC_JPY
+  );
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["cryptoPrice", pair],
-    queryFn: () => fetchCoincheckStatus(pair),
+    queryKey: ["cryptoPrice", virtualCurrency],
+    queryFn: () => fetchCoincheckStatus(virtualCurrency),
     keepPreviousData: true,
   });
 
   const handleChange = (event: SelectChangeEvent<string>) => {
-    setPair(event.target.value as string);
+    setVirtualCurrency(event.target.value);
   };
 
   return (
@@ -34,15 +36,15 @@ function CryptoPriceInformation() {
         価格情報
       </Typography>
       <FormControl fullWidth margin="normal">
-        <InputLabel id="crypto-pair-select-label">通貨ペア</InputLabel>
+        <InputLabel id="virtual-currency-select-label">通貨ペア</InputLabel>
         <Select
-          labelId="crypto-pair-select-label"
-          value={pair}
+          labelId="virtual-currency-select-label"
+          value={virtualCurrency}
           onChange={handleChange}
         >
-          {currencyPairs.map((pair) => (
-            <MenuItem key={pair} value={pair}>
-              {pair.toUpperCase()}
+          {virtualCurrencyList.map((virtualCurrency) => (
+            <MenuItem key={virtualCurrency} value={virtualCurrency}>
+              {virtualCurrency.toUpperCase()}
             </MenuItem>
           ))}
         </Select>

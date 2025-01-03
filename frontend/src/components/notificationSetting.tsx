@@ -7,7 +7,7 @@ import {
   hundleLineNotificationTestButton,
   Setting,
 } from "../feature/notificationSetting";
-import { currencyPairs } from "../feature/enums";
+import { virtualCurrencyList } from "../feature/constants";
 import { settingsSchema } from "../feature/notificationSettingSchema";
 import {
   Container,
@@ -110,9 +110,9 @@ function NotificationSetting() {
               value={displaySetting.virtualCurrencyType}
               onChange={handleVirtualCurrencyTypeChange}
             >
-              {currencyPairs.map((pair) => (
-                <MenuItem key={pair} value={pair}>
-                  {pair.toUpperCase()}
+              {virtualCurrencyList.map((virtualCurrency) => (
+                <MenuItem key={virtualCurrency} value={virtualCurrency}>
+                  {virtualCurrency.toUpperCase()}
                 </MenuItem>
               ))}
             </Select>

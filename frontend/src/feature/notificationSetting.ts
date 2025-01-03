@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Dispatch, SetStateAction } from "react";
+import { VIRTUAL_CURRENCIES } from "./constants";
 
 export type Setting = {
   id: number | null;
@@ -8,28 +9,20 @@ export type Setting = {
   lineToken: string;
 };
 
-export const fetchCoincheckStatus = async (pair = "btc_jpy") => {
-  try {
-    const response = await axios.get(
-      `http://localhost:3001/api/virtualCurrency?pair=${pair}`
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    throw error;
-  }
+export const fetchCoincheckStatus = async (
+  virtualCurrency = VIRTUAL_CURRENCIES.BTC_JPY
+) => {
+  const response = await axios.get(
+    `http://localhost:3001/api/virtualCurrency?virtualCurrency=${virtualCurrency}`
+  );
+  return response.data;
 };
 
 export const fetchSettings = async () => {
-  try {
-    const response = await axios.get(
-      `http://localhost:3001/api/notificationSetting?id=${1}`
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching settings:", error);
-    throw error;
-  }
+  const response = await axios.get(
+    `http://localhost:3001/api/notificationSetting?id=${1}`
+  );
+  return response.data;
 };
 
 export const hundleLineNotificationTestButton = async ({
@@ -40,44 +33,29 @@ export const hundleLineNotificationTestButton = async ({
   price?: number;
 }) => {
   if (price) {
-    try {
-      const result = await axios.post<string>(
-        "http://localhost:3001/api/line",
-        {
-          id: 1,
-          price: price,
-        }
-      );
-      if (result.data === "success") {
-        setInfomation("成功しました。");
-      } else if (result.data === "failure") {
-        setInfomation("失敗しました。");
-      }
-    } catch (error) {
-      console.error("Error sending notification:", error);
+    const result = await axios.post<string>("http://localhost:3001/api/line", {
+      id: 1,
+      price: price,
+    });
+    if (result.data === "success") {
+      setInfomation("成功しました。");
+    } else if (result.data === "failure") {
+      setInfomation("失敗しました。");
     }
   }
 };
 
 const createSettings = async (displaySetting: Setting) => {
-  try {
-    await axios.post("http://localhost:3001/api/notificationSetting/create", {
-      ...displaySetting,
-      id: 1,
-    });
-  } catch (error) {
-    console.error("Error saving settings:", error);
-  }
+  await axios.post("http://localhost:3001/api/notificationSetting/create", {
+    ...displaySetting,
+    id: 1,
+  });
 };
 
 const updateSettings = async (displaySetting: Setting) => {
-  try {
-    await axios.put("http://localhost:3001/api/notificationSetting/update", {
-      ...displaySetting,
-    });
-  } catch (error) {
-    console.error("Error updating settings:", error);
-  }
+  await axios.put("http://localhost:3001/api/notificationSetting/update", {
+    ...displaySetting,
+  });
 };
 
 export const saveSettings = async ({

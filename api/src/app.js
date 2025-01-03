@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 app.get("/api/notificationSetting", get);
 app.post("/api/notificationSetting/create", create);
 app.put("/api/notificationSetting/update", update);
-app.get("/api/virtualCurrency/get", getVirtualCurrency);
+app.get("/api/virtualCurrency", getVirtualCurrency);
 app.post("/api/line", sendNotification);
 
 app.listen(port, () => {
