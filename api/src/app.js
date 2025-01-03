@@ -6,7 +6,8 @@ import {
   create,
   update,
 } from "./controllers/notificationSettingController.js";
-import { getTicker, sendNotification } from "./controllers/lineController.js";
+import { sendNotification } from "./controllers/lineController.js";
+import { get as getVirtualCurrency } from "./controllers/virtualCurrencyController.js";
 
 const app = express();
 const port = 3001;
@@ -18,7 +19,7 @@ app.use(bodyParser.json());
 app.get("/api/notificationSetting", get);
 app.post("/api/notificationSetting/create", create);
 app.put("/api/notificationSetting/update", update);
-app.get("/api/ticker", getTicker);
+app.get("/api/virtualCurrency/get", getVirtualCurrency);
 app.post("/api/line", sendNotification);
 
 app.listen(port, () => {

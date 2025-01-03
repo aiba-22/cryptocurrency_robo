@@ -11,7 +11,7 @@ export type Setting = {
 export const fetchCoincheckStatus = async (pair = "btc_jpy") => {
   try {
     const response = await axios.get(
-      `http://localhost:3001/api/ticker?pair=${pair}`
+      `http://localhost:3001/api/virtualCurrency?pair=${pair}`
     );
     return response.data;
   } catch (error) {

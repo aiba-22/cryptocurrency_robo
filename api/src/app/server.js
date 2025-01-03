@@ -5,10 +5,10 @@ const app = express();
 const port = 3001;
 
 app.use(cors());
-app.get("/api/ticker", async (req, res) => {
+app.get("/api/virtualCurrency", async (req, res) => {
   const pair = req.query.pair || "btc_jpy";
   const response = await axios.get(
-    `https://coincheck.com/api/ticker?pair=${pair}`
+    `https://coincheck.com/api/virtualCurrency?pair=${pair}`
   );
   res.json(response.data);
 });
