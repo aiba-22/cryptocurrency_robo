@@ -1,11 +1,11 @@
 import axios from "axios";
 import { LineService } from "../service/line.js";
+import { CoinCheckService } from "../service/coinCheck.js";
 
 export const getTicker = async (req, res) => {
-  const response = await axios.get(
-    `https://coincheck.com/api/ticker?pair=${req.query.pair || "btc_jpy"}`
-  );
-  res.json(response.data);
+  const coinCheckService = new CoinCheckService();
+  const result = await coinCheckService.getPriceList(req.query.pair);
+  res.json(result.data);
 };
 
 export const sendNotification = async (req, res) => {
