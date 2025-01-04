@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import {
-  fetchCoincheckStatus,
-  fetchSettings,
+  fetchVirtualCurrency,
+  findNotificationSetting,
   saveSettings,
   hundleLineNotificationTestButton,
   Setting,
 } from "../feature/notificationSetting";
 import { VIRTUAL_CURRENCY_LIST } from "../feature/constants";
-import { settingsSchema } from "../feature/notificationSettingSchema";
+import { notificationSettingSchema } from "../feature/notificationSettingSchema";
 import {
   Container,
   Typography,
@@ -24,8 +24,8 @@ import {
 } from "@mui/material";
 
 function NotificationSetting() {
-  const [infomation, setInfomation] = useState("");
-  const [displaySetting, setDisplaySetting] = useState<Setting>({
+  const [snackbarInfomation, setSnackbarInfomation] = useState("");
+  const [notificationSetting, setNotificationSetting] = useState<Setting>({
     id: null,
     virtualCurrencyType: "btc_jpy",
     targetPrice: 0,
@@ -40,8 +40,9 @@ function NotificationSetting() {
     isError: isVirtualCurrencyListError,
     isLoading: isVirtualCurrencyListLoading,
   } = useQuery({
-    queryKey: ["ticker", displaySetting.virtualCurrencyType],
-    queryFn: () => fetchCoincheckStatus(displaySetting.virtualCurrencyType),
+    queryKey: ["virtualCurrency", notificationSetting.virtualCurrencyType],
+    queryFn: () =>
+      fetchVirtualCurrency(notificationSetting.virtualCurrencyType),
     keepPreviousData: true,
   });
 
@@ -49,11 +50,11 @@ function NotificationSetting() {
     isError: isNotificationSettingError,
     isLoading: isNotificationSettingLoading,
   } = useQuery({
-    queryKey: ["settings"],
-    queryFn: fetchSettings,
-    onSuccess: (settings) => {
-      if (settings) {
-        setDisplaySetting(settings);
+    queryKey: ["findNotificationSetting"],
+    queryFn: findNotificationSetting,
+    onSuccess: (notificationSetting) => {
+      if (notificationSetting) {
+        setNotificationSetting(notificationSetting);
       }
     },
   });
@@ -61,7 +62,7 @@ function NotificationSetting() {
   const handleTargetPriceChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setDisplaySetting((prevSetting) => ({
+    setNotificationSetting((prevSetting) => ({
       ...prevSetting,
       targetPrice: parseInt(event.target.value, 10),
     }));
@@ -70,7 +71,7 @@ function NotificationSetting() {
   const handleVirtualCurrencyTypeChange = (
     event: SelectChangeEvent<string>
   ) => {
-    setDisplaySetting((prevSetting) => ({
+    setNotificationSetting((prevSetting) => ({
       ...prevSetting,
       virtualCurrencyType: event.target.value,
     }));
@@ -79,7 +80,7 @@ function NotificationSetting() {
   const handleLineTokenChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setDisplaySetting((prevSetting) => ({
+    setNotificationSetting((prevSetting) => ({
       ...prevSetting,
       lineToken: event.target.value,
     }));
@@ -87,9 +88,10 @@ function NotificationSetting() {
 
   const handleSettingSaveButton = async () => {
     try {
-      const validatedData = settingsSchema.parse(displaySetting);
-      await saveSettings({ displaySetting: validatedData });
-      setInfomation("設定が保存されました。");
+      const notificationSettingResult =
+        notificationSettingSchema.parse(notificationSetting);
+      await saveSettings(notificationSettingResult);
+      setSnackbarInfomation("設定が保存されました。");
     } catch (error: any) {
       const formattedErrors: Record<string, string> = {};
       error.errors.forEach((err: any) => {
@@ -111,7 +113,7 @@ function NotificationSetting() {
             <InputLabel id="virtual-currency-type-label">指定通貨</InputLabel>
             <Select
               labelId="virtual-currency-type-label"
-              value={displaySetting.virtualCurrencyType}
+              value={notificationSetting.virtualCurrencyType}
               onChange={handleVirtualCurrencyTypeChange}
             >
               {VIRTUAL_CURRENCY_LIST.map((virtualCurrency) => (
@@ -132,7 +134,7 @@ function NotificationSetting() {
             margin="normal"
             label="目標価格"
             type="number"
-            value={displaySetting.targetPrice}
+            value={notificationSetting.targetPrice}
             onChange={handleTargetPriceChange}
             placeholder="例: 5000000"
             error={!!validationErrors.targetPrice}
@@ -144,7 +146,7 @@ function NotificationSetting() {
             margin="normal"
             label="LINEトークン"
             type="password"
-            value={displaySetting.lineToken}
+            value={notificationSetting.lineToken}
             onChange={handleLineTokenChange}
             error={!!validationErrors.lineToken}
             helperText={validationErrors.lineToken}
@@ -169,7 +171,7 @@ function NotificationSetting() {
               color="secondary"
               onClick={() =>
                 hundleLineNotificationTestButton({
-                  setInfomation,
+                  setInfomation: setSnackbarInfomation,
                   price: virtualCurrencyList?.last,
                 })
               }
@@ -178,9 +180,9 @@ function NotificationSetting() {
             </Button>
           </Box>
 
-          {infomation && (
+          {snackbarInfomation && (
             <Box mt={2}>
-              <Alert severity="success">{infomation}</Alert>
+              <Alert severity="success">{snackbarInfomation}</Alert>
             </Box>
           )}
         </div>

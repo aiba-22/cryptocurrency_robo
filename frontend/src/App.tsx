@@ -1,6 +1,6 @@
 import "./App.css";
 import { Routes, Route, Link as RouterLink } from "react-router-dom";
-import CryptoPriceInformation from "./components/cryptoPriceInformation";
+import VirtualCurrencyInformation from "./components/virtualCurrencyInformation";
 import NotificationSetting from "./components/notificationSetting";
 import {
   AppBar,
@@ -22,7 +22,7 @@ export default function App() {
           <Button
             color="inherit"
             component={RouterLink}
-            to="/cryptoPriceInformation"
+            to="/virtualCurrencyInformation"
           >
             価格情報
           </Button>
@@ -40,8 +40,8 @@ export default function App() {
         <Box my={4}>
           <Routes>
             <Route
-              path="/cryptoPriceInformation"
-              element={<CryptoPriceInformation />}
+              path="/virtualCurrencyInformation"
+              element={<VirtualCurrencyInformation />}
             />
             <Route
               path="/notificationSetting"

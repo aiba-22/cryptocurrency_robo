@@ -9,7 +9,7 @@ export type Setting = {
   lineToken: string;
 };
 
-export const fetchCoincheckStatus = async (
+export const fetchVirtualCurrency = async (
   virtualCurrency = VIRTUAL_CURRENCIES.BTC_JPY
 ) => {
   const response = await axios.get(
@@ -18,7 +18,7 @@ export const fetchCoincheckStatus = async (
   return response.data;
 };
 
-export const fetchSettings = async () => {
+export const findNotificationSetting = async () => {
   const response = await axios.get(
     `http://localhost:3001/api/notificationSetting?id=${1}`
   );
@@ -58,11 +58,7 @@ const updateSettings = async (displaySetting: Setting) => {
   });
 };
 
-export const saveSettings = async ({
-  displaySetting,
-}: {
-  displaySetting: Setting;
-}) => {
+export const saveSettings = async (displaySetting: Setting) => {
   if (displaySetting.id) {
     await updateSettings(displaySetting);
   } else {

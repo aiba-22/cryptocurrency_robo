@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
-import { fetchCoincheckStatus } from "../feature/notificationSetting";
+import { fetchVirtualCurrency } from "../feature/notificationSetting";
 import {
   VIRTUAL_CURRENCIES,
   VIRTUAL_CURRENCY_LIST,
@@ -24,8 +24,8 @@ function CryptoPriceInformation() {
   );
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["cryptoPrice", virtualCurrency],
-    queryFn: () => fetchCoincheckStatus(virtualCurrency),
+    queryKey: ["virtualCurrency", virtualCurrency],
+    queryFn: () => fetchVirtualCurrency(virtualCurrency),
     keepPreviousData: true,
   });
 
