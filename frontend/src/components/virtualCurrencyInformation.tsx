@@ -1,10 +1,4 @@
 import { useState } from "react";
-import { useQuery } from "react-query";
-import { fetchVirtualCurrency } from "../feature/notificationSetting";
-import {
-  VIRTUAL_CURRENCIES,
-  VIRTUAL_CURRENCY_LIST,
-} from "../feature/constants";
 import {
   Container,
   Typography,
@@ -15,19 +9,24 @@ import {
   CircularProgress,
   Box,
   Alert,
-  SelectChangeEvent,
 } from "@mui/material";
+import { SelectChangeEvent } from "@mui/material";
+import { useVirtualCurrencyList } from "../feature/hooks/useNotificationSettings";
+import {
+  VIRTUAL_CURRENCIES,
+  VIRTUAL_CURRENCY_LIST,
+} from "../feature/constants";
 
-function CryptoPriceInformation() {
+function VirtualCurrencyInformation() {
   const [virtualCurrency, setVirtualCurrency] = useState(
     VIRTUAL_CURRENCIES.BTC_JPY
   );
 
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["virtualCurrency", virtualCurrency],
-    queryFn: () => fetchVirtualCurrency(virtualCurrency),
-    keepPreviousData: true,
-  });
+  const {
+    virtualCurrencyTradingPrice,
+    isVirtualCurrencyError,
+    isVirtualCurrencyLoading,
+  } = useVirtualCurrencyList(virtualCurrency);
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     setVirtualCurrency(event.target.value);
@@ -45,33 +44,38 @@ function CryptoPriceInformation() {
           value={virtualCurrency}
           onChange={handleChange}
         >
-          {VIRTUAL_CURRENCY_LIST.map((virtualCurrency) => (
-            <MenuItem key={virtualCurrency} value={virtualCurrency}>
-              {virtualCurrency.toUpperCase()}
+          {VIRTUAL_CURRENCY_LIST.map((currency) => (
+            <MenuItem key={currency} value={currency}>
+              {currency.toUpperCase()}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
 
-      {isLoading && (
+      {isVirtualCurrencyLoading && (
         <Box display="flex" justifyContent="center" alignItems="center">
           <CircularProgress />
         </Box>
       )}
 
-      {error && <Alert severity="error">システムエラーが発生しました</Alert>}
+      {isVirtualCurrencyError && (
+        <Alert severity="error">システムエラーが発生しました</Alert>
+      )}
 
-      {data && (
+      {virtualCurrencyTradingPrice && (
         <Box mt={2}>
           <Typography variant="h6">価格詳細</Typography>
-          <Typography>最終価格: {data.last}</Typography>
-          <Typography>買い価格: {data.bid}</Typography>
-          <Typography>売り価格: {data.ask}</Typography>
-          <Typography>高値: {data.high}</Typography>
-          <Typography>安値: {data.low}</Typography>
-          <Typography>取引量: {data.volume}</Typography>
+          <Typography>最終価格: {virtualCurrencyTradingPrice.last}</Typography>
+          <Typography>買い価格: {virtualCurrencyTradingPrice.bid}</Typography>
+          <Typography>売り価格: {virtualCurrencyTradingPrice.ask}</Typography>
+          <Typography>高値: {virtualCurrencyTradingPrice.high}</Typography>
+          <Typography>安値: {virtualCurrencyTradingPrice.low}</Typography>
+          <Typography>取引量: {virtualCurrencyTradingPrice.volume}</Typography>
           <Typography>
-            タイムスタンプ: {new Date(data.timestamp * 1000).toLocaleString()}
+            タイムスタンプ:{" "}
+            {new Date(
+              virtualCurrencyTradingPrice.timestamp * 1000
+            ).toLocaleString()}
           </Typography>
         </Box>
       )}
@@ -79,4 +83,4 @@ function CryptoPriceInformation() {
   );
 }
 
-export default CryptoPriceInformation;
+export default VirtualCurrencyInformation;
