@@ -20,5 +20,3 @@ export const VIRTUAL_CURRENCIES = {
   BRIL_JPY: "bril_jpy",
   BC_JPY: "bc_jpy",
 };
-
-export const virtualCurrencyList = Object.values(VIRTUAL_CURRENCIES);

@@ -101,6 +101,7 @@ function NotificationSetting() {
       <Typography variant="h4" gutterBottom>
         通知設定
       </Typography>
+      目標価格を超えるとLINEへの通知が送られます
       {!settingsLoading && !tickerLoading && (
         <div>
           <FormControl fullWidth margin="normal">
@@ -126,7 +127,7 @@ function NotificationSetting() {
           <TextField
             fullWidth
             margin="normal"
-            label="下限価格"
+            label="目標価格"
             type="number"
             value={displaySetting.targetPrice}
             onChange={handleTargetPriceChange}

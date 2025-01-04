@@ -14,26 +14,21 @@ export class NotificationSettingService {
   }
 
   async find(id) {
-    try {
-      const priceNotification = await this.db("price_notification")
-        .where({ id })
-        .first();
-      const lineSettings = await this.db("line").where({ id }).first();
+    const priceNotification = await this.db("price_notification")
+      .where({ id })
+      .first();
+    const lineSettings = await this.db("line").where({ id }).first();
 
-      if (!priceNotification || !lineSettings) {
-        throw new Error("Notification setting not found.");
-      }
-
-      return {
-        id: priceNotification.id,
-        virtualCurrencyType: priceNotification.virtual_currency_type,
-        targetPrice: priceNotification.target_price,
-        lineToken: lineSettings.token,
-      };
-    } catch (error) {
-      console.error("Error finding notification setting:", error);
-      throw error;
+    if (!priceNotification || !lineSettings) {
+      throw new Error("Notification setting not found.");
     }
+
+    return {
+      id: priceNotification.id,
+      virtualCurrencyType: priceNotification.virtual_currency_type,
+      targetPrice: priceNotification.target_price,
+      lineToken: lineSettings.token,
+    };
   }
 
   async create(virtualCurrencyType, targetPrice, lineToken) {
@@ -56,7 +51,6 @@ export class NotificationSettingService {
       return "success";
     } catch (error) {
       await transaction.rollback();
-      console.error("Error creating notification setting:", error);
       return "failure";
     }
   }
@@ -79,7 +73,6 @@ export class NotificationSettingService {
       return "success";
     } catch (error) {
       await transaction.rollback();
-      console.error("Error updating notification setting:", error);
       return "failure";
     }
   }
