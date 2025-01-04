@@ -23,13 +23,16 @@ import {
   Setting,
   validateAndSaveSettings,
 } from "../feature/notificationSetting";
-import { VIRTUAL_CURRENCY_LIST } from "../feature/constants";
+import {
+  VIRTUAL_CURRENCIES,
+  VIRTUAL_CURRENCY_LIST,
+} from "../feature/constants";
 
 function NotificationSetting() {
   const [snackbarInfomation, setSnackbarInfomation] = useState("");
   const [notificationSetting, setNotificationSetting] = useState<Setting>({
     id: null,
-    virtualCurrencyType: "btc_jpy",
+    virtualCurrencyType: VIRTUAL_CURRENCIES.BTC_JPY,
     targetPrice: 0,
     lineToken: "",
   });
