@@ -19,12 +19,11 @@ import {
 } from "../feature/hooks/useNotificationSettings";
 
 import {
-  saveSettings,
   hundleLineNotificationTestButton,
   Setting,
+  validateAndSaveSettings,
 } from "../feature/notificationSetting";
 import { VIRTUAL_CURRENCY_LIST } from "../feature/constants";
-import { notificationSettingSchema } from "../feature/notificationSettingSchema";
 
 function NotificationSetting() {
   const [snackbarInfomation, setSnackbarInfomation] = useState("");
@@ -79,18 +78,11 @@ function NotificationSetting() {
   };
 
   const handleSettingSaveButton = async () => {
-    try {
-      const notificationSettingResult =
-        notificationSettingSchema.parse(notificationSetting);
-      await saveSettings(notificationSettingResult);
-      setSnackbarInfomation("設定が保存されました。");
-    } catch (error: any) {
-      const formattedErrors: Record<string, string> = {};
-      error.errors.forEach((err: any) => {
-        formattedErrors[err.path[0]] = err.message;
-      });
-      setValidationErrors(formattedErrors);
+    const result = await validateAndSaveSettings(notificationSetting);
+    if (result.validationErrors) {
+      setValidationErrors(result.validationErrors);
     }
+    setSnackbarInfomation(result.message);
   };
 
   return (
