@@ -7,7 +7,7 @@ import {
   hundleLineNotificationTestButton,
   Setting,
 } from "../feature/notificationSetting";
-import { virtualCurrencyList } from "../feature/constants";
+import { VIRTUAL_CURRENCY_LIST } from "../feature/constants";
 import { settingsSchema } from "../feature/notificationSettingSchema";
 import {
   Container,
@@ -36,16 +36,19 @@ function NotificationSetting() {
   >({});
 
   const {
-    data: tickerData,
-    isError: tickerIsError,
-    isLoading: tickerLoading,
+    data: virtualCurrencyList,
+    isError: isVirtualCurrencyListError,
+    isLoading: isVirtualCurrencyListLoading,
   } = useQuery({
     queryKey: ["ticker", displaySetting.virtualCurrencyType],
     queryFn: () => fetchCoincheckStatus(displaySetting.virtualCurrencyType),
     keepPreviousData: true,
   });
 
-  const { isError: settingIsError, isLoading: settingsLoading } = useQuery({
+  const {
+    isError: isNotificationSettingError,
+    isLoading: isNotificationSettingLoading,
+  } = useQuery({
     queryKey: ["settings"],
     queryFn: fetchSettings,
     onSuccess: (settings) => {
@@ -102,7 +105,7 @@ function NotificationSetting() {
         通知設定
       </Typography>
       目標価格を超えるとLINEへの通知が送られます
-      {!settingsLoading && !tickerLoading && (
+      {!isNotificationSettingLoading && !isVirtualCurrencyListLoading && (
         <div>
           <FormControl fullWidth margin="normal">
             <InputLabel id="virtual-currency-type-label">指定通貨</InputLabel>
@@ -111,7 +114,7 @@ function NotificationSetting() {
               value={displaySetting.virtualCurrencyType}
               onChange={handleVirtualCurrencyTypeChange}
             >
-              {virtualCurrencyList.map((virtualCurrency) => (
+              {VIRTUAL_CURRENCY_LIST.map((virtualCurrency) => (
                 <MenuItem key={virtualCurrency} value={virtualCurrency}>
                   {virtualCurrency.toUpperCase()}
                 </MenuItem>
@@ -147,7 +150,7 @@ function NotificationSetting() {
             helperText={validationErrors.lineToken}
           />
 
-          {(settingIsError || tickerIsError) && (
+          {(isNotificationSettingError || isVirtualCurrencyListError) && (
             <div>
               <Alert severity="error">データ取得に失敗しました</Alert>
             </div>
@@ -167,7 +170,7 @@ function NotificationSetting() {
               onClick={() =>
                 hundleLineNotificationTestButton({
                   setInfomation,
-                  price: tickerData?.last,
+                  price: virtualCurrencyList?.last,
                 })
               }
             >

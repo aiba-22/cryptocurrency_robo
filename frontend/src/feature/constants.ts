@@ -21,4 +21,4 @@ export const VIRTUAL_CURRENCIES = {
   BC_JPY: "bc_jpy",
 };
 
-export const virtualCurrencyList = Object.values(VIRTUAL_CURRENCIES);
+export const VIRTUAL_CURRENCY_LIST = Object.values(VIRTUAL_CURRENCIES);

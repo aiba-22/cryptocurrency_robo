@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { fetchCoincheckStatus } from "../feature/notificationSetting";
-import { VIRTUAL_CURRENCIES, virtualCurrencyList } from "../feature/constants";
+import {
+  VIRTUAL_CURRENCIES,
+  VIRTUAL_CURRENCY_LIST,
+} from "../feature/constants";
 import {
   Container,
   Typography,
@@ -42,7 +45,7 @@ function CryptoPriceInformation() {
           value={virtualCurrency}
           onChange={handleChange}
         >
-          {virtualCurrencyList.map((virtualCurrency) => (
+          {VIRTUAL_CURRENCY_LIST.map((virtualCurrency) => (
             <MenuItem key={virtualCurrency} value={virtualCurrency}>
               {virtualCurrency.toUpperCase()}
             </MenuItem>
