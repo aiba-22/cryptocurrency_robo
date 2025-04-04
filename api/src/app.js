@@ -20,6 +20,9 @@ app.get("/api/notificationSetting", get);
 app.post("/api/notificationSetting/create", create);
 app.put("/api/notificationSetting/update", update);
 app.get("/api/virtualCurrency", getVirtualCurrency);
+// app.get("/api/virtualCurrency", (req, res) => {
+//   res.json({ symbol: "BTC", price: 123456 });
+// });
 app.post("/api/line", sendNotification);
 
 app.listen(port, () => {

@@ -14,7 +14,7 @@ import {
 import { SelectChangeEvent } from "@mui/material";
 
 import {
-  useVirtualCurrencyList,
+  useVirtualCurrency,
   useNotificationSetting,
 } from "../feature/hooks/useNotificationSettings";
 
@@ -41,10 +41,10 @@ function NotificationSetting() {
   >({});
 
   const {
-    virtualCurrencyTradingPrice,
+    virtualCurrencyTradingPriceList,
     isVirtualCurrencyError,
     isVirtualCurrencyLoading,
-  } = useVirtualCurrencyList(notificationSetting.virtualCurrencyType);
+  } = useVirtualCurrency();
 
   const { isNotificationSettingError, isNotificationSettingLoading } =
     useNotificationSetting((notificationSetting) => {
@@ -159,7 +159,7 @@ function NotificationSetting() {
               onClick={() =>
                 hundleLineNotificationTestButton({
                   setInfomation: setSnackbarInfomation,
-                  price: virtualCurrencyTradingPrice?.last,
+                  price: virtualCurrencyTradingPriceList?.last,
                 })
               }
             >

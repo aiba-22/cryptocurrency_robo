@@ -4,15 +4,15 @@ import {
   findNotificationSetting,
 } from "..//notificationSetting";
 
-export const useVirtualCurrencyList = (virtualCurrencyType: string) => {
+export const useVirtualCurrency = () => {
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["virtualCurrency", virtualCurrencyType],
-    queryFn: () => fetchVirtualCurrency(virtualCurrencyType),
+    queryKey: ["virtualCurrency"],
+    queryFn: () => fetchVirtualCurrency(),
     keepPreviousData: true,
   });
 
   return {
-    virtualCurrencyTradingPrice: data,
+    virtualCurrencyTradingPriceList: data,
     isVirtualCurrencyLoading: isLoading,
     isVirtualCurrencyError: isError,
   };

@@ -1,9 +1,8 @@
-import { CoinCheckService } from "../service/virtualCurrency/coinCheck.js";
+import { GmoService } from "../service/virtualCurrency/gmo.js";
 
 export const get = async (req, res) => {
-  const coinCheckService = new CoinCheckService();
-  const result = await coinCheckService.getTradingPrice(
-    req.query.virtualCurrency
-  );
-  res.json(result);
+  const gmoService = new GmoService();
+  const gmoResult = await gmoService.getTradingPrice(req.query.virtualCurrency);
+
+  res.json(gmoResult.data);
 };
