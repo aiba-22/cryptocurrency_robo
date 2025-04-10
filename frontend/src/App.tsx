@@ -3,6 +3,8 @@ import { Routes, Route, Link as RouterLink } from "react-router-dom";
 import VirtualCurrencyInformation from "./components/virtualCurrencyInformation";
 import NotificationSetting from "./components/notificationSetting";
 import AutomaticTrading from "./components/automaticTrading";
+import AutomaticTradingSetting from "./components/automaticTradingSetting";
+
 import {
   AppBar,
   Toolbar,
@@ -35,7 +37,14 @@ export default function App() {
             通知設定
           </Button>
           <Button color="inherit" component={RouterLink} to="/automaticTrading">
-            通知設定
+            自動取引
+          </Button>
+          <Button
+            color="inherit"
+            component={RouterLink}
+            to="/automaticTradingSetting"
+          >
+            自動取引設定
           </Button>
         </Toolbar>
       </AppBar>
@@ -52,6 +61,10 @@ export default function App() {
               element={<NotificationSetting />}
             />
             <Route path="/automaticTrading" element={<AutomaticTrading />} />
+            <Route
+              path="/automaticTradingSetting"
+              element={<AutomaticTradingSetting />}
+            />
           </Routes>
         </Box>
       </Container>

@@ -4,6 +4,7 @@ export const createNotificationSchema = z.object({
   virtualCurrencyType: z.string(),
   targetPrice: z.number().positive(),
   lineToken: z.string(),
+  userId: z.string(),
 });
 
 export const updateNotificationSchema = z.object({
@@ -11,4 +12,5 @@ export const updateNotificationSchema = z.object({
   virtualCurrencyType: z.string(),
   targetPrice: z.number().positive(),
   lineToken: z.string(),
+  userId: z.string(),
 });

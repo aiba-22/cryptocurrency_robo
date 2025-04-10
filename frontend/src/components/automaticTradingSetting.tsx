@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Container,
   Typography,
@@ -20,29 +20,51 @@ import {
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { useForm } from "react-hook-form";
+import { createSettings, getSetting } from "../feature/gmoSetting";
+import { useQuery } from "react-query";
+import axios from "axios";
 
 type FormInputs = {
-  firstName: string;
-  lastName: string;
-  amount: string;
-  corndogAmount: number;
+  apiKey: string;
+  secretKey: string;
 };
 
-const AutomaticTrading = () => {
+type ApiSetting = {
+  apiKey: string;
+  secretKey: string;
+};
+
+const AutomaticTradingfSetting = () => {
+  const { data } = useQuery({
+    queryKey: ["gmo"],
+    queryFn: () => getSetting(),
+  });
   const {
     register,
     handleSubmit,
     setValue,
+    reset,
     formState: { touchedFields },
   } = useForm<FormInputs>({
     defaultValues: {
-      firstName: "Bill",
-      lastName: "Luo",
-      amount: "",
+      apiKey: "",
+      secretKey: "",
     },
   });
 
+  useEffect(() => {
+    if (data) {
+      reset({
+        apiKey: data.apiKey,
+        secretKey: data.secretKey,
+      });
+    }
+  }, [data, reset]);
+
   const onSubmit = (data: FormInputs) => {
+    const reult = createSettings(data);
+    console.log(reult);
+
     alert(JSON.stringify(data));
   };
 
@@ -52,19 +74,10 @@ const AutomaticTrading = () => {
     <Container maxWidth="sm">
       <form onSubmit={handleSubmit(onSubmit)}>
         <label>First Name</label>
-        <input type="text" {...register("firstName")} />
+        <input type="text" {...register("apiKey")} />
         <label>Last Name</label>
-        <input type="text" {...register("lastName")} />
+        <input type="text" {...register("secretKey")} />
         <label>Number of Corndog's</label>
-        <input type="number" {...register("amount", { min: 1, max: 99 })} />
-        <button
-          type="button"
-          onClick={() => {
-            setValue("amount", "100", { shouldDirty: true });
-          }}
-        >
-          change amount
-        </button>
         <input type="submit" />
       </form>
     </Container>
@@ -155,4 +168,4 @@ const AutomaticTrading = () => {
 //   );
 // }
 
-export default AutomaticTrading;
+export default AutomaticTradingfSetting;

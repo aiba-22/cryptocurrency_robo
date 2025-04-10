@@ -8,6 +8,7 @@ export type Setting = {
   virtualCurrencyType: string;
   targetPrice: number;
   lineToken: string;
+  userId: string;
 };
 
 export const fetchVirtualCurrency = async (

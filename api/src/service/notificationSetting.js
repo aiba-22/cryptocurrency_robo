@@ -19,19 +19,16 @@ export class NotificationSettingService {
       .first();
     const lineSettings = await this.db("line").where({ id }).first();
 
-    if (!priceNotification || !lineSettings) {
-      throw new Error("Notification setting not found.");
-    }
-
     return {
-      id: priceNotification.id,
-      virtualCurrencyType: priceNotification.virtual_currency_type,
-      targetPrice: priceNotification.target_price,
-      lineToken: lineSettings.token,
+      id: priceNotification?.id || null,
+      virtualCurrencyType: priceNotification?.virtual_currency_type || null,
+      targetPrice: priceNotification?.target_price || null,
+      lineToken: lineSettings?.channel_access_token || null,
+      userId: lineSettings?.user_id || null,
     };
   }
 
-  async create(virtualCurrencyType, targetPrice, lineToken) {
+  async create(virtualCurrencyType, targetPrice, lineToken, userId) {
     const transaction = await this.db.transaction();
     try {
       await transaction("price_notification").insert({
@@ -40,9 +37,10 @@ export class NotificationSettingService {
         created_at: new Date(),
         updated_at: new Date(),
       });
-
+      console.log(userId);
       await transaction("line").insert({
-        token: lineToken,
+        channel_access_token: lineToken,
+        user_id: userId,
         created_at: new Date(),
         updated_at: new Date(),
       });
@@ -55,7 +53,7 @@ export class NotificationSettingService {
     }
   }
 
-  async update(id, virtualCurrencyType, targetPrice, lineToken) {
+  async update(id, virtualCurrencyType, targetPrice, lineToken, userId) {
     const transaction = await this.db.transaction();
     try {
       await transaction("price_notification").where({ id }).update({
@@ -65,7 +63,8 @@ export class NotificationSettingService {
       });
 
       await transaction("line").where({ id }).update({
-        token: lineToken,
+        channel_access_token: lineToken,
+        user_id: userId,
         updated_at: new Date(),
       });
 

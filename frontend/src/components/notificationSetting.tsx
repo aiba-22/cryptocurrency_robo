@@ -35,6 +35,7 @@ function NotificationSetting() {
     virtualCurrencyType: VIRTUAL_CURRENCIES.BTC_JPY,
     targetPrice: 0,
     lineToken: "",
+    userId: "",
   });
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
@@ -80,6 +81,12 @@ function NotificationSetting() {
     }));
   };
 
+  const handleUserIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNotificationSetting((prevSetting) => ({
+      ...prevSetting,
+      userId: event.target.value,
+    }));
+  };
   const handleSettingSaveButton = async () => {
     const result = await validateAndSaveSettings(notificationSetting);
     if (result.validationErrors) {
@@ -139,6 +146,16 @@ function NotificationSetting() {
             helperText={validationErrors.lineToken}
           />
 
+          <TextField
+            fullWidth
+            margin="normal"
+            label="LINEユーザーID"
+            type="password"
+            value={notificationSetting.userId}
+            onChange={handleUserIdChange}
+            error={!!validationErrors.userId}
+            helperText={validationErrors.userId}
+          />
           {(isNotificationSettingError || isVirtualCurrencyError) && (
             <div>
               <Alert severity="error">データ取得に失敗しました</Alert>
@@ -159,7 +176,7 @@ function NotificationSetting() {
               onClick={() =>
                 hundleLineNotificationTestButton({
                   setInfomation: setSnackbarInfomation,
-                  price: virtualCurrencyTradingPriceList?.last,
+                  price: notificationSetting.targetPrice,
                 })
               }
             >

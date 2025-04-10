@@ -1,7 +1,8 @@
 export function up(knex) {
   return knex.schema.createTable("line", function (table) {
     table.increments("id");
-    table.string("token").notNullable();
+    table.string("channel_access_token").notNullable();
+    table.string("user_id").notNullable();
     table.timestamps(true, true);
   });
 }
