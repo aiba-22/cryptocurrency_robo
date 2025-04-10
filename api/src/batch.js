@@ -1,9 +1,9 @@
 import cron from "node-cron";
 import { NotificationSettingService } from "./service/notificationSetting.js";
 import { LineService } from "./service/line.js";
-import { CoinCheckService } from "./service/virtualCurrency/coinCheck.js";
+import { CoinCheckService } from "./service/coinCheck.js";
 
-const sendLineNotifications = async () => {
+const notificationControllers = async () => {
   const id = 1; //現状アカウント登録機能がついてないため、一つ目のIDを指定する。アカウント登録できるようになったら複数配信にする。
   const notificationSettingService = new NotificationSettingService();
   const lineService = new LineService();
@@ -18,9 +18,9 @@ const sendLineNotifications = async () => {
     if (!isAboveTargetPrice) {
       return;
     }
-    await lineService.sendNotification(id, virtualCurrencyTradingPrice.last);
+    await lineService.send(id, virtualCurrencyTradingPrice.last);
   }
 };
 
 // 五分毎にLINE通知を送信するバッチ処理
-cron.schedule("*/5 * * * *", sendLineNotifications);
+cron.schedule("*/5 * * * *", notificationControllers);

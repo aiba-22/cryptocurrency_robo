@@ -1,33 +1,38 @@
-import knex from "knex";
 import axios from "axios";
+import db from "../db.js";
 
 export class LineService {
+  db;
   constructor() {
-    this.db = knex({
-      client: "mysql2",
-      connection: {
-        host: "db",
-        user: "root",
-        password: "password",
-        database: "mydatabase",
-      },
-    });
+    this.db = db;
   }
 
-  async sendNotification(id, price) {
+  async find(id) {
+    const line = await this.db("line").where({ id }).first();
+
+    return {
+      lineToken: line?.channel_access_token || null,
+      userId: line?.user_id || null,
+    };
+  }
+
+  async send({ id, price }) {
+    const line = await this.db("line").where({ id }).first();
+    if (!line) return "failure";
+
+    const channelAccessToken = line.channel_access_token;
+    const userId = line.user_id;
+    const body = {
+      to: userId,
+      messages: [
+        {
+          type: "text",
+          text: `現在の価格は${price}円です。`,
+        },
+      ],
+    };
+
     try {
-      const line = await this.db("line").where({ id }).first();
-      const channelAccessToken = line.channel_access_token;
-      const userId = line.user_id;
-      const body = {
-        to: userId,
-        messages: [
-          {
-            type: "text",
-            text: `現在の価格は${price}円です。`,
-          },
-        ],
-      };
       await axios.post(
         "https://api.line.me/v2/bot/message/push",
         // `message=${encodeURIComponent(message)}`,
@@ -41,7 +46,6 @@ export class LineService {
       );
       return "success";
     } catch (error) {
-      console.log(error);
       return "failure";
     }
   }

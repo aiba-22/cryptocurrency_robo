@@ -1,4 +1,4 @@
-import { GmoService } from "../service/virtualCurrency/gmo.js";
+import { GmoService } from "../service/gmo.js";
 
 export const get = async (req, res) => {
   const gmoService = new GmoService();

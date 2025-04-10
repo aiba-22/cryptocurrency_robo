@@ -22,13 +22,22 @@ export const fetchVirtualCurrency = async (
 };
 
 export const findNotificationSetting = async () => {
-  const response = await axios.get(
-    `http://localhost:3001/api/notificationSetting?id=${1}`
+  const targetPriceResponse = await axios.get(
+    `http://localhost:3001/api/targetPrice?id=${1}`
   );
-  return response.data;
+  const lineSettingResponse = await axios.get(
+    `http://localhost:3001/api/lineSetting?id=${1}`
+  );
+  const response = {
+    lineToken: lineSettingResponse.data.lineToken,
+    targetPrice: targetPriceResponse.data.targetPrice,
+    userId: lineSettingResponse.data.userId,
+    virtualCurrencyType: targetPriceResponse.data.virtualCurrencyType,
+  };
+  return response;
 };
 
-export const hundleLineNotificationTestButton = async ({
+export const hundlenotificationControllerTestButton = async ({
   setInfomation,
   price,
 }: {
@@ -36,10 +45,14 @@ export const hundleLineNotificationTestButton = async ({
   price?: number;
 }) => {
   if (price) {
-    const result = await axios.post<string>("http://localhost:3001/api/line", {
-      id: 1,
-      price: price,
-    });
+    console.log("testボタン押下");
+    const result = await axios.post<string>(
+      "http://localhost:3001/api/notification/line",
+      {
+        id: 1,
+        price: price,
+      }
+    );
     if (result.data === "success") {
       setInfomation("成功しました。");
     } else if (result.data === "failure") {
@@ -49,14 +62,14 @@ export const hundleLineNotificationTestButton = async ({
 };
 
 const createSettings = async (displaySetting: Setting) => {
-  await axios.post("http://localhost:3001/api/notificationSetting/create", {
+  await axios.post("http://localhost:3001/api/targetPrice/create", {
     ...displaySetting,
     id: 1,
   });
 };
 
 const updateSettings = async (displaySetting: Setting) => {
-  await axios.put("http://localhost:3001/api/notificationSetting/update", {
+  await axios.put("http://localhost:3001/api/targetPrice/update", {
     ...displaySetting,
   });
 };

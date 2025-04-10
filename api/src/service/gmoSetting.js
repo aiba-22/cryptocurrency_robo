@@ -1,16 +1,8 @@
-import knex from "knex";
+import db from "../db.js";
 
 export class GmoSettingService {
   constructor() {
-    this.db = knex({
-      client: "mysql2",
-      connection: {
-        host: "db",
-        user: "root",
-        password: "password",
-        database: "mydatabase",
-      },
-    });
+    this.db = db;
   }
 
   async find(id) {

@@ -1,16 +1,8 @@
-import knex from "knex";
+import db from "../db.js";
 
 export class NotificationSettingService {
   constructor() {
-    this.db = knex({
-      client: "mysql2",
-      connection: {
-        host: "db",
-        user: "root",
-        password: "password",
-        database: "mydatabase",
-      },
-    });
+    this.db = db;
   }
 
   async find(id) {
@@ -35,14 +27,11 @@ export class NotificationSettingService {
         virtual_currency_type: virtualCurrencyType,
         target_price: targetPrice,
         created_at: new Date(),
-        updated_at: new Date(),
       });
-      console.log(userId);
       await transaction("line").insert({
         channel_access_token: lineToken,
         user_id: userId,
         created_at: new Date(),
-        updated_at: new Date(),
       });
 
       await transaction.commit();

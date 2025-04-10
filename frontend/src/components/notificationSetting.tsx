@@ -19,7 +19,7 @@ import {
 } from "../feature/hooks/useNotificationSettings";
 
 import {
-  hundleLineNotificationTestButton,
+  hundlenotificationControllerTestButton,
   Setting,
   validateAndSaveSettings,
 } from "../feature/notificationSetting";
@@ -174,7 +174,7 @@ function NotificationSetting() {
               variant="outlined"
               color="secondary"
               onClick={() =>
-                hundleLineNotificationTestButton({
+                hundlenotificationControllerTestButton({
                   setInfomation: setSnackbarInfomation,
                   price: notificationSetting.targetPrice,
                 })
