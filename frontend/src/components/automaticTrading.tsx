@@ -1,158 +1,191 @@
-import { useState } from "react";
 import {
   Container,
   Typography,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  CircularProgress,
+  TextField,
+  Button,
   Box,
-  Alert,
+  Grid,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
-import { SelectChangeEvent } from "@mui/material";
-import { useVirtualCurrency } from "../feature/hooks/useNotificationSettings";
-import {
-  VIRTUAL_CURRENCIES,
-  VIRTUAL_CURRENCY_LIST,
-} from "../feature/constants";
+import { useForm, Controller } from "react-hook-form";
 
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { useForm } from "react-hook-form";
-
-type FormInputs = {
-  firstName: string;
-  lastName: string;
-  amount: string;
-  corndogAmount: number;
+type Form = {
+  buyPrice: number;
+  buyQuantity: number;
+  sellPrice: number;
+  SellQuantity: number;
+  enableBuying: boolean;
+  enableSelling: boolean;
 };
 
 const AutomaticTrading = () => {
   const {
-    register,
+    control,
     handleSubmit,
-    setValue,
-    formState: { touchedFields },
-  } = useForm<FormInputs>({
+    watch,
+    formState: { errors },
+  } = useForm<Form>({
     defaultValues: {
-      firstName: "Bill",
-      lastName: "Luo",
-      amount: "",
+      buyPrice: 0,
+      buyQuantity: 0,
+      sellPrice: 0,
+      SellQuantity: 0,
+      enableBuying: true,
+      enableSelling: true,
     },
   });
 
-  const onSubmit = (data: FormInputs) => {
-    alert(JSON.stringify(data));
-  };
+  const enableBuying = watch("enableBuying");
+  const enableSelling = watch("enableSelling");
 
-  console.log("touched", touchedFields);
+  const onSubmit = (data: Form) => {
+    alert(JSON.stringify(data, null, 2));
+  };
 
   return (
     <Container maxWidth="sm">
+      <Typography variant="h4" gutterBottom>
+        自動売買設定
+      </Typography>
+
+      <Typography variant="body1" gutterBottom>
+        購入・売却の価格と数量を入力してください。
+      </Typography>
+
       <form onSubmit={handleSubmit(onSubmit)}>
-        <label>First Name</label>
-        <input type="text" {...register("firstName")} />
-        <label>Last Name</label>
-        <input type="text" {...register("lastName")} />
-        <label>Number of Corndog's</label>
-        <input type="number" {...register("amount", { min: 1, max: 99 })} />
-        <button
-          type="button"
-          onClick={() => {
-            setValue("amount", "100", { shouldDirty: true });
-          }}
-        >
-          change amount
-        </button>
-        <input type="submit" />
+        {/* 買い注文設定 */}
+        <Box mb={2} display="flex" justifyContent="flex-start">
+          <Controller
+            name="enableBuying"
+            control={control}
+            render={({ field }) => (
+              <FormControlLabel
+                control={<Checkbox {...field} checked={field.value} />}
+                label="買い注文を設定する"
+              />
+            )}
+          />
+        </Box>
+
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Controller
+              name="buyPrice"
+              control={control}
+              rules={
+                enableBuying
+                  ? { required: "購入価格を入力してください" }
+                  : undefined
+              }
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="購入価格"
+                  type="number"
+                  fullWidth
+                  disabled={!enableBuying}
+                  error={!!errors.buyPrice}
+                  helperText={errors.buyPrice?.message}
+                />
+              )}
+            />
+          </Grid>
+
+          <Grid item xs={6}>
+            <Controller
+              name="buyQuantity"
+              control={control}
+              rules={
+                enableBuying
+                  ? { required: "購入数量を入力してください" }
+                  : undefined
+              }
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="購入数量"
+                  type="number"
+                  fullWidth
+                  disabled={!enableBuying}
+                  error={!!errors.buyQuantity}
+                  helperText={errors.buyQuantity?.message}
+                />
+              )}
+            />
+          </Grid>
+        </Grid>
+
+        {/* 売り注文設定 */}
+        <Box mb={2} display="flex" justifyContent="flex-start">
+          <Controller
+            name="enableSelling"
+            control={control}
+            render={({ field }) => (
+              <FormControlLabel
+                control={<Checkbox {...field} checked={field.value} />}
+                label="売り注文を設定する"
+              />
+            )}
+          />
+        </Box>
+
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Controller
+              name="sellPrice"
+              control={control}
+              rules={
+                enableSelling
+                  ? { required: "売値を入力してください" }
+                  : undefined
+              }
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="売値"
+                  type="number"
+                  fullWidth
+                  disabled={!enableSelling}
+                  error={!!errors.sellPrice}
+                  helperText={errors.sellPrice?.message}
+                />
+              )}
+            />
+          </Grid>
+
+          <Grid item xs={6}>
+            <Controller
+              name="SellQuantity"
+              control={control}
+              rules={
+                enableSelling
+                  ? { required: "売り数量を入力してください" }
+                  : undefined
+              }
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="売り数量"
+                  type="number"
+                  fullWidth
+                  disabled={!enableSelling}
+                  error={!!errors.SellQuantity}
+                  helperText={errors.SellQuantity?.message}
+                />
+              )}
+            />
+          </Grid>
+        </Grid>
+
+        <Box mt={3} display="flex" justifyContent="flex-end">
+          <Button type="submit" variant="contained" color="primary">
+            注文を送信
+          </Button>
+        </Box>
       </form>
     </Container>
   );
 };
-// function hoge() {
-//   const [virtualCurrency, setVirtualCurrency] = useState(
-//     VIRTUAL_CURRENCIES.BTC_JPY
-//   );
-
-//   // TODO: GMOAPIからの取得に変更
-//   const {
-//     virtualCurrencyTradingPriceList,
-//     isVirtualCurrencyError,
-//     isVirtualCurrencyLoading,
-//   } = useVirtualCurrency();
-
-//   const handleChange = (event: SelectChangeEvent<string>) => {
-//     setVirtualCurrency(event.target.value);
-//   };
-
-//   // TODO: useformを利用したform入力を実装
-
-//   return (
-//     <Container maxWidth="sm">
-//       <form
-//         onSubmit={() => {
-//           console.log("hoge");
-//         }}
-//       >
-//         <input value={"cartItems"} onChange={() => {}} />
-//         <button type="submit">Update</button>
-//       </form>
-//       <Typography variant="h4" gutterBottom>
-//         自動取引
-//       </Typography>
-//       <FormControl fullWidth margin="normal">
-//         <InputLabel id="virtual-currency-select-label">通貨ペア</InputLabel>
-//         <Select
-//           labelId="virtual-currency-select-label"
-//           value={virtualCurrency}
-//           onChange={handleChange}
-//         >
-//           {VIRTUAL_CURRENCY_LIST.map((currency) => (
-//             <MenuItem key={currency} value={currency}>
-//               {currency.toUpperCase()}
-//             </MenuItem>
-//           ))}
-//         </Select>
-//       </FormControl>
-
-//       {isVirtualCurrencyLoading && (
-//         <Box display="flex" justifyContent="center" alignItems="center">
-//           <CircularProgress />
-//         </Box>
-//       )}
-
-//       {isVirtualCurrencyError && (
-//         <Alert severity="error">システムエラーが発生しました</Alert>
-//       )}
-
-//       {virtualCurrencyTradingPriceList && (
-//         <Box mt={2}>
-//           <Typography variant="h6">価格詳細</Typography>
-//           <Typography>
-//             最終価格: {virtualCurrencyTradingPriceList.last}
-//           </Typography>
-//           <Typography>
-//             買い価格: {virtualCurrencyTradingPriceList.bid}
-//           </Typography>
-//           <Typography>
-//             売り価格: {virtualCurrencyTradingPriceList.ask}
-//           </Typography>
-//           <Typography>高値: {virtualCurrencyTradingPriceList.high}</Typography>
-//           <Typography>安値: {virtualCurrencyTradingPriceList.low}</Typography>
-//           <Typography>
-//             取引量: {virtualCurrencyTradingPriceList.volume}
-//           </Typography>
-//           <Typography>
-//             タイムスタンプ:{" "}
-//             {new Date(
-//               virtualCurrencyTradingPriceList.timestamp * 1000
-//             ).toLocaleString()}
-//           </Typography>
-//         </Box>
-//       )}
-//     </Container>
-//   );
-// }
 
 export default AutomaticTrading;

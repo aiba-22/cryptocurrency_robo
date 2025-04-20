@@ -1,6 +1,6 @@
 import axios from "axios";
 import crypto from "crypto";
-
+type Gmo = { apiKey: string; secretKey: string };
 export class GmoService {
   async getTradingPrice() {
     const endPoint = "https://api.coin.z.com/public";
@@ -10,9 +10,13 @@ export class GmoService {
     return result.data;
   }
 
-  async fetchAssets(gmo) {
-    const apiKey = gmo.api_key;
-    const secretKey = gmo.secret_key;
+  async fetchAssets({
+    apiKey,
+    secretKey,
+  }: {
+    apiKey: string;
+    secretKey: string;
+  }) {
     const timestamp = Date.now().toString();
     const method = "GET";
     const endPoint = "https://api.coin.z.com/private";

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Container,
   Typography,
@@ -11,64 +11,33 @@ import {
   Alert,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material";
-import { useVirtualCurrency } from "../feature/hooks/useNotificationSettings";
-import {
-  VIRTUAL_CURRENCIES,
-  VIRTUAL_CURRENCY_LIST,
-} from "../feature/constants";
+import { useVirtualCurrencyRate } from "../feature/hooks/useVirtualCurrency";
+import { VIRTUAL_CURRENCY_LIST } from "../feature/constants";
 
-type UseVirtualCurrency = {
-  last: number;
-  bid: number;
-  ask: number;
-  high: number;
-  low: number;
-  volume: number;
-  timestamp: 0;
+type VirtualCurrencyRate = {
+  symbol?: string;
+  last?: number;
+  bid?: number;
+  ask?: number;
+  high?: number;
+  low?: number;
+  volume?: number;
+  timestamp?: Date;
 };
 
 function VirtualCurrencyInformation() {
-  const [selectedCrypto, setSelectedCrypto] = useState(
-    VIRTUAL_CURRENCIES.BTC_JPY
-  );
-  const [virtualCurrency, setVirtualCurrency] = useState<UseVirtualCurrency>({
-    last: 0,
-    bid: 0,
-    ask: 0,
-    high: 0,
-    low: 0,
-    volume: 0,
-    timestamp: 0,
-  });
+  const [virtualCurrency, setVirtualCurrency] = useState<VirtualCurrencyRate>();
 
-  const {
-    virtualCurrencyTradingPriceList,
-    isVirtualCurrencyError,
-    isVirtualCurrencyLoading,
-  } = useVirtualCurrency();
+  const { isVirtualCurrencyLoading, errorMessage, virtualCurrencyRate } =
+    useVirtualCurrencyRate();
 
   const handleChange = (event: SelectChangeEvent<string>) => {
-    setSelectedCrypto(event.target.value);
-    if (virtualCurrencyTradingPriceList) {
-      const virtualCurrencyTradingPrice = virtualCurrencyTradingPriceList.find(
-        (virtualCurrencyTradingPrice: any) => {
-          return virtualCurrencyTradingPrice.symbol === event.target.value;
-        }
-      );
-      setVirtualCurrency(virtualCurrencyTradingPrice);
+    const virtualCurrency = virtualCurrencyRate(event.target.value);
+
+    if (virtualCurrency) {
+      setVirtualCurrency(virtualCurrency);
     }
   };
-
-  useEffect(() => {
-    if (virtualCurrencyTradingPriceList) {
-      const virtualCurrencyTradingPrice = virtualCurrencyTradingPriceList.find(
-        (r: any) => {
-          return r.symbol === VIRTUAL_CURRENCIES.BTC_JPY;
-        }
-      );
-      setVirtualCurrency(virtualCurrencyTradingPrice);
-    }
-  }, [virtualCurrencyTradingPriceList]);
 
   return (
     <Container maxWidth="sm">
@@ -79,7 +48,7 @@ function VirtualCurrencyInformation() {
         <InputLabel id="virtual-currency-select-label">通貨ペア</InputLabel>
         <Select
           labelId="virtual-currency-select-label"
-          value={selectedCrypto}
+          value={virtualCurrency?.symbol || ""}
           onChange={handleChange}
         >
           {VIRTUAL_CURRENCY_LIST.map((currency) => (
@@ -89,17 +58,16 @@ function VirtualCurrencyInformation() {
           ))}
         </Select>
       </FormControl>
-
       {isVirtualCurrencyLoading && (
         <Box display="flex" justifyContent="center" alignItems="center">
           <CircularProgress />
         </Box>
       )}
-
-      {isVirtualCurrencyError && (
-        <Alert severity="error">システムエラーが発生しました</Alert>
+      {errorMessage && (
+        <Box mt={2}>
+          <Alert severity="success">{errorMessage}</Alert>
+        </Box>
       )}
-
       {virtualCurrency && (
         <Box mt={2}>
           <Typography variant="h6">価格詳細</Typography>

@@ -25,7 +25,7 @@ git clone https://github.com/aiba-22/virtual_currency.git
 
 ### 2. Docker コンテナのビルドと起動
 
-docker-compose up --build
+docker-compose up
 
 上記コマンドにより、フロントエンド、バックエンド、バッチサービス、MySQL データベースがビルドされ、起動されます。
 

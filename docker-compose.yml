@@ -17,8 +17,17 @@ services:
       - DATABASE_URL=mysql://root:password@db:3306/mydatabase
     volumes:
       - ./api:/usr/src/app
-      - /usr/src/app/node_modules
-    command: ["npx", "nodemon", "src/app.js"]
+    command:
+      [
+        "npx",
+        "nodemon",
+        "--watch",
+        "src",
+        "--ext",
+        "ts",
+        "--exec",
+        "node --loader ts-node/esm src/app.ts",
+      ]
     ports:
       - 3001:3001
     depends_on:
@@ -31,7 +40,8 @@ services:
       - DATABASE_URL=mysql://root:password@db:3306/mydatabase
     volumes:
       - ./api:/usr/src/app
-    command: ["sh", "-c", "node src/batch.js"]
+    command: ["node", "--loader", "ts-node/esm", "src/batch.ts"]
+
     depends_on:
       - db
 

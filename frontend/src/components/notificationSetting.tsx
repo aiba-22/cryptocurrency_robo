@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect } from "react";
 import {
   Container,
   Typography,
@@ -12,87 +12,65 @@ import {
   Alert,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material";
+import { useForm, Controller } from "react-hook-form";
 
-import {
-  useVirtualCurrency,
-  useNotificationSetting,
-} from "../feature/hooks/useNotificationSettings";
-
-import {
-  hundlenotificationControllerTestButton,
-  Setting,
-  validateAndSaveSettings,
-} from "../feature/notificationSetting";
+import { useNotificationSetting } from "../feature/hooks/useNotificationSettings";
 import {
   VIRTUAL_CURRENCIES,
   VIRTUAL_CURRENCY_LIST,
 } from "../feature/constants";
+import { useLineNotification } from "../feature/hooks/useLineNotification";
+import { useSaveTargetPrice } from "../feature/hooks/useSaveTargetPrice";
+
+type Form = {
+  id?: number;
+  virtualCurrencyType: string;
+  targetPrice: number;
+  lineToken: string;
+  userId: string;
+};
 
 function NotificationSetting() {
-  const [snackbarInfomation, setSnackbarInfomation] = useState("");
-  const [notificationSetting, setNotificationSetting] = useState<Setting>({
-    id: null,
-    virtualCurrencyType: VIRTUAL_CURRENCIES.BTC_JPY,
-    targetPrice: 0,
-    lineToken: "",
-    userId: "",
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+    reset,
+  } = useForm<Form>({
+    defaultValues: {
+      id: 1,
+      virtualCurrencyType: VIRTUAL_CURRENCIES.BTC_JPY,
+      targetPrice: 0,
+      lineToken: "",
+      userId: "",
+    },
   });
-  const [validationErrors, setValidationErrors] = useState<
-    Record<string, string>
-  >({});
 
   const {
-    virtualCurrencyTradingPriceList,
-    isVirtualCurrencyError,
-    isVirtualCurrencyLoading,
-  } = useVirtualCurrency();
+    notificationSetting,
+    isNotificationError,
+    isNotificationLoading,
+    errorMessage,
+  } = useNotificationSetting();
 
-  const { isNotificationSettingError, isNotificationSettingLoading } =
-    useNotificationSetting((notificationSetting) => {
-      if (notificationSetting) {
-        setNotificationSetting(notificationSetting);
-      }
-    });
+  useEffect(() => {
+    if (notificationSetting) reset(notificationSetting);
+  }, [notificationSetting, reset]);
 
-  const handleTargetPriceChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setNotificationSetting((prevSetting) => ({
-      ...prevSetting,
-      targetPrice: parseInt(event.target.value, 10),
-    }));
+  const { resultMessage: saveResultMessage, saveSettings } =
+    useSaveTargetPrice();
+
+  const { resultMessage: notificationResultMessage, sendNotification } =
+    useLineNotification();
+
+  const onSubmit = async (data: Form) => {
+    saveSettings(data);
   };
 
-  const handleVirtualCurrencyTypeChange = (
-    event: SelectChangeEvent<string>
-  ) => {
-    setNotificationSetting((prevSetting) => ({
-      ...prevSetting,
-      virtualCurrencyType: event.target.value,
-    }));
-  };
-
-  const handleLineTokenChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setNotificationSetting((prevSetting) => ({
-      ...prevSetting,
-      lineToken: event.target.value,
-    }));
-  };
-
-  const handleUserIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNotificationSetting((prevSetting) => ({
-      ...prevSetting,
-      userId: event.target.value,
-    }));
-  };
-  const handleSettingSaveButton = async () => {
-    const result = await validateAndSaveSettings(notificationSetting);
-    if (result.validationErrors) {
-      setValidationErrors(result.validationErrors);
-    }
-    setSnackbarInfomation(result.message);
+  const handleNotificationTestButton = async () => {
+    const { targetPrice } = getValues();
+    sendNotification(targetPrice);
   };
 
   return (
@@ -101,95 +79,117 @@ function NotificationSetting() {
         通知設定
       </Typography>
       目標価格を超えるとLINEへの通知が送られます
-      {!isNotificationSettingLoading && !isVirtualCurrencyLoading && (
-        <div>
+      {!isNotificationLoading && (
+        <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl fullWidth margin="normal">
             <InputLabel id="virtual-currency-type-label">指定通貨</InputLabel>
-            <Select
-              labelId="virtual-currency-type-label"
-              value={notificationSetting.virtualCurrencyType}
-              onChange={handleVirtualCurrencyTypeChange}
-            >
-              {VIRTUAL_CURRENCY_LIST.map((virtualCurrency) => (
-                <MenuItem key={virtualCurrency} value={virtualCurrency}>
-                  {virtualCurrency.toUpperCase()}
-                </MenuItem>
-              ))}
-            </Select>
-            {validationErrors.virtualCurrencyType && (
+            <Controller
+              name="virtualCurrencyType"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  labelId="virtual-currency-type-label"
+                  onChange={(e: SelectChangeEvent) =>
+                    field.onChange(e.target.value)
+                  }
+                >
+                  {VIRTUAL_CURRENCY_LIST.map((virtualCurrency) => (
+                    <MenuItem key={virtualCurrency} value={virtualCurrency}>
+                      {virtualCurrency.toUpperCase()}
+                    </MenuItem>
+                  ))}
+                </Select>
+              )}
+            />
+            {errors.virtualCurrencyType && (
               <Alert severity="error">
-                {validationErrors.virtualCurrencyType}
+                {errors.virtualCurrencyType.message}
               </Alert>
             )}
           </FormControl>
 
-          <TextField
-            fullWidth
-            margin="normal"
-            label="目標価格"
-            type="number"
-            value={notificationSetting.targetPrice}
-            onChange={handleTargetPriceChange}
-            placeholder="例: 5000000"
-            error={!!validationErrors.targetPrice}
-            helperText={validationErrors.targetPrice}
+          <Controller
+            name="targetPrice"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                value={field.value ?? ""}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  field.onChange(val === "" ? "" : Number(val));
+                }}
+                fullWidth
+                margin="normal"
+                label="目標価格"
+                type="number"
+                error={!!errors.targetPrice}
+                helperText={errors.targetPrice?.message}
+                placeholder="例: 5000000"
+              />
+            )}
           />
 
-          <TextField
-            fullWidth
-            margin="normal"
-            label="LINEトークン"
-            type="password"
-            value={notificationSetting.lineToken}
-            onChange={handleLineTokenChange}
-            error={!!validationErrors.lineToken}
-            helperText={validationErrors.lineToken}
+          <Controller
+            name="lineToken"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                margin="normal"
+                label="LINEトークン"
+                type="password"
+                error={!!errors.lineToken}
+                helperText={errors.lineToken?.message}
+              />
+            )}
           />
 
-          <TextField
-            fullWidth
-            margin="normal"
-            label="LINEユーザーID"
-            type="password"
-            value={notificationSetting.userId}
-            onChange={handleUserIdChange}
-            error={!!validationErrors.userId}
-            helperText={validationErrors.userId}
+          <Controller
+            name="userId"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                margin="normal"
+                label="LINEユーザーID"
+                type="password"
+                error={!!errors.userId}
+                helperText={errors.userId?.message}
+              />
+            )}
           />
-          {(isNotificationSettingError || isVirtualCurrencyError) && (
+
+          {isNotificationError && (
             <div>
               <Alert severity="error">データ取得に失敗しました</Alert>
             </div>
           )}
 
           <Box display="flex" justifyContent="space-between" mt={2}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSettingSaveButton}
-            >
+            <Button variant="contained" color="primary" type="submit">
               設定を保存
             </Button>
             <Button
               variant="outlined"
               color="secondary"
-              onClick={() =>
-                hundlenotificationControllerTestButton({
-                  setInfomation: setSnackbarInfomation,
-                  price: notificationSetting.targetPrice,
-                })
-              }
+              onClick={handleNotificationTestButton}
             >
               LINEに通知テスト
             </Button>
           </Box>
 
-          {snackbarInfomation && (
+          {(errorMessage || saveResultMessage || notificationResultMessage) && (
             <Box mt={2}>
-              <Alert severity="success">{snackbarInfomation}</Alert>
+              <Alert severity="info">
+                {errorMessage || saveResultMessage || notificationResultMessage}
+              </Alert>
             </Box>
           )}
-        </div>
+        </form>
       )}
     </Container>
   );

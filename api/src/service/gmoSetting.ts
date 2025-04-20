@@ -1,11 +1,12 @@
-import db from "../db.js";
+import db from "../db";
 
 export class GmoSettingService {
+  db;
   constructor() {
     this.db = db;
   }
 
-  async find(id) {
+  async find(id: number) {
     const gmo = await this.db("gmo").where({ id }).first();
 
     return {
@@ -15,7 +16,7 @@ export class GmoSettingService {
     };
   }
 
-  async create(apiKey, secretKey) {
+  async create({ apiKey, secretKey }: { apiKey: string; secretKey: string }) {
     const transaction = await this.db.transaction();
     try {
       await transaction("gmo").insert({
@@ -32,17 +33,20 @@ export class GmoSettingService {
     }
   }
 
-  async update(id, virtualCurrencyType, targetPrice, lineToken) {
+  async update({
+    id,
+    apiKey,
+    secretKey,
+  }: {
+    id: number;
+    apiKey: string;
+    secretKey: string;
+  }) {
     const transaction = await this.db.transaction();
     try {
-      await transaction("price_notification").where({ id }).update({
-        virtual_currency_type: virtualCurrencyType,
-        target_price: targetPrice,
-        updated_at: new Date(),
-      });
-
-      await transaction("line").where({ id }).update({
-        token: lineToken,
+      await transaction("gmo").where({ id }).update({
+        api_key: apiKey,
+        secret_key: secretKey,
         updated_at: new Date(),
       });
 

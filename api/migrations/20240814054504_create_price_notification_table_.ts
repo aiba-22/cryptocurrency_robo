@@ -1,4 +1,4 @@
-export function up(knex) {
+export function up(knex: any) {
   return knex.schema.createTable("price_notification", function (table) {
     table.increments("id");
     table.string("virtual_currency_type").notNullable();
@@ -7,6 +7,6 @@ export function up(knex) {
   });
 }
 
-export function down(knex) {
+export function down(knex: any) {
   return knex.schema.dropTable("price_notification");
 }

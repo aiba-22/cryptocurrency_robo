@@ -1,31 +1,21 @@
 import { useQuery } from "react-query";
-import {
-  fetchVirtualCurrency,
-  findNotificationSetting,
-} from "..//notificationSetting";
+import { useState } from "react";
+import { findNotificationSetting } from "../notificationSetting";
 
-export const useVirtualCurrency = () => {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["virtualCurrency"],
-    queryFn: () => fetchVirtualCurrency(),
-    keepPreviousData: true,
-  });
+export const useNotificationSetting = () => {
+  const [errorMessage, setErrorMessage] = useState("");
 
-  return {
-    virtualCurrencyTradingPriceList: data,
-    isVirtualCurrencyLoading: isLoading,
-    isVirtualCurrencyError: isError,
-  };
-};
-
-export const useNotificationSetting = (onSuccess: (setting: any) => void) => {
-  const { isError, isLoading } = useQuery({
+  const { data, isError, isLoading } = useQuery({
     queryKey: ["findNotificationSetting"],
-    queryFn: findNotificationSetting,
-    onSuccess,
+    queryFn: () => findNotificationSetting(),
+    onError: () => {
+      setErrorMessage("システムエラーが発生しました。");
+    },
   });
   return {
-    isNotificationSettingError: isError,
-    isNotificationSettingLoading: isLoading,
+    isNotificationError: isError,
+    isNotificationLoading: isLoading,
+    notificationSetting: data,
+    errorMessage,
   };
 };

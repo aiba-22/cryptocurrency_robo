@@ -1,4 +1,4 @@
-FROM node:17.4.0-alpine
+FROM node:20-alpine
 
 WORKDIR /usr/src/app
 
@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 3001
 
-CMD ["npx", "nodemon", "--exec", "npm start & node src/batch.js"]
+CMD ["npx", "nodemon", "--watch", "src", "--ext", "ts", "--exec", "ts-node", "src/app.ts"]

@@ -1,8 +1,8 @@
 import axios from "axios";
-import { VIRTUAL_CURRENCIES } from "./constants.js";
+import { VIRTUAL_CURRENCIES } from "./constants";
 
 export class CoinCheckService {
-  async getTradingPrice(virtualCurrency) {
+  async getTradingPrice() {
     const virtualCurrencyTradingPrice = await axios.get(
       `https://coincheck.com/api/ticker?pair=${VIRTUAL_CURRENCIES.BTC_JPY}`
     );

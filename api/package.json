@@ -2,10 +2,11 @@
   "name": "virtual_currency",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "start": "node src/app.js",
-    "server": "node src/app.js",
+    "dev": "nodemon --exec ts-node src/app.ts",
+    "start": "ts-node src/app.ts",
+    "build": "tsc",
+    "start:prod": "node dist/app.js",
     "migrate": "knex migrate:latest",
     "migrate:make": "knex migrate:make",
     "migrate:rollback": "knex migrate:rollback"
@@ -21,8 +22,12 @@
     "zod": "^3.11.6"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
     "@types/node": "^22.14.0",
-    "nodemon": "^3.1.4",
+    "@types/node-cron": "^3.0.11",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   }
 }
