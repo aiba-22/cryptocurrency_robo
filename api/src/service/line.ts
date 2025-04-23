@@ -1,7 +1,7 @@
 import axios from "axios";
 import db from "../db";
 
-export class LineService {
+export default class LineService {
   db;
   constructor() {
     this.db = db;
@@ -29,7 +29,7 @@ export class LineService {
       return "success";
     } catch (error) {
       await transaction.rollback();
-      return "failure";
+      throw new Error();
     }
   }
 
@@ -54,13 +54,13 @@ export class LineService {
       return "success";
     } catch (error) {
       await transaction.rollback();
-      return "failure";
+      throw new Error();
     }
   }
 
   async send({ id, price }: { id: number; price: number }) {
     const line = await this.db("line").where({ id }).first();
-    if (!line) return "failure";
+    if (!line) return "systemError";
 
     const channelAccessToken = line.channel_access_token;
     const userId = line.user_id;
@@ -75,20 +75,15 @@ export class LineService {
     };
 
     try {
-      await axios.post(
-        "https://api.line.me/v2/bot/message/push",
-        // `message=${encodeURIComponent(message)}`,
-        body,
-        {
-          headers: {
-            Authorization: `Bearer ${channelAccessToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await axios.post("https://api.line.me/v2/bot/message/push", body, {
+        headers: {
+          Authorization: `Bearer ${channelAccessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
       return "success";
     } catch (error) {
-      return "failure";
+      throw new Error();
     }
   }
 }

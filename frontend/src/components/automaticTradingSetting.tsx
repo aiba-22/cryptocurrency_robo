@@ -8,8 +8,8 @@ import {
   Alert,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
-import { useSaveGmoSettings } from "../feature/hooks/useSaveGmoSettings";
-import { useGmoSetting } from "../feature/hooks/useGmoSetting";
+import { useSaveGmoSetting } from "../feature/hooks/gmo/useSaveSetting";
+import { useGmoSetting } from "../feature/hooks/gmo/useSetting";
 
 type Form = {
   id: number;
@@ -32,7 +32,7 @@ const AutomaticTradingSetting = () => {
   });
 
   const { data, isError, isLoading, errorMessage } = useGmoSetting();
-  const { resultMessage, saveSettings } = useSaveGmoSettings();
+  const { resultMessage, saveSetting } = useSaveGmoSetting();
 
   useEffect(() => {
     if (data) {
@@ -41,7 +41,7 @@ const AutomaticTradingSetting = () => {
   }, [data, reset]);
 
   const onSubmit = async (formData: Form) => {
-    saveSettings(formData);
+    saveSetting(formData);
   };
 
   return (

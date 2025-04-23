@@ -1,14 +1,26 @@
 import axios from "axios";
-export type Setting = {
+
+export const fetchLine = async (): Promise<{
   lineToken: string;
   userId: string;
+}> => {
+  const response = await axios.get(`http://localhost:3001/api/line`);
+  return response.data;
 };
 
-type Response = { lineToken: string; userId: string };
+export const createLine = async (request: {
+  lineToken: string;
+  userId: string;
+}): Promise<void> => {
+  await axios.post("http://localhost:3001/api/line", request);
+};
 
-export const getLineSetting = async (): Promise<Response> => {
-  const response = await axios.get(`http://localhost:3001/api/lineSetting`);
-  return response.data;
+export const updateLine = async (request: {
+  id: number;
+  lineToken: string;
+  userId: string;
+}): Promise<void> => {
+  await axios.put("http://localhost:3001/api/line", request);
 };
 
 export const sendLineNotification = async ({

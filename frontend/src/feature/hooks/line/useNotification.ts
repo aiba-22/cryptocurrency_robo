@@ -1,4 +1,4 @@
-import { sendLineNotification } from "../../apiClients/line";
+import { sendLineNotification } from "../../../apiClients/line";
 import { useState } from "react";
 import { useMutation } from "react-query";
 

@@ -2,31 +2,28 @@ import { useQuery } from "react-query";
 import { listVirtualCurrencyRate } from "../../apiClients/gmo";
 import { useState } from "react";
 
-export const useVirtualCurrencyRate = () => {
+export const useCryptocurrencyRate = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const { data, isLoading, isError } = useQuery({
     queryKey: ["virtualCurrency"],
     queryFn: () => listVirtualCurrencyRate(),
-    keepPreviousData: true,
     onError: () => {
       setErrorMessage("システムエラー");
     },
   });
 
-  const virtualCurrencyRate = (virtualCurrency: string) => {
-    const virtualCurrencyRate = data.find(
-      (virtualCurrencyTradingPrice: any) => {
-        return virtualCurrencyTradingPrice.symbol === virtualCurrency;
-      }
-    );
-    return virtualCurrencyRate;
+  const cryptocurrencyRate = (cryptocurrency: string) => {
+    const cryptocurrencyRate = data.find((cryptocurrencyTradingPrice: any) => {
+      return cryptocurrencyTradingPrice.symbol === cryptocurrency;
+    });
+    return cryptocurrencyRate;
   };
 
   return {
-    virtualCurrencyTradingPriceList: data,
+    cryptocurrencyradingPriceList: data,
     isVirtualCurrencyLoading: isLoading,
     isVirtualCurrencyError: isError,
     errorMessage,
-    virtualCurrencyRate,
+    cryptocurrencyRate,
   };
 };

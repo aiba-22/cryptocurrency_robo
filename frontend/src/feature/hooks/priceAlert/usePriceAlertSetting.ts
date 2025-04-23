@@ -1,8 +1,8 @@
 import { useQuery } from "react-query";
 import { useState } from "react";
-import { findNotificationSetting } from "../notificationSetting";
+import { findNotificationSetting } from "../../notificationSetting";
 
-export const useNotificationSetting = () => {
+export const usePriceAlertSettings = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const { data, isError, isLoading } = useQuery({

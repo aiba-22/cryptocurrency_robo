@@ -1,5 +1,5 @@
 export function up(knex: any) {
-  return knex.schema.createTable("gmo", function (table) {
+  return knex.schema.createTable("gmo", function (table: any) {
     table.increments("id");
     table.string("api_key", 255).notNullable();
     table.string("secret_key", 255).notNullable();

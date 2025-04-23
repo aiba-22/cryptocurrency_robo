@@ -1,15 +1,14 @@
-import { getTargetPrice } from "../apiClients/targetPrice";
-import { getLineSetting } from "../apiClients/line";
+import { fetchPriceAlert } from "../apiClients/priceAlert";
+import { fetchLine } from "../apiClients/line";
 
 export const findNotificationSetting = async () => {
-  const { id, targetPrice, virtualCurrencyType } = await getTargetPrice();
-  const { lineToken, userId } = await getLineSetting();
+  const { id, conditions } = await fetchPriceAlert();
+  const { lineToken, userId } = await fetchLine();
   const response = {
     id,
     lineToken,
-    targetPrice,
     userId,
-    virtualCurrencyType,
+    ...conditions,
   };
   return response;
 };

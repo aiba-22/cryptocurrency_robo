@@ -14,23 +14,24 @@ import {
 import { SelectChangeEvent } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 
-import { useNotificationSetting } from "../feature/hooks/useNotificationSettings";
+import { usePriceAlertSettings } from "../feature/hooks/priceAlert/usePriceAlertSetting";
 import {
   VIRTUAL_CURRENCIES,
   VIRTUAL_CURRENCY_LIST,
 } from "../feature/constants";
-import { useLineNotification } from "../feature/hooks/useLineNotification";
-import { useSaveTargetPrice } from "../feature/hooks/useSaveTargetPrice";
+import { useLineNotification } from "../feature/hooks/line/useNotification";
+import { useSaveTargetPriceSettings } from "../feature/hooks/priceAlert/useSavePriceAlertSetting";
 
 type Form = {
   id?: number;
-  virtualCurrencyType: string;
-  targetPrice: number;
+  isUpperLimit: boolean;
+  cryptocurrencyType: string;
+  price: number;
   lineToken: string;
   userId: string;
 };
 
-function NotificationSetting() {
+function PrieAlertSetting() {
   const {
     control,
     handleSubmit,
@@ -40,8 +41,9 @@ function NotificationSetting() {
   } = useForm<Form>({
     defaultValues: {
       id: 1,
-      virtualCurrencyType: VIRTUAL_CURRENCIES.BTC_JPY,
-      targetPrice: 0,
+      cryptocurrencyType: VIRTUAL_CURRENCIES.BTC_JPY,
+      isUpperLimit: true,
+      price: 0,
       lineToken: "",
       userId: "",
     },
@@ -52,14 +54,14 @@ function NotificationSetting() {
     isNotificationError,
     isNotificationLoading,
     errorMessage,
-  } = useNotificationSetting();
+  } = usePriceAlertSettings();
 
   useEffect(() => {
     if (notificationSetting) reset(notificationSetting);
   }, [notificationSetting, reset]);
 
   const { resultMessage: saveResultMessage, saveSettings } =
-    useSaveTargetPrice();
+    useSaveTargetPriceSettings();
 
   const { resultMessage: notificationResultMessage, sendNotification } =
     useLineNotification();
@@ -69,8 +71,8 @@ function NotificationSetting() {
   };
 
   const handleNotificationTestButton = async () => {
-    const { targetPrice } = getValues();
-    sendNotification(targetPrice);
+    const { price } = getValues();
+    sendNotification(price);
   };
 
   return (
@@ -84,7 +86,7 @@ function NotificationSetting() {
           <FormControl fullWidth margin="normal">
             <InputLabel id="virtual-currency-type-label">指定通貨</InputLabel>
             <Controller
-              name="virtualCurrencyType"
+              name="cryptocurrencyType"
               control={control}
               render={({ field }) => (
                 <Select
@@ -102,15 +104,15 @@ function NotificationSetting() {
                 </Select>
               )}
             />
-            {errors.virtualCurrencyType && (
+            {errors.cryptocurrencyType && (
               <Alert severity="error">
-                {errors.virtualCurrencyType.message}
+                {errors.cryptocurrencyType.message}
               </Alert>
             )}
           </FormControl>
 
           <Controller
-            name="targetPrice"
+            name="price"
             control={control}
             render={({ field }) => (
               <TextField
@@ -124,12 +126,34 @@ function NotificationSetting() {
                 margin="normal"
                 label="目標価格"
                 type="number"
-                error={!!errors.targetPrice}
-                helperText={errors.targetPrice?.message}
+                error={!!errors.price}
+                helperText={errors.price?.message}
                 placeholder="例: 5000000"
               />
             )}
           />
+
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="is-upper-limit-label">通知条件</InputLabel>
+            <Controller
+              name="isUpperLimit"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  labelId="is-upper-limit-label"
+                  label="通知条件"
+                  onChange={(e: SelectChangeEvent) =>
+                    field.onChange(e.target.value === "true")
+                  }
+                  value={String(field.value)} // "true" または "false"
+                >
+                  <MenuItem value="true">価格が上回ったら通知</MenuItem>
+                  <MenuItem value="false">価格が下回ったら通知</MenuItem>
+                </Select>
+              )}
+            />
+          </FormControl>
 
           <Controller
             name="lineToken"
@@ -195,4 +219,4 @@ function NotificationSetting() {
   );
 }
 
-export default NotificationSetting;
+export default PrieAlertSetting;

@@ -11,7 +11,7 @@ import {
   Alert,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material";
-import { useVirtualCurrencyRate } from "../feature/hooks/useVirtualCurrency";
+import { useCryptocurrencyRate } from "../feature/hooks/useCryptocurrencyRate";
 import { VIRTUAL_CURRENCY_LIST } from "../feature/constants";
 
 type VirtualCurrencyRate = {
@@ -25,14 +25,14 @@ type VirtualCurrencyRate = {
   timestamp?: Date;
 };
 
-function VirtualCurrencyInformation() {
+function CryptocurrencyRate() {
   const [virtualCurrency, setVirtualCurrency] = useState<VirtualCurrencyRate>();
 
-  const { isVirtualCurrencyLoading, errorMessage, virtualCurrencyRate } =
-    useVirtualCurrencyRate();
+  const { isVirtualCurrencyLoading, errorMessage, cryptocurrencyRate } =
+    useCryptocurrencyRate();
 
   const handleChange = (event: SelectChangeEvent<string>) => {
-    const virtualCurrency = virtualCurrencyRate(event.target.value);
+    const virtualCurrency = cryptocurrencyRate(event.target.value);
 
     if (virtualCurrency) {
       setVirtualCurrency(virtualCurrency);
@@ -83,4 +83,4 @@ function VirtualCurrencyInformation() {
   );
 }
 
-export default VirtualCurrencyInformation;
+export default CryptocurrencyRate;

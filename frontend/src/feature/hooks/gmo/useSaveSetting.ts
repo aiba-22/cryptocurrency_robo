@@ -1,25 +1,21 @@
 import { useState } from "react";
 import { useMutation } from "react-query";
-import {
-  updateGmoSetting,
-  createGmoSetting,
-  RequestSetting,
-} from "../../apiClients/gmo";
+import { updateGmo, createGmo, Request } from "../../../apiClients/gmo";
 
-export const useSaveGmoSettings = () => {
+export const useSaveGmoSetting = () => {
   const [resultMessage, setResultMessage] = useState("");
 
   const {
-    mutate: saveSettings,
+    mutate: saveSetting,
     isLoading,
     isError,
     isSuccess,
   } = useMutation(
-    async (notificationSetting: RequestSetting) => {
-      if (notificationSetting.id) {
-        return await updateGmoSetting(notificationSetting);
+    async (gmoSetting: Request) => {
+      if (gmoSetting.id) {
+        return await updateGmo(gmoSetting);
       } else {
-        return await createGmoSetting(notificationSetting);
+        return await createGmo(gmoSetting);
       }
     },
     {
@@ -33,7 +29,7 @@ export const useSaveGmoSettings = () => {
   );
 
   return {
-    saveSettings,
+    saveSetting,
     resultMessage,
     isLoading,
     isError,
