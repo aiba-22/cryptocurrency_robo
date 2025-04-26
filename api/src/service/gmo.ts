@@ -10,7 +10,6 @@ export default class gmoService {
 
   async find(id: number) {
     const gmo = await this.db("gmo").where({ id }).first();
-
     return {
       id: gmo?.id || null,
       apiKey: gmo?.api_key || null,
@@ -31,7 +30,7 @@ export default class gmoService {
       return "success";
     } catch (error) {
       await transaction.rollback();
-      throw new Error();
+      return "failure";
     }
   }
 
@@ -56,7 +55,7 @@ export default class gmoService {
       return "success";
     } catch (error) {
       await transaction.rollback();
-      throw new Error();
+      return "failure";
     }
   }
 

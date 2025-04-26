@@ -1,12 +1,12 @@
 import { useQuery } from "react-query";
-import { listVirtualCurrencyRate } from "../../apiClients/gmo";
+import { listCryptocurrencyRateRate } from "../../apiClients/gmo";
 import { useState } from "react";
 
 export const useCryptocurrencyRate = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["virtualCurrency"],
-    queryFn: () => listVirtualCurrencyRate(),
+    queryKey: ["useCryptocurrencyRate"],
+    queryFn: () => listCryptocurrencyRateRate(),
     onError: () => {
       setErrorMessage("システムエラー");
     },

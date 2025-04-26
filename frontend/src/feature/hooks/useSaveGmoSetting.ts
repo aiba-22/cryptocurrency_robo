@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useMutation } from "react-query";
-import { updateGmo, createGmo, Request } from "../../../apiClients/gmo";
+import { updateGmo, createGmo, Request } from "../../apiClients/gmo";
 
 export const useSaveGmoSetting = () => {
-  const [resultMessage, setResultMessage] = useState("");
+  const [saveGmoSettingResultCode, setSaveGmoSettingResultCode] = useState({
+    status: "",
+  });
 
   const {
     mutate: saveSetting,
@@ -20,17 +22,17 @@ export const useSaveGmoSetting = () => {
     },
     {
       onSuccess: () => {
-        setResultMessage("設定が保存されました。");
+        setSaveGmoSettingResultCode({ status: "successSaveGmoSetting" });
       },
       onError: () => {
-        setResultMessage("設定の保存が失敗しました。");
+        setSaveGmoSettingResultCode({ status: "errorSaveGmoSetting" });
       },
     }
   );
 
   return {
     saveSetting,
-    resultMessage,
+    saveGmoSettingResultCode,
     isLoading,
     isError,
     isSuccess,

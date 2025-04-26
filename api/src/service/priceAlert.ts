@@ -32,7 +32,7 @@ export default class PriceAlertService {
       return "success";
     } catch (error) {
       await transaction.rollback();
-      throw new Error();
+      return "failure";
     }
   }
 
@@ -59,7 +59,7 @@ export default class PriceAlertService {
       return "success";
     } catch (error) {
       await transaction.rollback();
-      throw new Error();
+      return "failure";
     }
   }
 }

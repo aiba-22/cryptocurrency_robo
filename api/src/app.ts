@@ -22,6 +22,11 @@ import {
 import { lineNotification } from "./controllers/notificationController";
 import { get as getVirtualCurrencyRateList } from "./controllers/cryptocurrencyRateController";
 
+import {
+  list as listCryptocurrencyOrder,
+  create as createCryptocurrencyOrder,
+  update as updateCryptocurrencyOrder,
+} from "./controllers/cryptocurrencyOrderController";
 const app = express();
 const port = 3001;
 
@@ -39,8 +44,10 @@ app.get("/api/gmo", getGmo);
 app.post("/api/gmo", createGmo);
 app.put("/api/gmo", updateGmo);
 app.get("/api/VirtualCurrencyRateList", getVirtualCurrencyRateList);
-
 app.post("/api/notification/line", lineNotification);
+app.get("/api/cryptocurrencyOrder/list", listCryptocurrencyOrder);
+app.post("/api/cryptocurrencyOrder", createCryptocurrencyOrder);
+app.put("/api/cryptocurrencyOrder", updateCryptocurrencyOrder);
 
 app.listen(port, () => {
   console.log(`Proxy server is running on http://localhost:${port}`);

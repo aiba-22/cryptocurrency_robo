@@ -8,8 +8,8 @@ import {
   Alert,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
-import { useSaveGmoSetting } from "../feature/hooks/gmo/useSaveSetting";
-import { useGmoSetting } from "../feature/hooks/gmo/useSetting";
+import { useSaveGmoSetting } from "../../feature/hooks/useSaveGmoSetting";
+import { useGmoSetting } from "../../feature/hooks/useFindGmoSetting";
 
 type Form = {
   id: number;
@@ -17,7 +17,11 @@ type Form = {
   secretKey: string;
 };
 
-const AutomaticTradingSetting = () => {
+const GmoSetting = ({
+  setSnackBarMessage,
+}: {
+  setSnackBarMessage: (snackBarMessage: string) => void;
+}) => {
   const {
     control,
     handleSubmit,
@@ -31,8 +35,8 @@ const AutomaticTradingSetting = () => {
     },
   });
 
-  const { data, isError, isLoading, errorMessage } = useGmoSetting();
-  const { resultMessage, saveSetting } = useSaveGmoSetting();
+  const { data, isError, isLoading } = useGmoSetting();
+  const { saveGmoSettingResultCode, saveSetting } = useSaveGmoSetting();
 
   useEffect(() => {
     if (data) {
@@ -43,6 +47,16 @@ const AutomaticTradingSetting = () => {
   const onSubmit = async (formData: Form) => {
     saveSetting(formData);
   };
+
+  useEffect(() => {
+    const message =
+      saveGmoSettingResultCode.status === "successSaveGmoSetting"
+        ? "APIキーの保存に成功しました。"
+        : saveGmoSettingResultCode.status === "errorSaveGmoSetting"
+        ? "APIキーの保存に失敗しました"
+        : "";
+    setSnackBarMessage(message);
+  }, [saveGmoSettingResultCode, setSnackBarMessage]);
 
   return (
     <Container maxWidth="sm">
@@ -61,7 +75,7 @@ const AutomaticTradingSetting = () => {
           <Controller
             name="apiKey"
             control={control}
-            rules={{ required: "APIキーを入力してください" }}
+            rules={{ required: "必須項目です" }}
             render={({ field }) => (
               <TextField
                 {...field}
@@ -78,7 +92,7 @@ const AutomaticTradingSetting = () => {
           <Controller
             name="secretKey"
             control={control}
-            rules={{ required: "シークレットキーを入力してください" }}
+            rules={{ required: "必須項目です" }}
             render={({ field }) => (
               <TextField
                 {...field}
@@ -94,19 +108,13 @@ const AutomaticTradingSetting = () => {
 
           <Box mt={2} display="flex" justifyContent="flex-end">
             <Button type="submit" variant="contained" color="primary">
-              設定を保存
+              保存
             </Button>
           </Box>
-
-          {(resultMessage || errorMessage) && (
-            <Box mt={2}>
-              <Alert severity="info">{resultMessage || errorMessage}</Alert>
-            </Box>
-          )}
         </form>
       )}
     </Container>
   );
 };
 
-export default AutomaticTradingSetting;
+export default GmoSetting;

@@ -2,8 +2,8 @@ import { useMutation } from "react-query";
 import {
   createPriceAlert,
   updatePriceAlert,
-} from "../../../apiClients/priceAlert";
-import { createLine, updateLine } from "../../../apiClients/line";
+} from "../../apiClients/priceAlert";
+import { createLine, updateLine } from "../../apiClients/line";
 import { useState } from "react";
 
 type SaveTargetPriceParams = {
@@ -16,13 +16,9 @@ type SaveTargetPriceParams = {
 };
 
 export const useSaveTargetPriceSettings = () => {
-  const [resultMessage, setResultMessage] = useState("");
+  const [saveResultCode, setSaveResultCode] = useState({ status: "" });
 
-  const {
-    mutate: saveSettings,
-    isLoading,
-    isError,
-  } = useMutation(
+  const { mutate: saveSettings, isLoading } = useMutation(
     async (params: SaveTargetPriceParams) => {
       const { id, isUpperLimit, cryptocurrencyType, price, lineToken, userId } =
         params;
@@ -41,18 +37,17 @@ export const useSaveTargetPriceSettings = () => {
     },
     {
       onSuccess: () => {
-        setResultMessage("保存が成功しました。");
+        setSaveResultCode({ status: "successSaveTargetPriceSetting" });
       },
       onError: () => {
-        setResultMessage("保存が失敗しました。");
+        setSaveResultCode({ status: "errorSaveTargetPriceSetting" });
       },
     }
   );
 
   return {
     saveSettings,
-    resultMessage,
+    saveResultCode,
     isLoading,
-    isError,
   };
 };

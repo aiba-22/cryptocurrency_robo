@@ -5,26 +5,26 @@ export type Request = {
   secretKey: string;
 };
 
-export const fetchGmo = async () => {
-  const response = await axios.get(`http://localhost:3001/api/gmo?id=${1}`);
+export const findGmo = async () => {
+  const response = await axios.get(`http://localhost:3001/api/gmo`);
   return response.data;
 };
 
 export const createGmo = async (request: Request) => {
-  const response = await axios.post("http://localhost:3001/api/Gmo", {
+  const response = await axios.post("http://localhost:3001/api/gmo", {
     ...request,
   });
   return response.data;
 };
 
 export const updateGmo = async (request: Request) => {
-  const response = await axios.put("http://localhost:3001/api/Gmo", {
+  const response = await axios.put("http://localhost:3001/api/gmo", {
     ...request,
   });
   return response.data;
 };
 
-export const listVirtualCurrencyRate = async () => {
+export const listCryptocurrencyRateRate = async () => {
   const response = await axios.get(
     `http://localhost:3001/api/virtualCurrencyRateList`
   );

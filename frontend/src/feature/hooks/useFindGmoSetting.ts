@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import { fetchGmo } from "../../../apiClients/gmo";
+import { findGmo } from "../../apiClients/gmo";
 import { useState } from "react";
 
 export const useGmoSetting = () => {
@@ -7,7 +7,7 @@ export const useGmoSetting = () => {
 
   const { data, isError, isLoading } = useQuery({
     queryKey: ["gmo"],
-    queryFn: () => fetchGmo(),
+    queryFn: () => findGmo(),
     onError: () => {
       setErrorMessage("システムエラーが発生しました。");
     },

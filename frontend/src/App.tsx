@@ -2,8 +2,7 @@ import "./App.css";
 import { Routes, Route, Link as RouterLink } from "react-router-dom";
 import CryptocurrencyRate from "./components/cryptocurrencyRate";
 import PrieAlertSetting from "./components/priceAlertSetting";
-import AutomaticTrading from "./components/automaticTrading";
-import AutomaticTradingSetting from "./components/automaticTradingSetting";
+import AutomaticTrading from "./components/automaticTrading/automaticTrading";
 
 import {
   AppBar,
@@ -34,17 +33,10 @@ export default function App() {
             component={RouterLink}
             to="/priceAlertSetting"
           >
-            通知設定
+            価格アラート
           </Button>
           <Button color="inherit" component={RouterLink} to="/automaticTrading">
             自動取引
-          </Button>
-          <Button
-            color="inherit"
-            component={RouterLink}
-            to="/automaticTradingSetting"
-          >
-            自動取引設定
           </Button>
         </Toolbar>
       </AppBar>
@@ -58,10 +50,6 @@ export default function App() {
             />
             <Route path="/priceAlertSetting" element={<PrieAlertSetting />} />
             <Route path="/automaticTrading" element={<AutomaticTrading />} />
-            <Route
-              path="/automaticTradingSetting"
-              element={<AutomaticTradingSetting />}
-            />
           </Routes>
         </Box>
       </Container>

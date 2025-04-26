@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Container,
   Typography,
@@ -14,18 +14,15 @@ import {
 import { SelectChangeEvent } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 
-import { usePriceAlertSettings } from "../feature/hooks/priceAlert/usePriceAlertSetting";
-import {
-  VIRTUAL_CURRENCIES,
-  VIRTUAL_CURRENCY_LIST,
-} from "../feature/constants";
-import { useLineNotification } from "../feature/hooks/line/useNotification";
-import { useSaveTargetPriceSettings } from "../feature/hooks/priceAlert/useSavePriceAlertSetting";
+import { usePriceAlertSettings } from "../feature/hooks/useFindPriceAlertSetting";
+import { CRYPTOCURRENCY_LIST } from "../feature/constants";
+import { useLineNotification } from "../feature/hooks/useNotificationLine";
+import { useSaveTargetPriceSettings } from "../feature/hooks/useSavePriceAlertSetting";
 
 type Form = {
   id?: number;
-  isUpperLimit: boolean;
   cryptocurrencyType: string;
+  isUpperLimit: boolean;
   price: number;
   lineToken: string;
   userId: string;
@@ -35,52 +32,62 @@ function PrieAlertSetting() {
   const {
     control,
     handleSubmit,
-    formState: { errors },
-    getValues,
     reset,
+    formState: { errors },
   } = useForm<Form>({
     defaultValues: {
-      id: 1,
-      cryptocurrencyType: VIRTUAL_CURRENCIES.BTC_JPY,
-      isUpperLimit: true,
+      id: undefined,
+      cryptocurrencyType: "",
+      isUpperLimit: undefined,
       price: 0,
       lineToken: "",
       userId: "",
     },
   });
+  const [snackBarMessage, setSnackBarMessage] = useState("");
+  const { notificationSetting, isNotificationLoading } =
+    usePriceAlertSettings();
 
-  const {
-    notificationSetting,
-    isNotificationError,
-    isNotificationLoading,
-    errorMessage,
-  } = usePriceAlertSettings();
+  const { saveResultCode, saveSettings } = useSaveTargetPriceSettings();
+  const { notificationResultCode, sendNotification } = useLineNotification();
+
+  const onSubmit = async (form: Form) => {
+    saveSettings(form);
+  };
+
+  const notificationLine = async (form: Form) => {
+    sendNotification(form.price);
+  };
 
   useEffect(() => {
     if (notificationSetting) reset(notificationSetting);
   }, [notificationSetting, reset]);
 
-  const { resultMessage: saveResultMessage, saveSettings } =
-    useSaveTargetPriceSettings();
+  useEffect(() => {
+    const message =
+      saveResultCode.status === "successSaveTargetPriceSetting"
+        ? "保存に成功しました。"
+        : saveResultCode.status === "errorSaveTargetPriceSetting"
+        ? "保存に失敗しました"
+        : "";
+    setSnackBarMessage(message);
+  }, [saveResultCode]);
 
-  const { resultMessage: notificationResultMessage, sendNotification } =
-    useLineNotification();
-
-  const onSubmit = async (data: Form) => {
-    saveSettings(data);
-  };
-
-  const handleNotificationTestButton = async () => {
-    const { price } = getValues();
-    sendNotification(price);
-  };
+  useEffect(() => {
+    const message =
+      notificationResultCode.status === "successLineNotification"
+        ? "テスト送信に成功しました。"
+        : notificationResultCode.status === "errorLineNotification"
+        ? "テスト送信に失敗しました"
+        : "";
+    setSnackBarMessage(message);
+  }, [notificationResultCode]);
 
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
-        通知設定
+        価格アラート
       </Typography>
-      目標価格を超えるとLINEへの通知が送られます
       {!isNotificationLoading && (
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl fullWidth margin="normal">
@@ -88,6 +95,7 @@ function PrieAlertSetting() {
             <Controller
               name="cryptocurrencyType"
               control={control}
+              rules={{ required: "入力必須項目です" }}
               render={({ field }) => (
                 <Select
                   {...field}
@@ -96,9 +104,9 @@ function PrieAlertSetting() {
                     field.onChange(e.target.value)
                   }
                 >
-                  {VIRTUAL_CURRENCY_LIST.map((virtualCurrency) => (
-                    <MenuItem key={virtualCurrency} value={virtualCurrency}>
-                      {virtualCurrency.toUpperCase()}
+                  {CRYPTOCURRENCY_LIST.map((cryptocurrency) => (
+                    <MenuItem key={cryptocurrency} value={cryptocurrency}>
+                      {cryptocurrency.toUpperCase()}
                     </MenuItem>
                   ))}
                 </Select>
@@ -114,6 +122,7 @@ function PrieAlertSetting() {
           <Controller
             name="price"
             control={control}
+            rules={{ required: "入力必須項目です" }}
             render={({ field }) => (
               <TextField
                 {...field}
@@ -138,6 +147,7 @@ function PrieAlertSetting() {
             <Controller
               name="isUpperLimit"
               control={control}
+              rules={{ required: "入力必須項目です" }}
               render={({ field }) => (
                 <Select
                   {...field}
@@ -158,6 +168,7 @@ function PrieAlertSetting() {
           <Controller
             name="lineToken"
             control={control}
+            rules={{ required: "入力必須項目です" }}
             render={({ field }) => (
               <TextField
                 {...field}
@@ -174,6 +185,7 @@ function PrieAlertSetting() {
           <Controller
             name="userId"
             control={control}
+            rules={{ required: "入力必須項目です" }}
             render={({ field }) => (
               <TextField
                 {...field}
@@ -187,12 +199,6 @@ function PrieAlertSetting() {
             )}
           />
 
-          {isNotificationError && (
-            <div>
-              <Alert severity="error">データ取得に失敗しました</Alert>
-            </div>
-          )}
-
           <Box display="flex" justifyContent="space-between" mt={2}>
             <Button variant="contained" color="primary" type="submit">
               設定を保存
@@ -200,17 +206,15 @@ function PrieAlertSetting() {
             <Button
               variant="outlined"
               color="secondary"
-              onClick={handleNotificationTestButton}
+              onClick={handleSubmit(notificationLine)}
             >
               LINEに通知テスト
             </Button>
           </Box>
 
-          {(errorMessage || saveResultMessage || notificationResultMessage) && (
+          {snackBarMessage && (
             <Box mt={2}>
-              <Alert severity="info">
-                {errorMessage || saveResultMessage || notificationResultMessage}
-              </Alert>
+              <Alert severity="info">{snackBarMessage}</Alert>
             </Box>
           )}
         </form>

@@ -14,7 +14,4 @@ export const upedateLineSchema = z.object({
   userId: z.string(),
 });
 
-export const lineNotificationSchema = z.object({
-  id: z.number(),
-  price: z.number(),
-});
+export const lineNotificationSchema = z.object({ price: z.number() });

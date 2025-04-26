@@ -29,7 +29,7 @@ export default class LineService {
       return "success";
     } catch (error) {
       await transaction.rollback();
-      throw new Error();
+      return "failure";
     }
   }
 
@@ -54,7 +54,7 @@ export default class LineService {
       return "success";
     } catch (error) {
       await transaction.rollback();
-      throw new Error();
+      return "failure";
     }
   }
 
@@ -83,7 +83,7 @@ export default class LineService {
       });
       return "success";
     } catch (error) {
-      throw new Error();
+      return "failure";
     }
   }
 }

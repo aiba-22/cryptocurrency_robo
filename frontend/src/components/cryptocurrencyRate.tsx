@@ -11,8 +11,8 @@ import {
   Alert,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material";
-import { useCryptocurrencyRate } from "../feature/hooks/useCryptocurrencyRate";
-import { VIRTUAL_CURRENCY_LIST } from "../feature/constants";
+import { useCryptocurrencyRate } from "../feature/hooks/useListCryptocurrencyRate";
+import { CRYPTOCURRENCY_LIST } from "../feature/constants";
 
 type VirtualCurrencyRate = {
   symbol?: string;
@@ -51,9 +51,9 @@ function CryptocurrencyRate() {
           value={virtualCurrency?.symbol || ""}
           onChange={handleChange}
         >
-          {VIRTUAL_CURRENCY_LIST.map((currency) => (
-            <MenuItem key={currency} value={currency}>
-              {currency.toUpperCase()}
+          {CRYPTOCURRENCY_LIST.map((cryptocurrency) => (
+            <MenuItem key={cryptocurrency} value={cryptocurrency}>
+              {cryptocurrency.toUpperCase()}
             </MenuItem>
           ))}
         </Select>

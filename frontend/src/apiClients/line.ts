@@ -23,17 +23,10 @@ export const updateLine = async (request: {
   await axios.put("http://localhost:3001/api/line", request);
 };
 
-export const sendLineNotification = async ({
-  id,
-  targetPrice,
-}: {
-  id: number;
-  targetPrice: number;
-}) => {
+export const sendLineNotification = async (targetPrice: number) => {
   const result = await axios.post<string>(
     "http://localhost:3001/api/notification/line",
     {
-      id,
       price: targetPrice,
     }
   );
