@@ -8,11 +8,11 @@ import {
   MenuItem,
   CircularProgress,
   Box,
-  Alert,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material";
-import { useCryptocurrencyRate } from "../feature/hooks/useListCryptocurrencyRate";
+import { useListCryptocurrencyRate } from "../feature/hooks/useListCryptocurrencyRate";
 import { CRYPTOCURRENCY_LIST } from "../feature/constants";
+import SnackBer from "./snackBer";
 
 type VirtualCurrencyRate = {
   symbol?: string;
@@ -28,8 +28,8 @@ type VirtualCurrencyRate = {
 function CryptocurrencyRate() {
   const [virtualCurrency, setVirtualCurrency] = useState<VirtualCurrencyRate>();
 
-  const { isVirtualCurrencyLoading, errorMessage, cryptocurrencyRate } =
-    useCryptocurrencyRate();
+  const { isVirtualCurrencyLoading, resultCodeOfList, cryptocurrencyRate } =
+    useListCryptocurrencyRate();
 
   const handleChange = (event: SelectChangeEvent<string>) => {
     const virtualCurrency = cryptocurrencyRate(event.target.value);
@@ -63,11 +63,7 @@ function CryptocurrencyRate() {
           <CircularProgress />
         </Box>
       )}
-      {errorMessage && (
-        <Box mt={2}>
-          <Alert severity="success">{errorMessage}</Alert>
-        </Box>
-      )}
+      {resultCodeOfList.code && <SnackBer message={resultCodeOfList.code} />}
       {virtualCurrency && (
         <Box mt={2}>
           <Typography variant="h6">価格詳細</Typography>

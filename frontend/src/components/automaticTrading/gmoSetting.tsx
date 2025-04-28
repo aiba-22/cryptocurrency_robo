@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { useSaveGmoSetting } from "../../feature/hooks/useSaveGmoSetting";
-import { useGmoSetting } from "../../feature/hooks/useFindGmoSetting";
+import { useFindGmoSetting } from "../../feature/hooks/useFindGmoSetting";
 
 type Form = {
   id: number;
@@ -17,11 +17,11 @@ type Form = {
   secretKey: string;
 };
 
-const GmoSetting = ({
+function GmoSetting({
   setSnackBarMessage,
 }: {
   setSnackBarMessage: (snackBarMessage: string) => void;
-}) => {
+}) {
   const {
     control,
     handleSubmit,
@@ -35,8 +35,8 @@ const GmoSetting = ({
     },
   });
 
-  const { data, isError, isLoading } = useGmoSetting();
-  const { saveGmoSettingResultCode, saveSetting } = useSaveGmoSetting();
+  const { data, isError, isLoading } = useFindGmoSetting();
+  const { resultCodeOfSave, saveSetting } = useSaveGmoSetting();
 
   useEffect(() => {
     if (data) {
@@ -50,13 +50,14 @@ const GmoSetting = ({
 
   useEffect(() => {
     const message =
-      saveGmoSettingResultCode.status === "successSaveGmoSetting"
+      resultCodeOfSave.code === "successSaveGmoSetting"
         ? "APIキーの保存に成功しました。"
-        : saveGmoSettingResultCode.status === "errorSaveGmoSetting"
+        : resultCodeOfSave.code === "errorSaveGmoSetting"
         ? "APIキーの保存に失敗しました"
         : "";
+
     setSnackBarMessage(message);
-  }, [saveGmoSettingResultCode, setSnackBarMessage]);
+  }, [resultCodeOfSave, setSnackBarMessage]);
 
   return (
     <Container maxWidth="sm">
@@ -115,6 +116,6 @@ const GmoSetting = ({
       )}
     </Container>
   );
-};
+}
 
 export default GmoSetting;

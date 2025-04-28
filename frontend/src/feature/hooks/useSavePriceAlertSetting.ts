@@ -15,8 +15,8 @@ type SaveTargetPriceParams = {
   userId: string;
 };
 
-export const useSaveTargetPriceSettings = () => {
-  const [saveResultCode, setSaveResultCode] = useState({ status: "" });
+export const useSavePriceAlertSetting = () => {
+  const [resultCodeOfSave, setResultCodeOfSave] = useState({ code: "" });
 
   const { mutate: saveSettings, isLoading } = useMutation(
     async (params: SaveTargetPriceParams) => {
@@ -37,17 +37,17 @@ export const useSaveTargetPriceSettings = () => {
     },
     {
       onSuccess: () => {
-        setSaveResultCode({ status: "successSaveTargetPriceSetting" });
+        setResultCodeOfSave({ code: "successSaveTargetPriceSetting" });
       },
       onError: () => {
-        setSaveResultCode({ status: "errorSaveTargetPriceSetting" });
+        setResultCodeOfSave({ code: "errorSaveTargetPriceSetting" });
       },
     }
   );
 
   return {
     saveSettings,
-    saveResultCode,
+    resultCodeOfSave,
     isLoading,
   };
 };

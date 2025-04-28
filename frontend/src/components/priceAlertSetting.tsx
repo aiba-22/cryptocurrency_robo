@@ -14,10 +14,11 @@ import {
 import { SelectChangeEvent } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 
-import { usePriceAlertSettings } from "../feature/hooks/useFindPriceAlertSetting";
+import { useFindPriceAlertSetting } from "../feature/hooks/useFindPriceAlertSetting";
 import { CRYPTOCURRENCY_LIST } from "../feature/constants";
 import { useLineNotification } from "../feature/hooks/useNotificationLine";
-import { useSaveTargetPriceSettings } from "../feature/hooks/useSavePriceAlertSetting";
+import { useSavePriceAlertSetting } from "../feature/hooks/useSavePriceAlertSetting";
+import SnackBer from "./snackBer";
 
 type Form = {
   id?: number;
@@ -46,10 +47,10 @@ function PrieAlertSetting() {
   });
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const { notificationSetting, isNotificationLoading } =
-    usePriceAlertSettings();
+    useFindPriceAlertSetting();
 
-  const { saveResultCode, saveSettings } = useSaveTargetPriceSettings();
-  const { notificationResultCode, sendNotification } = useLineNotification();
+  const { resultCodeOfSave, saveSettings } = useSavePriceAlertSetting();
+  const { resultCodeOfNotification, sendNotification } = useLineNotification();
 
   const onSubmit = async (form: Form) => {
     saveSettings(form);
@@ -65,23 +66,23 @@ function PrieAlertSetting() {
 
   useEffect(() => {
     const message =
-      saveResultCode.status === "successSaveTargetPriceSetting"
+      resultCodeOfSave.code === "successSaveTargetPriceSetting"
         ? "保存に成功しました。"
-        : saveResultCode.status === "errorSaveTargetPriceSetting"
+        : resultCodeOfSave.code === "errorSaveTargetPriceSetting"
         ? "保存に失敗しました"
         : "";
     setSnackBarMessage(message);
-  }, [saveResultCode]);
+  }, [resultCodeOfSave]);
 
   useEffect(() => {
     const message =
-      notificationResultCode.status === "successLineNotification"
+      resultCodeOfNotification.code === "successLineNotification"
         ? "テスト送信に成功しました。"
-        : notificationResultCode.status === "errorLineNotification"
+        : resultCodeOfNotification.code === "errorLineNotification"
         ? "テスト送信に失敗しました"
         : "";
     setSnackBarMessage(message);
-  }, [notificationResultCode]);
+  }, [resultCodeOfNotification]);
 
   return (
     <Container maxWidth="sm">
@@ -212,11 +213,7 @@ function PrieAlertSetting() {
             </Button>
           </Box>
 
-          {snackBarMessage && (
-            <Box mt={2}>
-              <Alert severity="info">{snackBarMessage}</Alert>
-            </Box>
-          )}
+          {snackBarMessage && <SnackBer message={snackBarMessage} />}
         </form>
       )}
     </Container>

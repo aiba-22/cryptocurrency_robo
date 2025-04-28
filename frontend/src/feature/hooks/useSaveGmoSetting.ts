@@ -3,9 +3,7 @@ import { useMutation } from "react-query";
 import { updateGmo, createGmo, Request } from "../../apiClients/gmo";
 
 export const useSaveGmoSetting = () => {
-  const [saveGmoSettingResultCode, setSaveGmoSettingResultCode] = useState({
-    status: "",
-  });
+  const [resultCodeOfSave, setResultCodeOfSave] = useState({ code: "" });
 
   const {
     mutate: saveSetting,
@@ -22,17 +20,17 @@ export const useSaveGmoSetting = () => {
     },
     {
       onSuccess: () => {
-        setSaveGmoSettingResultCode({ status: "successSaveGmoSetting" });
+        setResultCodeOfSave({ code: "successSaveGmoSetting" });
       },
       onError: () => {
-        setSaveGmoSettingResultCode({ status: "errorSaveGmoSetting" });
+        setResultCodeOfSave({ code: "errorSaveGmoSetting" });
       },
     }
   );
 
   return {
     saveSetting,
-    saveGmoSettingResultCode,
+    resultCodeOfSave,
     isLoading,
     isError,
     isSuccess,

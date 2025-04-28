@@ -3,8 +3,8 @@ import { useState } from "react";
 import { useMutation } from "react-query";
 
 export const useLineNotification = () => {
-  const [notificationResultCode, setNotificationResultCode] = useState({
-    status: "",
+  const [resultCodeOfNotification, setResultCodeOfNotification] = useState({
+    code: "",
   });
 
   const {
@@ -14,19 +14,19 @@ export const useLineNotification = () => {
   } = useMutation(sendLineNotification, {
     onSuccess: (data) => {
       if (data === "success") {
-        setNotificationResultCode({ status: "successLineNotification" });
+        setResultCodeOfNotification({ code: "successLineNotification" });
       } else {
-        setNotificationResultCode({ status: "errorLineNotification" });
+        setResultCodeOfNotification({ code: "errorLineNotification" });
       }
     },
     onError: () => {
-      setNotificationResultCode({ status: "errorLineNotification" });
+      setResultCodeOfNotification({ code: "errorLineNotification" });
     },
   });
 
   return {
     sendNotification,
-    notificationResultCode,
+    resultCodeOfNotification,
     isLoading,
     isError,
   };

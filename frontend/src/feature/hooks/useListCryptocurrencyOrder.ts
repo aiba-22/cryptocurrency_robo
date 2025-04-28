@@ -13,15 +13,15 @@ export type Request = {
 };
 
 export const useListCryptocurrencyOrder = () => {
-  const [errorMessage, setErrorMessage] = useState("");
+  const [resultCodeOfList, setResultCodeOfList] = useState({ code: "" });
 
   const { data } = useQuery<Request[]>({
     queryKey: ["useListCryptocurrencyOrder"],
     queryFn: listCryptocurrencyOrder,
     onError: () => {
-      setErrorMessage("システムエラー");
+      setResultCodeOfList({ code: "systemError" });
     },
   });
 
-  return { cryptocurrencyOrderList: data, errorMessage };
+  return { cryptocurrencyOrderList: data, resultCodeOfList };
 };

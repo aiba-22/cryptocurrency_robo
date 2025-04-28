@@ -2,13 +2,13 @@ import { useQuery } from "react-query";
 import { listCryptocurrencyRateRate } from "../../apiClients/gmo";
 import { useState } from "react";
 
-export const useCryptocurrencyRate = () => {
-  const [errorMessage, setErrorMessage] = useState("");
+export const useListCryptocurrencyRate = () => {
+  const [resultCodeOfList, setResultCodeOfList] = useState({ code: "" });
   const { data, isLoading, isError } = useQuery({
     queryKey: ["useCryptocurrencyRate"],
     queryFn: () => listCryptocurrencyRateRate(),
     onError: () => {
-      setErrorMessage("システムエラー");
+      setResultCodeOfList({ code: "systemErro" });
     },
   });
 
@@ -23,7 +23,7 @@ export const useCryptocurrencyRate = () => {
     cryptocurrencyradingPriceList: data,
     isVirtualCurrencyLoading: isLoading,
     isVirtualCurrencyError: isError,
-    errorMessage,
+    resultCodeOfList,
     cryptocurrencyRate,
   };
 };

@@ -18,11 +18,11 @@ import { convertToFormData } from "../../feature/automaticTrading/convertToFormD
 import { CRYPTOCURRENCY_LIST, CRYPTOCURRENCYS } from "../../feature/constants";
 import OrderFormSection, { Form } from "./orderFormSection";
 
-const OrderSetting = ({
+function OrderSetting({
   setSnackBarMessage,
 }: {
   setSnackBarMessage: (snackBarMessage: string) => void;
-}) => {
+}) {
   const {
     control,
     handleSubmit,
@@ -43,7 +43,7 @@ const OrderSetting = ({
     },
   });
 
-  const { saveSetting, saveResultCode } = useSaveCryptocurrencyOrdeSetting();
+  const { saveSetting, resultCodeOfSave } = useSaveCryptocurrencyOrdeSetting();
   const onSubmit = (data: Form) => {
     saveSetting(data);
   };
@@ -62,13 +62,13 @@ const OrderSetting = ({
 
   useEffect(() => {
     const message =
-      saveResultCode.status === "successSavecryptocurrencyOrdeSetting"
+      resultCodeOfSave.code === "successSaveCryptocurrencyOrdeSetting"
         ? "注文の保存が成功しました。"
-        : saveResultCode.status === "errorSavecryptocurrencyOrdeSetting"
+        : resultCodeOfSave.code === "errorSaveCryptocurrencyOrdeSetting"
         ? "注文の保存に失敗しました。"
         : "";
     setSnackBarMessage(message);
-  }, [saveResultCode.status, setSnackBarMessage]);
+  }, [resultCodeOfSave, setSnackBarMessage]);
 
   return (
     <Container maxWidth="sm">
@@ -160,6 +160,6 @@ const OrderSetting = ({
       </form>
     </Container>
   );
-};
+}
 
 export default OrderSetting;

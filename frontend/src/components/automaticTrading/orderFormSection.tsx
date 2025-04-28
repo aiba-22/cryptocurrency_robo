@@ -22,12 +22,12 @@ type Props = {
   labelPrefix: string;
 };
 
-const OrderFormSection = ({
+function OrderFormSection({
   control,
   errors,
   priceField,
   quantityField,
-}: Props) => {
+}: Props) {
   return (
     <>
       <Grid container spacing={2}>
@@ -81,6 +81,6 @@ const OrderFormSection = ({
       </Grid>
     </>
   );
-};
+}
 
 export default OrderFormSection;

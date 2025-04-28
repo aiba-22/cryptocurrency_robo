@@ -1,4 +1,3 @@
-// useSaveCryptocurrencyOrdeSetting.ts
 import { useState } from "react";
 import { useMutation } from "react-query";
 import {
@@ -11,7 +10,7 @@ import {
 } from "../../apiClients/cryptocurrencyOrder";
 
 export const useSaveCryptocurrencyOrdeSetting = () => {
-  const [saveResultCode, setSaveResultCode] = useState({ status: "" });
+  const [resultCodeOfSave, setResultCodeOfSave] = useState({ code: "" });
 
   const {
     mutate: saveSetting,
@@ -37,17 +36,17 @@ export const useSaveCryptocurrencyOrdeSetting = () => {
     },
     {
       onSuccess: () => {
-        setSaveResultCode({ status: "successSavecryptocurrencyOrdeSetting" });
+        setResultCodeOfSave({ code: "successSaveCryptocurrencyOrdeSetting" });
       },
       onError: () => {
-        setSaveResultCode({ status: "errorSavecryptocurrencyOrdeSetting" });
+        setResultCodeOfSave({ code: "errorSaveCryptocurrencyOrdeSetting" });
       },
     }
   );
 
   return {
     saveSetting,
-    saveResultCode,
+    resultCodeOfSave,
     isLoading,
     isError,
     isSuccess,

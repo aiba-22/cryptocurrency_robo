@@ -3,8 +3,8 @@ import { useState } from "react";
 import { fetchPriceAlert } from "../../apiClients/priceAlert";
 import { fetchLine } from "../../apiClients/line";
 
-export const usePriceAlertSettings = () => {
-  const [errorMessage, setErrorMessage] = useState("");
+export const useFindPriceAlertSetting = () => {
+  const [resultCodeOfFind, setResultCodeOfFind] = useState({ code: "" });
 
   const findNotificationSetting = async () => {
     const { id, conditions } = await fetchPriceAlert();
@@ -22,7 +22,7 @@ export const usePriceAlertSettings = () => {
     queryKey: ["findNotificationSetting"],
     queryFn: findNotificationSetting,
     onError: () => {
-      setErrorMessage("システムエラーが発生しました。");
+      setResultCodeOfFind({ code: "systemError" });
     },
   });
 
@@ -30,6 +30,6 @@ export const usePriceAlertSettings = () => {
     isNotificationError: isError,
     isNotificationLoading: isLoading,
     notificationSetting: data,
-    errorMessage,
+    resultCodeOfFind,
   };
 };
