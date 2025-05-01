@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon --exec ts-node src/app.ts",
+    "dev": "nodemon --watch src --ext ts --exec ts-node src/app.ts",
+    "batch": "ts-node src/batch.ts",
     "start": "ts-node src/app.ts",
     "build": "tsc",
     "start:prod": "node dist/app.js",

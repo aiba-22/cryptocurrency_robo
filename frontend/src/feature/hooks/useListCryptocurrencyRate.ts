@@ -12,7 +12,8 @@ export const useListCryptocurrencyRate = () => {
     },
   });
 
-  const cryptocurrencyRate = (cryptocurrency: string) => {
+  const findCryptocurrencyRate = (cryptocurrency: string) => {
+    if (!data) return;
     const cryptocurrencyRate = data.find((cryptocurrencyTradingPrice: any) => {
       return cryptocurrencyTradingPrice.symbol === cryptocurrency;
     });
@@ -24,6 +25,6 @@ export const useListCryptocurrencyRate = () => {
     isVirtualCurrencyLoading: isLoading,
     isVirtualCurrencyError: isError,
     resultCodeOfList,
-    cryptocurrencyRate,
+    findCryptocurrencyRate,
   };
 };

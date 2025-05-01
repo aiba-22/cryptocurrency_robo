@@ -4,7 +4,7 @@ export const fetchPriceAlert = async (): Promise<{
   id: number;
   conditions: {
     isUpperLimit: boolean;
-    cryptocurrencyType: string;
+    symbol: string;
     price: number;
   };
 }> => {
@@ -14,24 +14,24 @@ export const fetchPriceAlert = async (): Promise<{
 
 export const createPriceAlert = async (request: {
   isUpperLimit: boolean;
-  cryptocurrencyType: string;
+  symbol: string;
   price: number;
 }): Promise<void> => {
-  const { isUpperLimit, cryptocurrencyType, price } = request;
+  const { isUpperLimit, symbol, price } = request;
   await axios.post("http://localhost:3001/api/priceAlert", {
-    conditions: { isUpperLimit, cryptocurrencyType, price },
+    conditions: { isUpperLimit, symbol, price },
   });
 };
 
 export const updatePriceAlert = async (request: {
   id: number;
   isUpperLimit: boolean;
-  cryptocurrencyType: string;
+  symbol: string;
   price: number;
 }): Promise<void> => {
-  const { id, isUpperLimit, cryptocurrencyType, price } = request;
+  const { id, isUpperLimit, symbol, price } = request;
   await axios.put("http://localhost:3001/api/priceAlert", {
     id,
-    conditions: { isUpperLimit, cryptocurrencyType, price },
+    conditions: { isUpperLimit, symbol, price },
   });
 };

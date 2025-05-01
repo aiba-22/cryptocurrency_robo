@@ -22,7 +22,7 @@ import SnackBer from "./snackBer";
 
 type Form = {
   id?: number;
-  cryptocurrencyType: string;
+  symbol: string;
   isUpperLimit: boolean;
   price: number;
   lineToken: string;
@@ -38,7 +38,7 @@ function PrieAlertSetting() {
   } = useForm<Form>({
     defaultValues: {
       id: undefined,
-      cryptocurrencyType: "",
+      symbol: "",
       isUpperLimit: undefined,
       price: 0,
       lineToken: "",
@@ -94,7 +94,7 @@ function PrieAlertSetting() {
           <FormControl fullWidth margin="normal">
             <InputLabel id="virtual-currency-type-label">指定通貨</InputLabel>
             <Controller
-              name="cryptocurrencyType"
+              name="symbol"
               control={control}
               rules={{ required: "入力必須項目です" }}
               render={({ field }) => (
@@ -113,10 +113,8 @@ function PrieAlertSetting() {
                 </Select>
               )}
             />
-            {errors.cryptocurrencyType && (
-              <Alert severity="error">
-                {errors.cryptocurrencyType.message}
-              </Alert>
+            {errors.symbol && (
+              <Alert severity="error">{errors.symbol.message}</Alert>
             )}
           </FormControl>
 

@@ -9,7 +9,7 @@ import { useState } from "react";
 type SaveTargetPriceParams = {
   id?: number;
   isUpperLimit: boolean;
-  cryptocurrencyType: string;
+  symbol: string;
   price: number;
   lineToken: string;
   userId: string;
@@ -20,17 +20,16 @@ export const useSavePriceAlertSetting = () => {
 
   const { mutate: saveSettings, isLoading } = useMutation(
     async (params: SaveTargetPriceParams) => {
-      const { id, isUpperLimit, cryptocurrencyType, price, lineToken, userId } =
-        params;
+      const { id, isUpperLimit, symbol, price, lineToken, userId } = params;
 
       if (id) {
         await Promise.all([
-          updatePriceAlert({ id, isUpperLimit, cryptocurrencyType, price }),
+          updatePriceAlert({ id, isUpperLimit, symbol, price }),
           updateLine({ id, lineToken, userId }),
         ]);
       } else {
         await Promise.all([
-          createPriceAlert({ isUpperLimit, cryptocurrencyType, price }),
+          createPriceAlert({ isUpperLimit, symbol, price }),
           createLine({ lineToken, userId }),
         ]);
       }

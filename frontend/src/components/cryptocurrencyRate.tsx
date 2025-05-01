@@ -28,11 +28,11 @@ type VirtualCurrencyRate = {
 function CryptocurrencyRate() {
   const [virtualCurrency, setVirtualCurrency] = useState<VirtualCurrencyRate>();
 
-  const { isVirtualCurrencyLoading, resultCodeOfList, cryptocurrencyRate } =
+  const { isVirtualCurrencyLoading, resultCodeOfList, findCryptocurrencyRate } =
     useListCryptocurrencyRate();
 
   const handleChange = (event: SelectChangeEvent<string>) => {
-    const virtualCurrency = cryptocurrencyRate(event.target.value);
+    const virtualCurrency = findCryptocurrencyRate(event.target.value);
 
     if (virtualCurrency) {
       setVirtualCurrency(virtualCurrency);
@@ -63,7 +63,7 @@ function CryptocurrencyRate() {
           <CircularProgress />
         </Box>
       )}
-      {resultCodeOfList.code && <SnackBer message={resultCodeOfList.code} />}
+      <SnackBer message={resultCodeOfList.code} />
       {virtualCurrency && (
         <Box mt={2}>
           <Typography variant="h6">価格詳細</Typography>

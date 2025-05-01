@@ -20,7 +20,7 @@ export default class PriceAlertService {
   async create(conditions: {
     price: number;
     isUpperLimit: boolean;
-    cryptocurrencyType: string;
+    symbol: string;
   }) {
     const transaction = await this.db.transaction();
     try {
@@ -44,7 +44,7 @@ export default class PriceAlertService {
     conditions: {
       price: number;
       isUpperLimit: boolean;
-      cryptocurrencyType: string;
+      symbol: string;
     };
   }) {
     const transaction = await this.db.transaction();

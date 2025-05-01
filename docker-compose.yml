@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   frontend:
     build: frontend
@@ -6,7 +8,7 @@ services:
     volumes:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
-    command: ["npx", "nodemon", "src/app.js"]
+    command: ["npm", "start"]
     ports:
       - 3000:3000
 
@@ -17,17 +19,7 @@ services:
       - DATABASE_URL=mysql://root:password@db:3306/mydatabase
     volumes:
       - ./api:/usr/src/app
-    command:
-      [
-        "npx",
-        "nodemon",
-        "--watch",
-        "src",
-        "--ext",
-        "ts",
-        "--exec",
-        "node --loader ts-node/esm src/app.ts",
-      ]
+    command: ["npm", "run", "dev"]
     ports:
       - 3001:3001
     depends_on:
@@ -40,7 +32,7 @@ services:
       - DATABASE_URL=mysql://root:password@db:3306/mydatabase
     volumes:
       - ./api:/usr/src/app
-    command: ["node", "--loader", "ts-node/esm", "src/batch.ts"]
+    command: ["npm", "run", "batch"]
 
     depends_on:
       - db

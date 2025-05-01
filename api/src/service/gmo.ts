@@ -2,7 +2,7 @@ import axios from "axios";
 import crypto from "crypto";
 import db from "../db";
 
-export default class gmoService {
+export default class GmoService {
   db;
   constructor() {
     this.db = db;
@@ -63,10 +63,10 @@ export default class gmoService {
     const endPoint = "https://api.coin.z.com/public";
     const path = `/v1/ticker?symbol=${symbol}`;
     const result = await axios.get(endPoint + path);
-    return result.data;
+    return result.data.data[0].last;
   }
 
-  async fetchTradingPriceList() {
+  async fetchTradingRateList() {
     const endPoint = "https://api.coin.z.com/public";
     const path = `/v1/ticker?symbol=`;
     const result = await axios.get(endPoint + path);
