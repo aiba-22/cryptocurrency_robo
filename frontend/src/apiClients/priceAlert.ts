@@ -1,15 +1,18 @@
 import axios from "axios";
 
-export const fetchPriceAlert = async (): Promise<{
+export const findPriceAlert = async (): Promise<{
   id: number;
-  conditions: {
-    isUpperLimit: boolean;
-    symbol: string;
-    price: number;
-  };
+  isUpperLimit: boolean;
+  symbol: string;
+  price: number;
 }> => {
-  const response = await axios.get(`http://localhost:3001/api/priceAlert`);
-  return response.data;
+  const { data } = await axios.get("http://localhost:3001/api/priceAlert");
+  const {
+    id,
+    conditions: { isUpperLimit, symbol, price },
+  } = data;
+
+  return { id, isUpperLimit, symbol, price };
 };
 
 export const createPriceAlert = async (request: {

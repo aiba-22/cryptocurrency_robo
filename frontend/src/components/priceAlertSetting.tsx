@@ -3,20 +3,19 @@ import {
   Container,
   Typography,
   TextField,
-  Button,
   Select,
   MenuItem,
   FormControl,
   InputLabel,
-  Box,
   Alert,
+  Box,
+  Button,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 
 import { useFindPriceAlertSetting } from "../feature/hooks/useFindPriceAlertSetting";
 import { CRYPTOCURRENCY_LIST } from "../feature/constants";
-import { useLineNotification } from "../feature/hooks/useNotificationLine";
 import { useSavePriceAlertSetting } from "../feature/hooks/useSavePriceAlertSetting";
 import SnackBer from "./snackBer";
 
@@ -25,8 +24,6 @@ type Form = {
   symbol: string;
   isUpperLimit: boolean;
   price: number;
-  lineToken: string;
-  userId: string;
 };
 
 function PrieAlertSetting() {
@@ -41,8 +38,6 @@ function PrieAlertSetting() {
       symbol: "",
       isUpperLimit: undefined,
       price: 0,
-      lineToken: "",
-      userId: "",
     },
   });
   const [snackBarMessage, setSnackBarMessage] = useState("");
@@ -50,14 +45,9 @@ function PrieAlertSetting() {
     useFindPriceAlertSetting();
 
   const { resultCodeOfSave, saveSettings } = useSavePriceAlertSetting();
-  const { resultCodeOfNotification, sendNotification } = useLineNotification();
 
   const onSubmit = async (form: Form) => {
     saveSettings(form);
-  };
-
-  const notificationLine = async (form: Form) => {
-    sendNotification(form.price);
   };
 
   useEffect(() => {
@@ -73,16 +63,6 @@ function PrieAlertSetting() {
         : "";
     setSnackBarMessage(message);
   }, [resultCodeOfSave]);
-
-  useEffect(() => {
-    const message =
-      resultCodeOfNotification.code === "successLineNotification"
-        ? "テスト送信に成功しました。"
-        : resultCodeOfNotification.code === "errorLineNotification"
-        ? "テスト送信に失敗しました"
-        : "";
-    setSnackBarMessage(message);
-  }, [resultCodeOfNotification]);
 
   return (
     <Container maxWidth="sm">
@@ -152,9 +132,7 @@ function PrieAlertSetting() {
                   {...field}
                   labelId="is-upper-limit-label"
                   label="通知条件"
-                  onChange={(e: SelectChangeEvent) =>
-                    field.onChange(e.target.value === "true")
-                  }
+                  onChange={(e) => field.onChange(e.target.value === "true")}
                   value={String(field.value)} // "true" または "false"
                 >
                   <MenuItem value="true">価格が上回ったら通知</MenuItem>
@@ -163,54 +141,11 @@ function PrieAlertSetting() {
               )}
             />
           </FormControl>
-
-          <Controller
-            name="lineToken"
-            control={control}
-            rules={{ required: "入力必須項目です" }}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                fullWidth
-                margin="normal"
-                label="LINEトークン"
-                type="password"
-                error={!!errors.lineToken}
-                helperText={errors.lineToken?.message}
-              />
-            )}
-          />
-
-          <Controller
-            name="userId"
-            control={control}
-            rules={{ required: "入力必須項目です" }}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                fullWidth
-                margin="normal"
-                label="LINEユーザーID"
-                type="password"
-                error={!!errors.userId}
-                helperText={errors.userId?.message}
-              />
-            )}
-          />
-
           <Box display="flex" justifyContent="space-between" mt={2}>
             <Button variant="contained" color="primary" type="submit">
-              設定を保存
-            </Button>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={handleSubmit(notificationLine)}
-            >
-              LINEに通知テスト
+              保存
             </Button>
           </Box>
-
           {snackBarMessage && <SnackBer message={snackBarMessage} />}
         </form>
       )}

@@ -1,30 +1,25 @@
 import { useMutation } from "react-query";
-import {
-  createPriceAlert,
-  updatePriceAlert,
-} from "../../apiClients/priceAlert";
+import {} from "../../apiClients/priceAlert";
+import { createLine, updateLine } from "../../apiClients/line";
 import { useState } from "react";
 
-type SaveTargetPriceParams = {
+type SaveLineParams = {
   id?: number;
-  isUpperLimit: boolean;
-  symbol: string;
-  price: number;
+  lineToken: string;
+  userId: string;
 };
 
-export const useSavePriceAlertSetting = () => {
+export const useSaveLineSetting = () => {
   const [resultCodeOfSave, setResultCodeOfSave] = useState({ code: "" });
 
   const { mutate: saveSettings, isLoading } = useMutation(
-    async (params: SaveTargetPriceParams) => {
-      const { id, isUpperLimit, symbol, price } = params;
+    async (params: SaveLineParams) => {
+      const { id, lineToken, userId } = params;
 
       if (id) {
-        await Promise.all([
-          updatePriceAlert({ id, isUpperLimit, symbol, price }),
-        ]);
+        await updateLine({ id, lineToken, userId });
       } else {
-        await Promise.all([createPriceAlert({ isUpperLimit, symbol, price })]);
+        await createLine({ lineToken, userId });
       }
     },
     {

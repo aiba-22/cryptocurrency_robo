@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Container,
   Typography,
@@ -26,18 +26,24 @@ type VirtualCurrencyRate = {
 };
 
 function CryptocurrencyRate() {
+  const [snackBarMessage, setSnackBarMessage] = useState("");
   const [virtualCurrency, setVirtualCurrency] = useState<VirtualCurrencyRate>();
 
   const { isVirtualCurrencyLoading, resultCodeOfList, findCryptocurrencyRate } =
     useListCryptocurrencyRate();
 
-  const handleChange = (event: SelectChangeEvent<string>) => {
+  const handleChange = (event: { target: { value: string } }) => {
     const virtualCurrency = findCryptocurrencyRate(event.target.value);
 
     if (virtualCurrency) {
       setVirtualCurrency(virtualCurrency);
     }
   };
+  useEffect(() => {
+    const message =
+      resultCodeOfList.code === "systemError" ? "システムエラー" : "";
+    setSnackBarMessage(message);
+  }, [resultCodeOfList.code]);
 
   return (
     <Container maxWidth="sm">
@@ -45,12 +51,8 @@ function CryptocurrencyRate() {
         価格情報
       </Typography>
       <FormControl fullWidth margin="normal">
-        <InputLabel id="virtual-currency-select-label">通貨ペア</InputLabel>
-        <Select
-          labelId="virtual-currency-select-label"
-          value={virtualCurrency?.symbol || ""}
-          onChange={handleChange}
-        >
+        <InputLabel>通貨ペア</InputLabel>
+        <Select value={virtualCurrency?.symbol || ""} onChange={handleChange}>
           {CRYPTOCURRENCY_LIST.map((cryptocurrency) => (
             <MenuItem key={cryptocurrency} value={cryptocurrency}>
               {cryptocurrency.toUpperCase()}
@@ -58,23 +60,24 @@ function CryptocurrencyRate() {
           ))}
         </Select>
       </FormControl>
-      {isVirtualCurrencyLoading && (
+      {isVirtualCurrencyLoading ? (
         <Box display="flex" justifyContent="center" alignItems="center">
           <CircularProgress />
         </Box>
+      ) : (
+        virtualCurrency && (
+          <Box mt={2}>
+            <Typography variant="h6">価格詳細</Typography>
+            <Typography>最終価格: {virtualCurrency.last}</Typography>
+            <Typography>買い価格: {virtualCurrency.bid}</Typography>
+            <Typography>売り価格: {virtualCurrency.ask}</Typography>
+            <Typography>高値: {virtualCurrency.high}</Typography>
+            <Typography>安値: {virtualCurrency.low}</Typography>
+            <Typography>取引量: {virtualCurrency.volume}</Typography>
+          </Box>
+        )
       )}
-      <SnackBer message={resultCodeOfList.code} />
-      {virtualCurrency && (
-        <Box mt={2}>
-          <Typography variant="h6">価格詳細</Typography>
-          <Typography>最終価格: {virtualCurrency.last}</Typography>
-          <Typography>買い価格: {virtualCurrency.bid}</Typography>
-          <Typography>売り価格: {virtualCurrency.ask}</Typography>
-          <Typography>高値: {virtualCurrency.high}</Typography>
-          <Typography>安値: {virtualCurrency.low}</Typography>
-          <Typography>取引量: {virtualCurrency.volume}</Typography>
-        </Box>
-      )}
+      <SnackBer message={snackBarMessage} />
     </Container>
   );
 }

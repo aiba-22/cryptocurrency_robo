@@ -59,7 +59,7 @@ export default class CryptocurrencyOrderService {
           target_price: targetPrice,
           quantity,
           order_type: orderType,
-          isEnabled,
+          is_enabled: isEnabled,
           updated_at: new Date(),
         });
       }

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Container,
   Typography,
@@ -10,6 +10,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { useSaveGmoSetting } from "../../feature/hooks/useSaveGmoSetting";
 import { useFindGmoSetting } from "../../feature/hooks/useFindGmoSetting";
+import SnackBer from "../snackBer";
 
 type Form = {
   id: number;
@@ -17,11 +18,9 @@ type Form = {
   secretKey: string;
 };
 
-function GmoSetting({
-  setSnackBarMessage,
-}: {
-  setSnackBarMessage: (snackBarMessage: string) => void;
-}) {
+function GmoSetting() {
+  const [snackBarMessage, setSnackBarMessage] = useState("");
+
   const {
     control,
     handleSubmit,
@@ -62,11 +61,7 @@ function GmoSetting({
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
-        APIキー設定
-      </Typography>
-
-      <Typography variant="body1" gutterBottom>
-        GMOの自動取引用APIキーを入力してください。
+        GMO設定
       </Typography>
 
       {isError && <Alert severity="error">設定の取得に失敗しました。</Alert>}
@@ -114,6 +109,7 @@ function GmoSetting({
           </Box>
         </form>
       )}
+      {snackBarMessage && <SnackBer message={snackBarMessage} />}
     </Container>
   );
 }

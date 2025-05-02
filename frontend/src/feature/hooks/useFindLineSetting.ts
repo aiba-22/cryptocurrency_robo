@@ -1,13 +1,13 @@
 import { useQuery } from "react-query";
 import { useState } from "react";
-import { findPriceAlert } from "../../apiClients/priceAlert";
+import { findLine } from "../../apiClients/line";
 
-export const useFindPriceAlertSetting = () => {
+export const useFindLineSetting = () => {
   const [resultCodeOfFind, setResultCodeOfFind] = useState({ code: "" });
 
   const { data, isError, isLoading } = useQuery({
-    queryKey: ["findNotificationSetting"],
-    queryFn: findPriceAlert,
+    queryKey: ["findLineSetting"],
+    queryFn: findLine,
     onError: () => {
       setResultCodeOfFind({ code: "systemError" });
     },

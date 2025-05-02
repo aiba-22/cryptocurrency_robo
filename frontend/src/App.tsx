@@ -5,6 +5,7 @@ import PrieAlertSetting from "./components/priceAlertSetting";
 import AutomaticTrading from "./components/automaticTrading/automaticTrading";
 
 import { AppBar, Toolbar, Button, Container, Box } from "@mui/material";
+import Setting from "./components/setting/setting";
 
 export default function App() {
   return (
@@ -28,6 +29,9 @@ export default function App() {
           <Button color="inherit" component={RouterLink} to="/automaticTrading">
             自動取引
           </Button>
+          <Button color="inherit" component={RouterLink} to="/setting">
+            設定
+          </Button>
         </Toolbar>
       </AppBar>
 
@@ -40,6 +44,7 @@ export default function App() {
             />
             <Route path="/priceAlertSetting" element={<PrieAlertSetting />} />
             <Route path="/automaticTrading" element={<AutomaticTrading />} />
+            <Route path="/setting" element={<Setting />} />
           </Routes>
         </Box>
       </Container>

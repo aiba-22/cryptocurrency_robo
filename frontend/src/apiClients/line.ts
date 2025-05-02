@@ -1,6 +1,7 @@
 import axios from "axios";
 
-export const fetchLine = async (): Promise<{
+export const findLine = async (): Promise<{
+  id: number;
   lineToken: string;
   userId: string;
 }> => {
@@ -23,11 +24,11 @@ export const updateLine = async (request: {
   await axios.put("http://localhost:3001/api/line", request);
 };
 
-export const sendLineNotification = async (targetPrice: number) => {
+export const sendLineNotification = async (message: string) => {
   const result = await axios.post<string>(
     "http://localhost:3001/api/notification/line",
     {
-      price: targetPrice,
+      message,
     }
   );
   return result.data;
