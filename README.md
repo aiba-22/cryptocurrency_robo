@@ -1,38 +1,36 @@
 # 仮想通貨通知システム
 
-以下機能を実装
+## 機能
 
-- 仮想通貨の現在価格表示機能
-- LINE への通知を行う場合の条件設定
-  - バッチにより 1 時間毎に判定し、条件に合致していれば通知を行う
+- 暗号通貨のレート情報表示
+- 価格アラート
+- 自動取引
 
 ## 使用技術
 
-- **フロントエンド**:
+- **フロントエンド**
 
   - **React**
-  - **JavaScript**と**TypeScript**: 作業時間の関係で TypeScript 化できてないところ有り。
+  - **TypeScript**
 
-- **バックエンド**:
-  - **Node.js/Express**:
-  - **JavaScript**と**TypeScript**: 作業時間の関係で TypeScript 化できてないところ有り。
+- **バックエンド**
+  - **Node.js**
+  - **TypeScript**
 
 ## 開始手順
 
 ### 1. リポジトリをクローン
 
-git clone https://github.com/aiba-22/virtual_currency.git
+git clone https://github.com/aiba-22/crypto_robo.git
 
 ### 2. Docker コンテナのビルドと起動
 
 docker-compose up
-
-上記コマンドにより、フロントエンド、バックエンド、バッチサービス、MySQL データベースがビルドされ、起動されます。
+フロントエンド、バックエンド、バッチ、データベースが立ち上がります。
 
 ### 3. アプリケーションへのアクセス
 
 http://localhost:8000
-でフロント画面にアクセス
 
 ### 価格情報画面
 
