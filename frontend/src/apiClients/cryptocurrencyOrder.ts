@@ -6,7 +6,7 @@ export type Request = {
   quantity: number;
   orderType: number;
   isEnabled: number;
-};
+}[];
 
 export const listCryptocurrencyOrder = async () => {
   const response = await axios.get(
@@ -18,9 +18,7 @@ export const listCryptocurrencyOrder = async () => {
 export const createCryptocurrencyOrder = async (request: Request) => {
   const response = await axios.post(
     "http://localhost:3001/api/cryptocurrencyOrder",
-    {
-      ...request,
-    }
+    request
   );
   return response.data;
 };
@@ -28,9 +26,7 @@ export const createCryptocurrencyOrder = async (request: Request) => {
 export const updateCryptocurrencyOrder = async (request: Request) => {
   const response = await axios.put(
     "http://localhost:3001/api/cryptocurrencyOrder",
-    {
-      ...request,
-    }
+    request
   );
   return response.data;
 };

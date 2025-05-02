@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import GmoService from "../service/gmo";
 import { createGmoSchema, upedateGmoSchema } from "../schema/gmoSchema";
+import { symbol } from "zod";
 
 export const get = async (req: Request, res: Response) => {
   const gmoService = new GmoService();
-  const id = 1; //現状アカウント登録機能がついてないため、１のみを使用する想定
-  const result = await gmoService.find(id);
+  const result = await gmoService.find();
   res.json(result);
 };
 

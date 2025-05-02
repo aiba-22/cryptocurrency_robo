@@ -4,23 +4,13 @@ import CryptocurrencyRate from "./components/cryptocurrencyRate";
 import PrieAlertSetting from "./components/priceAlertSetting";
 import AutomaticTrading from "./components/automaticTrading/automaticTrading";
 
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Container,
-  Box,
-} from "@mui/material";
+import { AppBar, Toolbar, Button, Container, Box } from "@mui/material";
 
 export default function App() {
   return (
     <div className="App">
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            仮想通貨トラッカー
-          </Typography>
           <Button
             color="inherit"
             component={RouterLink}

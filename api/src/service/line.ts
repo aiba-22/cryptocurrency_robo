@@ -7,8 +7,8 @@ export default class LineService {
     this.db = db;
   }
 
-  async find(id: number) {
-    const line = await this.db("line").where({ id }).first();
+  async find() {
+    const line = await this.db("line").where({ id: 1 }).first(); //アカウント機能はつけない想定なのでid固定
 
     return {
       lineToken: line?.channel_access_token || null,
@@ -57,9 +57,8 @@ export default class LineService {
       return "failure";
     }
   }
-
-  async send({ id, price }: { id: number; price: number }) {
-    const line = await this.db("line").where({ id }).first();
+  async sendMessage(message: string) {
+    const line = await this.db("line").where({ id: 1 }).first();
     if (!line) return "systemError";
 
     const channelAccessToken = line.channel_access_token;
@@ -69,7 +68,7 @@ export default class LineService {
       messages: [
         {
           type: "text",
-          text: `現在の価格は${price}円です。`,
+          text: message,
         },
       ],
     };

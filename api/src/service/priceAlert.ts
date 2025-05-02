@@ -6,9 +6,9 @@ export default class PriceAlertService {
     this.db = db;
   }
 
-  async find(id: number) {
+  async find() {
     const priceNotification = await this.db("price_alert")
-      .where({ id })
+      .where({ id: 1 }) //アカウント機能はつけない想定なのでid固定
       .first();
 
     return {

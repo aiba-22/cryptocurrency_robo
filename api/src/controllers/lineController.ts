@@ -3,9 +3,8 @@ import LineService from "../service/line";
 import { createLineSchema, upedateLineSchema } from "../schema/lineSchema";
 
 export const get = async (req: Request, res: Response) => {
-  const id = 1; //現状アカウント登録機能がついてないため、１のみを使用する想定
   const lineService = new LineService();
-  const result = await lineService.find(id);
+  const result = await lineService.find();
   res.json(result);
 };
 

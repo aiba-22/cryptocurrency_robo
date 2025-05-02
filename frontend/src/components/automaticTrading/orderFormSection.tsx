@@ -16,7 +16,7 @@ export type Form = {
 type Props = {
   control: Control<Form>;
   errors: FieldErrors<Form>;
-  enabledField: "isBuyEnabled " | "isSellEnabled ";
+  enabledField: "isBuyEnabled" | "isSellEnabled";
   priceField: "buyPrice" | "sellPrice";
   quantityField: "buyQuantity" | "sellQuantity";
   labelPrefix: string;
@@ -39,13 +39,9 @@ function OrderFormSection({
             render={({ field }) => (
               <TextField
                 {...field}
-                value={field.value ?? ""}
-                onChange={(e) =>
-                  field.onChange(
-                    e.target.value === "" ? undefined : +e.target.value
-                  )
-                }
-                label="購入価格"
+                value={field.value}
+                onChange={(e) => field.onChange(parseInt(e.target.value))}
+                label="価格"
                 type="number"
                 fullWidth
                 error={!!errors.buyPrice}
@@ -63,13 +59,9 @@ function OrderFormSection({
             render={({ field }) => (
               <TextField
                 {...field}
-                value={field.value ?? ""}
-                onChange={(e) =>
-                  field.onChange(
-                    e.target.value === "" ? undefined : +e.target.value
-                  )
-                }
-                label="購入数量"
+                value={field.value}
+                onChange={(e) => field.onChange(parseInt(e.target.value))}
+                label="数量"
                 type="number"
                 fullWidth
                 error={!!errors.buyQuantity}

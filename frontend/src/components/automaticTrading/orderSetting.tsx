@@ -117,7 +117,7 @@ function OrderSetting({
         {isBuyEnabled && (
           <OrderFormSection
             control={control}
-            enabledField="isBuyEnabled "
+            enabledField="isBuyEnabled"
             priceField="buyPrice"
             quantityField="buyQuantity"
             labelPrefix="買い"
@@ -145,7 +145,7 @@ function OrderSetting({
         {isSellEnabled && (
           <OrderFormSection
             control={control}
-            enabledField="isSellEnabled "
+            enabledField="isSellEnabled"
             priceField="sellPrice"
             quantityField="sellQuantity"
             labelPrefix="売り"

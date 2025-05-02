@@ -8,8 +8,8 @@ export default class GmoService {
     this.db = db;
   }
 
-  async find(id: number) {
-    const gmo = await this.db("gmo").where({ id }).first();
+  async find() {
+    const gmo = await this.db("gmo").where({ id: 1 }).first(); //アカウント機能はつけない想定なのでid固定
     return {
       id: gmo?.id || null,
       apiKey: gmo?.api_key || null,
@@ -21,7 +21,7 @@ export default class GmoService {
     const transaction = await this.db.transaction();
     try {
       await transaction("gmo").insert({
-        id: 1, //現状アカウント登録機能がついてないため、１のみを使用する想定
+        id: 1, //アカウント機能はつけない想定なので固定
         api_key: apiKey,
         secret_key: secretKey,
         created_at: new Date(),
@@ -66,7 +66,18 @@ export default class GmoService {
     return result.data.data[0].last;
   }
 
-  async fetchTradingRateList() {
+  async fetchTradingRateList(): Promise<
+    {
+      ask: string;
+      bid: string;
+      high: string;
+      last: string;
+      low: string;
+      symbol: string;
+      timestamp: string;
+      volume: string;
+    }[]
+  > {
     const endPoint = "https://api.coin.z.com/public";
     const path = `/v1/ticker?symbol=`;
     const result = await axios.get(endPoint + path);
@@ -101,5 +112,54 @@ export default class GmoService {
 
     const response = await axios.get(endPoint + path, options);
     return response.data;
+  }
+
+  async order({
+    symbol,
+    side,
+    price,
+    size,
+  }: {
+    symbol: string;
+    side: string;
+    price: number;
+    size: number;
+  }) {
+    console.log(symbol, side, price, size);
+    const { id, api_key, secret_key } = await this.db("gmo")
+      .where({ id: 1 }) //アカウント機能はつけない想定なのでid固定
+      .first();
+    if (!id) return;
+
+    const timestamp = Date.now().toString();
+    const method = "POST";
+    const endPoint = "https://api.coin.z.com/private";
+    const path = "/v1/order";
+    const reqBody = JSON.stringify({
+      symbol,
+      side,
+      executionType: "LIMIT",
+      timeInForce: "FAS",
+      price,
+      size,
+    });
+    const text = timestamp + method + path + reqBody;
+    const sign = crypto
+      .createHmac("sha256", secret_key)
+      .update(text)
+      .digest("hex");
+    const options = {
+      headers: {
+        "API-KEY": api_key,
+        "API-TIMESTAMP": timestamp,
+        "API-SIGN": sign,
+      },
+    };
+    try {
+      const result = await axios.post(endPoint + path, reqBody, options);
+      return result.data;
+    } catch (error) {
+      return "failure";
+    }
   }
 }

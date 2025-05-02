@@ -19,19 +19,11 @@ export const useSaveCryptocurrencyOrdeSetting = () => {
     isSuccess,
   } = useMutation(
     async (cryptocurrencyOrdeSetting: Form) => {
-      const [buyOrder, sellOrder] = convertFormToRequest(
-        cryptocurrencyOrdeSetting
-      );
-      if (buyOrder.id) {
-        await updateCryptocurrencyOrder(buyOrder);
+      const orderList = convertFormToRequest(cryptocurrencyOrdeSetting);
+      if (orderList[0].id) {
+        await updateCryptocurrencyOrder(orderList);
       } else {
-        await createCryptocurrencyOrder(buyOrder);
-      }
-
-      if (sellOrder.id) {
-        await updateCryptocurrencyOrder(sellOrder);
-      } else {
-        await createCryptocurrencyOrder(sellOrder);
+        await createCryptocurrencyOrder(orderList);
       }
     },
     {

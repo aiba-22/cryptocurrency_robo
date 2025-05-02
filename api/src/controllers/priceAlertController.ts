@@ -7,8 +7,7 @@ import {
 
 export const get = async (req: Request, res: Response) => {
   const priceAlertService = new PriceAlertService();
-  const id = 1; //現状複数登録機能がついてないため、一つ目のIDを指定する
-  const result = await priceAlertService.find(id);
+  const result = await priceAlertService.find();
   res.json(result);
 };
 
