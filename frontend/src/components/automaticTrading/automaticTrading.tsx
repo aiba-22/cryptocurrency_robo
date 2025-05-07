@@ -118,7 +118,7 @@ function AutomaticTrading() {
                       color="primary"
                     />
                   }
-                  label="買い注文を設定する"
+                  label="買い注文を設定"
                 />
               )}
             />
@@ -146,7 +146,7 @@ function AutomaticTrading() {
                       color="primary"
                     />
                   }
-                  label="売り注文を設定する"
+                  label="売り注文を設定"
                 />
               )}
             />

@@ -154,8 +154,8 @@ function PriceAlertSetting() {
                   onChange={(e) => field.onChange(e.target.value === "true")}
                   value={String(field.value)}
                 >
-                  <MenuItem value="true">価格が上回ったら通知</MenuItem>
-                  <MenuItem value="false">価格が下回ったら通知</MenuItem>
+                  <MenuItem value="true">価格が上回ったら</MenuItem>
+                  <MenuItem value="false">価格が下回ったら</MenuItem>
                 </Select>
               )}
             />

@@ -1,6 +1,5 @@
-import { Container, Typography, Box } from "@mui/material";
+import { Container, Typography, Box, Paper, Grid } from "@mui/material";
 import { useListCryptocurrencyRate } from "../feature/hooks/useListCryptocurrencyRate";
-import { symbol } from "zod";
 import SnackBer from "./snackBer";
 import { useEffect, useState } from "react";
 import Loading from "./loading";
@@ -13,27 +12,50 @@ function Rate({ symbol }: { symbol: string }) {
 
   useEffect(() => {
     if (isRateListError) setSnackBarMessage("システムエラー");
-  }, [isRateListError, setSnackBarMessage]);
+  }, [isRateListError]);
 
+  const formatNumber = (num: number | undefined) =>
+    num?.toLocaleString("ja-JP", { maximumFractionDigits: 2 }) ?? "-";
+
+  const rateEntries = rate
+    ? [
+        { label: "最終価格", value: rate.last },
+        { label: "買い価格", value: rate.bid },
+        { label: "売り価格", value: rate.ask },
+        { label: "高値", value: rate.high },
+        { label: "安値", value: rate.low },
+        { label: "取引量", value: rate.volume },
+      ]
+    : [];
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
-        現在のレート情報
+        レート情報（{symbol}）
       </Typography>
 
       {isRateListLoading ? (
         <Loading />
+      ) : rate ? (
+        <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+          <Grid container spacing={1}>
+            {rateEntries.map(({ label, value }) => (
+              <>
+                <Grid item xs={6}>
+                  <Typography color="textSecondary">{label}</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography>{formatNumber(value)}</Typography>
+                </Grid>
+              </>
+            ))}
+          </Grid>
+        </Paper>
       ) : (
-        <Box mt={2}>
-          <Typography variant="h6">価格詳細</Typography>
-          <Typography>最終価格: {rate?.last}</Typography>
-          <Typography>買い価格: {rate?.bid}</Typography>
-          <Typography>売り価格: {rate?.ask}</Typography>
-          <Typography>高値: {rate?.high}</Typography>
-          <Typography>安値: {rate?.low}</Typography>
-          <Typography>取引量: {rate?.volume}</Typography>
-        </Box>
+        <Typography color="textSecondary">
+          データが取得できませんでした。
+        </Typography>
       )}
+
       {snackBarMessage && <SnackBer message={snackBarMessage} />}
     </Container>
   );
