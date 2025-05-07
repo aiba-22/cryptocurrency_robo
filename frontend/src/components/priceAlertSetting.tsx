@@ -18,21 +18,24 @@ import { useFindPriceAlertSetting } from "../feature/hooks/useFindPriceAlertSett
 import { CRYPTOCURRENCY_LIST } from "../feature/constants";
 import { useSavePriceAlertSetting } from "../feature/hooks/useSavePriceAlertSetting";
 import SnackBer from "./snackBer";
+import { useListCryptocurrencyRate } from "../feature/hooks/useListCryptocurrencyRate";
+import Rate, { Cryptocurrencyrate } from "./rate";
 
-type Form = {
+type PriceAlertSettingForm = {
   id?: number;
   symbol: string;
   isUpperLimit: boolean;
   price: number;
 };
 
-function PrieAlertSetting() {
+function PriceAlertSetting() {
   const {
     control,
     handleSubmit,
+    watch,
     reset,
     formState: { errors },
-  } = useForm<Form>({
+  } = useForm<PriceAlertSettingForm>({
     defaultValues: {
       id: undefined,
       symbol: "",
@@ -43,10 +46,19 @@ function PrieAlertSetting() {
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const { notificationSetting, isNotificationLoading } =
     useFindPriceAlertSetting();
-
   const { resultCodeOfSave, saveSettings } = useSavePriceAlertSetting();
+  const { cryptocurrencyRateList } = useListCryptocurrencyRate();
 
-  const onSubmit = async (form: Form) => {
+  const symbol = watch("symbol");
+
+  const handleSymbolChange = (
+    e: SelectChangeEvent,
+    onChange: (value: string) => void
+  ) => {
+    onChange(e.target.value);
+  };
+
+  const onSubmit = (form: PriceAlertSettingForm) => {
     saveSettings(form);
   };
 
@@ -82,7 +94,7 @@ function PrieAlertSetting() {
                   {...field}
                   labelId="virtual-currency-type-label"
                   onChange={(e: SelectChangeEvent) =>
-                    field.onChange(e.target.value)
+                    handleSymbolChange(e, field.onChange)
                   }
                 >
                   {CRYPTOCURRENCY_LIST.map((cryptocurrency) => (
@@ -149,8 +161,11 @@ function PrieAlertSetting() {
           {snackBarMessage && <SnackBer message={snackBarMessage} />}
         </form>
       )}
+      {cryptocurrencyRateList?.get(symbol) && (
+        <Rate cryptocurrency={cryptocurrencyRateList.get(symbol)!} />
+      )}
     </Container>
   );
 }
 
-export default PrieAlertSetting;
+export default PriceAlertSetting;

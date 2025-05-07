@@ -1,30 +1,48 @@
 import { useQuery } from "react-query";
-import { listCryptocurrencyRateRate } from "../../apiClients/gmo";
+import {
+  CryptocurrencyRateList,
+  listCryptocurrencyRate,
+} from "../../apiClients/gmo";
 import { useState } from "react";
+
+export type CryptocurrencyRateMap = {
+  last: number;
+  bid: number;
+  ask: number;
+  high: number;
+  low: number;
+  volume: number;
+  timestamp: Date;
+};
 
 export const useListCryptocurrencyRate = () => {
   const [resultCodeOfList, setResultCodeOfList] = useState({ code: "" });
   const { data, isLoading, isError } = useQuery({
     queryKey: ["useCryptocurrencyRate"],
-    queryFn: () => listCryptocurrencyRateRate(),
+    queryFn: () => listCryptocurrencyRate(),
+    select: (data) => {
+      const cryptocurrencyRateMap = data.reduce(
+        (
+          map: Map<string, CryptocurrencyRateMap>,
+          cryptocurrencyRate: CryptocurrencyRateList
+        ) => {
+          const { symbol, ...rate } = cryptocurrencyRate;
+          map.set(symbol, rate);
+          return map;
+        },
+        new Map()
+      );
+      return cryptocurrencyRateMap;
+    },
     onError: () => {
       setResultCodeOfList({ code: "systemErro" });
     },
   });
 
-  const findCryptocurrencyRate = (cryptocurrency: string) => {
-    if (!data) return;
-    const cryptocurrencyRate = data.find((cryptocurrencyTradingPrice: any) => {
-      return cryptocurrencyTradingPrice.symbol === cryptocurrency;
-    });
-    return cryptocurrencyRate;
-  };
-
   return {
-    cryptocurrencyradingPriceList: data,
+    cryptocurrencyRateList: data,
     isVirtualCurrencyLoading: isLoading,
     isVirtualCurrencyError: isError,
     resultCodeOfList,
-    findCryptocurrencyRate,
   };
 };

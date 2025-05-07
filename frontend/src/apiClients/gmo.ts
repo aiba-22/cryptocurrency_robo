@@ -5,6 +5,17 @@ export type Request = {
   secretKey: string;
 };
 
+export type CryptocurrencyRateList = {
+  symbol: string;
+  last: number;
+  bid: number;
+  ask: number;
+  high: number;
+  low: number;
+  volume: number;
+  timestamp: Date;
+};
+
 export const findGmo = async () => {
   const response = await axios.get(`http://localhost:3001/api/gmo`);
   return response.data;
@@ -24,7 +35,9 @@ export const updateGmo = async (request: Request) => {
   return response.data;
 };
 
-export const listCryptocurrencyRateRate = async () => {
+export const listCryptocurrencyRate = async (): Promise<
+  CryptocurrencyRateList[]
+> => {
   const response = await axios.get(
     `http://localhost:3001/api/virtualCurrencyRateList`
   );

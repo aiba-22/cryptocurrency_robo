@@ -18,6 +18,8 @@ import { convertToFormData } from "../../feature/automaticTrading/convertToFormD
 import { CRYPTOCURRENCY_LIST, CRYPTOCURRENCYS } from "../../feature/constants";
 import OrderForm, { Form } from "./orderForm";
 import SnackBer from "../snackBer";
+import { useListCryptocurrencyRate } from "../../feature/hooks/useListCryptocurrencyRate";
+import Rate from "../rate";
 
 function AutomaticTrading() {
   const [snackBarMessage, setSnackBarMessage] = useState("");
@@ -42,15 +44,17 @@ function AutomaticTrading() {
     },
   });
 
-  const { saveSetting, resultCodeOfSave } = useSaveCryptocurrencyOrdeSetting();
+  const { saveSetting, resultSave } = useSaveCryptocurrencyOrdeSetting();
+  const { cryptocurrencyOrderList } = useListCryptocurrencyOrder();
+  const { cryptocurrencyRateList } = useListCryptocurrencyRate();
+
   const onSubmit = (data: Form) => {
     saveSetting(data);
   };
 
   const isBuyEnabled = watch("isBuyEnabled");
   const isSellEnabled = watch("isSellEnabled");
-
-  const { cryptocurrencyOrderList } = useListCryptocurrencyOrder();
+  const symbol = watch("symbol");
 
   useEffect(() => {
     if (cryptocurrencyOrderList) {
@@ -61,13 +65,13 @@ function AutomaticTrading() {
 
   useEffect(() => {
     const message =
-      resultCodeOfSave.code === "successSaveCryptocurrencyOrdeSetting"
+      resultSave.code === "successSaveCryptocurrencyOrdeSetting"
         ? "注文の保存が成功しました。"
-        : resultCodeOfSave.code === "errorSaveCryptocurrencyOrdeSetting"
+        : resultSave.code === "errorSaveCryptocurrencyOrdeSetting"
         ? "注文の保存に失敗しました。"
         : "";
     setSnackBarMessage(message);
-  }, [resultCodeOfSave, setSnackBarMessage]);
+  }, [resultSave, setSnackBarMessage]);
 
   return (
     <Container maxWidth="sm">
@@ -158,6 +162,10 @@ function AutomaticTrading() {
         </Box>
       </form>
       {snackBarMessage && <SnackBer message={snackBarMessage} />}
+
+      {cryptocurrencyRateList?.get(symbol) && (
+        <Rate cryptocurrency={cryptocurrencyRateList.get(symbol)!} />
+      )}
     </Container>
   );
 }
