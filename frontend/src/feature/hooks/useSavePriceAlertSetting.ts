@@ -3,7 +3,6 @@ import {
   createPriceAlert,
   updatePriceAlert,
 } from "../../apiClients/priceAlert";
-import { useState } from "react";
 
 type SaveTargetPriceParams = {
   id?: number;
@@ -13,33 +12,20 @@ type SaveTargetPriceParams = {
 };
 
 export const useSavePriceAlertSetting = () => {
-  const [resultCodeOfSave, setResultCodeOfSave] = useState({ code: "" });
-
-  const { mutate: saveSettings, isLoading } = useMutation(
+  const { mutate, status } = useMutation(
     async (params: SaveTargetPriceParams) => {
       const { id, isUpperLimit, symbol, price } = params;
 
       if (id) {
-        await Promise.all([
-          updatePriceAlert({ id, isUpperLimit, symbol, price }),
-        ]);
+        await updatePriceAlert({ id, isUpperLimit, symbol, price });
       } else {
-        await Promise.all([createPriceAlert({ isUpperLimit, symbol, price })]);
+        await createPriceAlert({ isUpperLimit, symbol, price });
       }
-    },
-    {
-      onSuccess: () => {
-        setResultCodeOfSave({ code: "successSaveTargetPriceSetting" });
-      },
-      onError: () => {
-        setResultCodeOfSave({ code: "errorSaveTargetPriceSetting" });
-      },
     }
   );
 
   return {
-    saveSettings,
-    resultCodeOfSave,
-    isLoading,
+    saveAlertSetting: mutate,
+    alertSettingSaveStatus: status,
   };
 };

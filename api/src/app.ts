@@ -67,7 +67,7 @@ app.use(
     res: express.Response,
     next: express.NextFunction
   ) => {
-    res.status(500).json({ message: "システムエラー" });
+    res.status(500).json({ message: "systemError" });
   }
 );
 

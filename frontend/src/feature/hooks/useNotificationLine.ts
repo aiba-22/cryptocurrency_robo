@@ -3,31 +3,19 @@ import { useState } from "react";
 import { useMutation } from "react-query";
 
 export const useLineNotification = () => {
-  const [resultCodeOfNotification, setResultCodeOfNotification] = useState({
-    code: "",
-  });
-
-  const {
-    mutate: sendNotification,
-    isLoading,
-    isError,
-  } = useMutation(sendLineNotification, {
+  const [notificationSendStatus, setNotificationSendStatus] =
+    useState<string>();
+  const { mutate } = useMutation(sendLineNotification, {
     onSuccess: (data) => {
-      if (data === "success") {
-        setResultCodeOfNotification({ code: "successLineNotification" });
-      } else {
-        setResultCodeOfNotification({ code: "errorLineNotification" });
-      }
+      setNotificationSendStatus(data);
     },
     onError: () => {
-      setResultCodeOfNotification({ code: "errorLineNotification" });
+      setNotificationSendStatus("systemError");
     },
   });
 
   return {
-    sendNotification,
-    resultCodeOfNotification,
-    isLoading,
-    isError,
+    sendNotification: mutate,
+    notificationSendStatus,
   };
 };

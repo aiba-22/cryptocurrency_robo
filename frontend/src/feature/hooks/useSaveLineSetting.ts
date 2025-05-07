@@ -5,36 +5,23 @@ import { useState } from "react";
 
 type SaveLineParams = {
   id?: number;
-  lineToken: string;
+  channelAccessToken: string;
   userId: string;
 };
 
 export const useSaveLineSetting = () => {
-  const [resultCodeOfSave, setResultCodeOfSave] = useState({ code: "" });
+  const { mutate, status } = useMutation(async (params: SaveLineParams) => {
+    const { id, channelAccessToken, userId } = params;
 
-  const { mutate: saveSettings, isLoading } = useMutation(
-    async (params: SaveLineParams) => {
-      const { id, lineToken, userId } = params;
-
-      if (id) {
-        await updateLine({ id, lineToken, userId });
-      } else {
-        await createLine({ lineToken, userId });
-      }
-    },
-    {
-      onSuccess: () => {
-        setResultCodeOfSave({ code: "successSaveTargetPriceSetting" });
-      },
-      onError: () => {
-        setResultCodeOfSave({ code: "errorSaveTargetPriceSetting" });
-      },
+    if (id) {
+      await updateLine({ id, channelAccessToken, userId });
+    } else {
+      await createLine({ channelAccessToken, userId });
     }
-  );
+  });
 
   return {
-    saveSettings,
-    resultCodeOfSave,
-    isLoading,
+    saveLineSettings: mutate,
+    lineSettingSaveStatus: status,
   };
 };

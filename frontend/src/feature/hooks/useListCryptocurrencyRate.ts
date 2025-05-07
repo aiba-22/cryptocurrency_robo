@@ -3,7 +3,6 @@ import {
   CryptocurrencyRateList,
   listCryptocurrencyRate,
 } from "../../apiClients/gmo";
-import { useState } from "react";
 
 export type CryptocurrencyRateMap = {
   last: number;
@@ -16,10 +15,9 @@ export type CryptocurrencyRateMap = {
 };
 
 export const useListCryptocurrencyRate = () => {
-  const [resultCodeOfList, setResultCodeOfList] = useState({ code: "" });
-  const { data, isLoading, isError } = useQuery({
+  const { data, isError, isLoading } = useQuery({
     queryKey: ["useCryptocurrencyRate"],
-    queryFn: () => listCryptocurrencyRate(),
+    queryFn: listCryptocurrencyRate,
     select: (data) => {
       const cryptocurrencyRateMap = data.reduce(
         (
@@ -34,15 +32,11 @@ export const useListCryptocurrencyRate = () => {
       );
       return cryptocurrencyRateMap;
     },
-    onError: () => {
-      setResultCodeOfList({ code: "systemErro" });
-    },
   });
 
   return {
-    cryptocurrencyRateList: data,
-    isVirtualCurrencyLoading: isLoading,
-    isVirtualCurrencyError: isError,
-    resultCodeOfList,
+    cryptocurrencyRateMap: data,
+    isRateListError: isError,
+    isRateListLoading: isLoading,
   };
 };

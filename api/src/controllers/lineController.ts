@@ -10,17 +10,17 @@ export const get = async (req: Request, res: Response) => {
 
 export const create = async (req: Request, res: Response) => {
   const lineService = new LineService();
-  const { lineToken, userId } = createLineSchema.parse(req.body);
-  const result = await lineService.create({ lineToken, userId });
+  const { channelAccessToken, userId } = createLineSchema.parse(req.body);
+  const result = await lineService.create({ channelAccessToken, userId });
   res.status(200).json(result);
 };
 
 export const update = async (req: Request, res: Response) => {
   const lineService = new LineService();
-  const { id, lineToken, userId } = upedateLineSchema.parse(req.body);
+  const { id, channelAccessToken, userId } = upedateLineSchema.parse(req.body);
   const result = await lineService.update({
     id,
-    lineToken,
+    channelAccessToken,
     userId,
   });
   res.status(200).json(result);

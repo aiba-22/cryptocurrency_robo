@@ -4,13 +4,13 @@ export const getLineSchema = z.object({
   id: z.number(),
 });
 export const createLineSchema = z.object({
-  lineToken: z.string(),
+  channelAccessToken: z.string(),
   userId: z.string(),
 });
 
 export const upedateLineSchema = z.object({
   id: z.number(),
-  lineToken: z.string(),
+  channelAccessToken: z.string(),
   userId: z.string(),
 });
 

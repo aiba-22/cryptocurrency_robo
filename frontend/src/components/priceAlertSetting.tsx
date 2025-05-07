@@ -19,7 +19,8 @@ import { CRYPTOCURRENCY_LIST } from "../feature/constants";
 import { useSavePriceAlertSetting } from "../feature/hooks/useSavePriceAlertSetting";
 import SnackBer from "./snackBer";
 import { useListCryptocurrencyRate } from "../feature/hooks/useListCryptocurrencyRate";
-import Rate, { Cryptocurrencyrate } from "./rate";
+import Rate from "./rate";
+import Loading from "./loading";
 
 type PriceAlertSettingForm = {
   id?: number;
@@ -44,10 +45,11 @@ function PriceAlertSetting() {
     },
   });
   const [snackBarMessage, setSnackBarMessage] = useState("");
-  const { notificationSetting, isNotificationLoading } =
+
+  const { alertSetting, isAlertSettingFindError, isAlertSettingFindLoading } =
     useFindPriceAlertSetting();
-  const { resultCodeOfSave, saveSettings } = useSavePriceAlertSetting();
-  const { cryptocurrencyRateList } = useListCryptocurrencyRate();
+  const { saveAlertSetting, alertSettingSaveStatus } =
+    useSavePriceAlertSetting();
 
   const symbol = watch("symbol");
 
@@ -59,29 +61,34 @@ function PriceAlertSetting() {
   };
 
   const onSubmit = (form: PriceAlertSettingForm) => {
-    saveSettings(form);
+    saveAlertSetting(form);
   };
 
   useEffect(() => {
-    if (notificationSetting) reset(notificationSetting);
-  }, [notificationSetting, reset]);
+    if (alertSetting) reset(alertSetting);
+  }, [alertSetting, reset]);
 
   useEffect(() => {
-    const message =
-      resultCodeOfSave.code === "successSaveTargetPriceSetting"
-        ? "保存に成功しました。"
-        : resultCodeOfSave.code === "errorSaveTargetPriceSetting"
-        ? "保存に失敗しました"
-        : "";
-    setSnackBarMessage(message);
-  }, [resultCodeOfSave]);
+    if (alertSettingSaveStatus === "success") {
+      setSnackBarMessage("保存に成功しました。");
+    }
+    if (alertSettingSaveStatus === "error") {
+      setSnackBarMessage("保存に失敗しました。");
+    }
+  }, [alertSettingSaveStatus, setSnackBarMessage]);
+
+  useEffect(() => {
+    if (isAlertSettingFindError) setSnackBarMessage("システムエラー");
+  }, [isAlertSettingFindError, setSnackBarMessage]);
 
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
         価格アラート
       </Typography>
-      {!isNotificationLoading && (
+      {isAlertSettingFindLoading ? (
+        <Loading />
+      ) : (
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl fullWidth margin="normal">
             <InputLabel id="virtual-currency-type-label">指定通貨</InputLabel>
@@ -145,7 +152,7 @@ function PriceAlertSetting() {
                   labelId="is-upper-limit-label"
                   label="通知条件"
                   onChange={(e) => field.onChange(e.target.value === "true")}
-                  value={String(field.value)} // "true" または "false"
+                  value={String(field.value)}
                 >
                   <MenuItem value="true">価格が上回ったら通知</MenuItem>
                   <MenuItem value="false">価格が下回ったら通知</MenuItem>
@@ -153,17 +160,16 @@ function PriceAlertSetting() {
               )}
             />
           </FormControl>
-          <Box display="flex" justifyContent="space-between" mt={2}>
+          <Box display="flex" justifyContent="flex-end" mt={2}>
             <Button variant="contained" color="primary" type="submit">
               保存
             </Button>
           </Box>
-          {snackBarMessage && <SnackBer message={snackBarMessage} />}
         </form>
       )}
-      {cryptocurrencyRateList?.get(symbol) && (
-        <Rate cryptocurrency={cryptocurrencyRateList.get(symbol)!} />
-      )}
+
+      {snackBarMessage && <SnackBer message={snackBarMessage} />}
+      <Rate symbol={symbol} />
     </Container>
   );
 }

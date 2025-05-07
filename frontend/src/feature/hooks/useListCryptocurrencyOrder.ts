@@ -1,7 +1,6 @@
 // hooks/useListCryptocurrencyOrder.ts
 import { useQuery } from "react-query";
 import { listCryptocurrencyOrder } from "../../apiClients/cryptocurrencyOrder";
-import { useState } from "react";
 
 export type Request = {
   id?: number;
@@ -13,15 +12,14 @@ export type Request = {
 };
 
 export const useListCryptocurrencyOrder = () => {
-  const [resultCodeOfList, setResultCodeOfList] = useState({ code: "" });
-
-  const { data } = useQuery<Request[]>({
+  const { data, isError, isLoading } = useQuery<Request[]>({
     queryKey: ["useListCryptocurrencyOrder"],
     queryFn: listCryptocurrencyOrder,
-    onError: () => {
-      setResultCodeOfList({ code: "systemError" });
-    },
   });
 
-  return { cryptocurrencyOrderList: data, resultCodeOfList };
+  return {
+    cryptocurrencyOrderList: data,
+    isOrderListError: isError,
+    isOrderListLoading: isLoading,
+  };
 };

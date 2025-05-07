@@ -5,6 +5,7 @@ import SnackBer from "../snackBer";
 import { useFindLineSetting } from "../../feature/hooks/useFindLineSetting";
 import { useLineNotification } from "../../feature/hooks/useNotificationLine";
 import { useSaveLineSetting } from "../../feature/hooks/useSaveLineSetting";
+import Loading from "../loading";
 
 function LineSetting() {
   const [snackBarMessage, setSnackBarMessage] = useState("");
@@ -16,59 +17,77 @@ function LineSetting() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      lineToken: "",
+      channelAccessToken: "",
       userId: "",
     },
   });
 
-  const { notificationSetting, isNotificationLoading } = useFindLineSetting();
-  const { resultCodeOfNotification, sendNotification } = useLineNotification();
-  const { resultCodeOfSave, saveSettings } = useSaveLineSetting();
+  const { lineSetting, isLineSettingFindError, isLineSettingFindLoading } =
+    useFindLineSetting();
+  const { sendNotification, notificationSendStatus } = useLineNotification();
+  const { saveLineSettings, lineSettingSaveStatus } = useSaveLineSetting();
 
   const onSubmit = async (form: {
     id?: number;
-    lineToken: string;
+    channelAccessToken: string;
     userId: string;
   }) => {
-    saveSettings(form);
+    saveLineSettings(form);
   };
-  const notificationLine = async () => {
-    sendNotification("テスト通知");
+  const notificationLine = () => {
+    const message = "通知テスト";
+    sendNotification(message);
   };
 
   useEffect(() => {
-    if (notificationSetting) reset(notificationSetting);
-  }, [notificationSetting, reset]);
+    if (lineSetting) reset(lineSetting);
+  }, [lineSetting, reset]);
 
   useEffect(() => {
-    const message =
-      resultCodeOfSave.code === "successSaveTargetPriceSetting"
-        ? "保存に成功しました。"
-        : resultCodeOfSave.code === "errorSaveTargetPriceSetting"
-        ? "保存に失敗しました"
-        : "";
-    setSnackBarMessage(message);
-  }, [resultCodeOfSave]);
+    if (lineSettingSaveStatus === "success") {
+      setSnackBarMessage("保存に成功しました。");
+    }
+    if (lineSettingSaveStatus === "error") {
+      setSnackBarMessage("保存に失敗しました。");
+    }
+  }, [lineSettingSaveStatus, setSnackBarMessage]);
 
   useEffect(() => {
-    const message =
-      resultCodeOfNotification.code === "successLineNotification"
-        ? "テスト送信に成功しました。"
-        : resultCodeOfNotification.code === "errorLineNotification"
-        ? "テスト送信に失敗しました"
-        : "";
-    setSnackBarMessage(message);
-  }, [resultCodeOfNotification]);
+    if (!notificationSendStatus) return;
+
+    switch (notificationSendStatus) {
+      case "success":
+        setSnackBarMessage("テスト送信に成功しました。");
+        break;
+      case "tooManyRequests":
+        setSnackBarMessage(
+          "メッセージの送信可能件数（月200件）を超過しました。"
+        );
+        break;
+      case "badRequest":
+        setSnackBarMessage("トークン情報が誤っています。");
+        break;
+      case "systemError":
+        setSnackBarMessage("システムエラー");
+        break;
+    }
+  }, [notificationSendStatus, setSnackBarMessage]);
+
+  useEffect(() => {
+    if (isLineSettingFindError) setSnackBarMessage("システムエラー");
+  }, [isLineSettingFindError, setSnackBarMessage]);
 
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
         LINE設定
       </Typography>
-      {!isNotificationLoading && (
+      {isLineSettingFindLoading ? (
+        <Loading />
+      ) : (
         <form onSubmit={handleSubmit(onSubmit)}>
           <Controller
-            name="lineToken"
+            name="channelAccessToken"
             control={control}
             rules={{ required: "入力必須項目です" }}
             render={({ field }) => (
@@ -78,8 +97,8 @@ function LineSetting() {
                 margin="normal"
                 label="LINEトークン"
                 type="password"
-                error={!!errors.lineToken}
-                helperText={errors.lineToken?.message}
+                error={!!errors.channelAccessToken}
+                helperText={errors.channelAccessToken?.message}
               />
             )}
           />
@@ -112,10 +131,9 @@ function LineSetting() {
               通知テスト
             </Button>
           </Box>
-
-          {snackBarMessage && <SnackBer message={snackBarMessage} />}
         </form>
       )}
+      {snackBarMessage && <SnackBer message={snackBarMessage} />}
     </Container>
   );
 }

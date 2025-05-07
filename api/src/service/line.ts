@@ -11,16 +11,23 @@ export default class LineService {
     const line = await this.db("line").where({ id: 1 }).first(); //アカウント機能はつけない想定なのでid固定
 
     return {
-      lineToken: line?.channel_access_token || null,
-      userId: line?.user_id || null,
+      id: line.id,
+      channelAccessToken: line.channel_access_token,
+      userId: line.user_id,
     };
   }
 
-  async create({ lineToken, userId }: { lineToken: string; userId: string }) {
+  async create({
+    channelAccessToken,
+    userId,
+  }: {
+    channelAccessToken: string;
+    userId: string;
+  }) {
     const transaction = await this.db.transaction();
     try {
       await transaction("line").insert({
-        channel_access_token: lineToken,
+        channel_access_token: channelAccessToken,
         user_id: userId,
         created_at: new Date(),
       });
@@ -35,17 +42,17 @@ export default class LineService {
 
   async update({
     id,
-    lineToken,
+    channelAccessToken,
     userId,
   }: {
     id: number;
-    lineToken: string;
+    channelAccessToken: string;
     userId: string;
   }) {
     const transaction = await this.db.transaction();
     try {
       await transaction("line").where({ id }).update({
-        channel_access_token: lineToken,
+        channel_access_token: channelAccessToken,
         user_id: userId,
         updated_at: new Date(),
       });
@@ -81,8 +88,16 @@ export default class LineService {
         },
       });
       return "success";
-    } catch (error) {
-      return "failure";
+    } catch (error: any) {
+      if (error?.response) {
+        const status = error.response.status;
+        if (status === 429) {
+          return "tooManyRequests";
+        } else if (status === 400) {
+          return "badRequest";
+        }
+      }
+      return "systemError";
     }
   }
 }

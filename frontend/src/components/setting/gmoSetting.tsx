@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import {
   Container,
   Typography,
@@ -11,6 +11,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useSaveGmoSetting } from "../../feature/hooks/useSaveGmoSetting";
 import { useFindGmoSetting } from "../../feature/hooks/useFindGmoSetting";
 import SnackBer from "../snackBer";
+import Loading from "../loading";
 
 type Form = {
   id: number;
@@ -34,39 +35,41 @@ function GmoSetting() {
     },
   });
 
-  const { data, isError, isLoading } = useFindGmoSetting();
-  const { resultCodeOfSave, saveSetting } = useSaveGmoSetting();
+  const { gmoSetting, isGmoSettingFindError, isGmoSettingFindLoading } =
+    useFindGmoSetting();
+  const { saveGmoSetting, gmoSettingSaveStatus } = useSaveGmoSetting();
 
   useEffect(() => {
-    if (data) {
-      reset(data);
+    if (gmoSetting) {
+      reset(gmoSetting);
     }
-  }, [data, reset]);
+  }, [gmoSetting, reset]);
 
   const onSubmit = async (formData: Form) => {
-    saveSetting(formData);
+    saveGmoSetting(formData);
   };
 
   useEffect(() => {
-    const message =
-      resultCodeOfSave.code === "successSaveGmoSetting"
-        ? "APIキーの保存に成功しました。"
-        : resultCodeOfSave.code === "errorSaveGmoSetting"
-        ? "APIキーの保存に失敗しました"
-        : "";
+    if (gmoSettingSaveStatus === "success") {
+      setSnackBarMessage("APIキーの保存に成功しました。");
+    }
+    if (gmoSettingSaveStatus === "error") {
+      setSnackBarMessage("APIキーの保存に失敗しました");
+    }
+  }, [gmoSettingSaveStatus, setSnackBarMessage]);
 
-    setSnackBarMessage(message);
-  }, [resultCodeOfSave, setSnackBarMessage]);
+  useEffect(() => {
+    if (isGmoSettingFindError) setSnackBarMessage("システムエラー");
+  }, [isGmoSettingFindError, setSnackBarMessage]);
 
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
         GMO設定
       </Typography>
-
-      {isError && <Alert severity="error">設定の取得に失敗しました。</Alert>}
-
-      {!isLoading && (
+      {isGmoSettingFindLoading ? (
+        <Loading />
+      ) : (
         <form onSubmit={handleSubmit(onSubmit)}>
           <Controller
             name="apiKey"

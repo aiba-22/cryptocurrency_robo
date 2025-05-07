@@ -3,36 +3,16 @@ import { useMutation } from "react-query";
 import { updateGmo, createGmo, Request } from "../../apiClients/gmo";
 
 export const useSaveGmoSetting = () => {
-  const [resultCodeOfSave, setResultCodeOfSave] = useState({ code: "" });
-
-  const {
-    mutate: saveSetting,
-    isLoading,
-    isError,
-    isSuccess,
-  } = useMutation(
-    async (gmoSetting: Request) => {
-      if (gmoSetting.id) {
-        return await updateGmo(gmoSetting);
-      } else {
-        return await createGmo(gmoSetting);
-      }
-    },
-    {
-      onSuccess: () => {
-        setResultCodeOfSave({ code: "successSaveGmoSetting" });
-      },
-      onError: () => {
-        setResultCodeOfSave({ code: "errorSaveGmoSetting" });
-      },
+  const { mutate, status } = useMutation(async (gmoSetting: Request) => {
+    if (gmoSetting.id) {
+      return await updateGmo(gmoSetting);
+    } else {
+      return await createGmo(gmoSetting);
     }
-  );
+  });
 
   return {
-    saveSetting,
-    resultCodeOfSave,
-    isLoading,
-    isError,
-    isSuccess,
+    saveGmoSetting: mutate,
+    gmoSettingSaveStatus: status,
   };
 };
