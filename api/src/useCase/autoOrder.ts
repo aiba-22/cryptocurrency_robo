@@ -8,12 +8,8 @@ export const autoOrder = async () => {
   const orderList = await cryptocurrencyOrderService.list();
   if (orderList.length === 0) return;
 
-  const buyOrder = orderList.find(
-    (order) => order.orderType === ORDER_TYPE.BUY
-  );
-  const sellOrder = orderList.find(
-    (order) => order.orderType === ORDER_TYPE.SELL
-  );
+  const buyOrder = orderList.find((order) => order.type === ORDER_TYPE.BUY);
+  const sellOrder = orderList.find((order) => order.type === ORDER_TYPE.SELL);
 
   const gmoService = new GmoService();
   const tradingRateList = await gmoService.fetchTradingRateList();
@@ -23,13 +19,13 @@ export const autoOrder = async () => {
     tradingRateList,
     symbol: buyOrder?.symbol,
     targetPrice: buyOrder?.targetPrice,
-    orderType: buyOrder?.orderType,
+    type: buyOrder?.type,
   });
 
   const isTargetSellPrice = checkPrice({
     tradingRateList,
     symbol: sellOrder?.symbol,
-    orderType: sellOrder?.orderType,
+    type: sellOrder?.type,
     targetPrice: sellOrder?.targetPrice,
   });
 
@@ -68,7 +64,7 @@ const checkPrice = ({
   tradingRateList,
   symbol,
   targetPrice,
-  orderType,
+  type,
 }: {
   tradingRateList: {
     ask: string;
@@ -82,7 +78,7 @@ const checkPrice = ({
   }[];
   symbol: string;
   targetPrice: number;
-  orderType: number;
+  type: number;
 }) => {
   const rate = tradingRateList.find(
     (tradingRate) => tradingRate.symbol === symbol
@@ -90,7 +86,7 @@ const checkPrice = ({
 
   if (!rate) return false;
 
-  if (orderType === ORDER_TYPE.BUY) {
+  if (type === ORDER_TYPE.BUY) {
     return parseInt(rate.last) <= targetPrice;
   } else {
     return parseInt(rate.last) >= targetPrice;

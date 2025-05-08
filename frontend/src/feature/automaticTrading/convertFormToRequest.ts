@@ -1,44 +1,39 @@
+import { ORDER_TYPE } from "./constants";
+
 export type Form = {
   symbol: string;
-  buyId?: number;
-  buyPrice: number;
-  buyQuantity: number;
-  isBuyEnabled: boolean;
-  sellId?: number;
-  sellPrice: number;
-  sellQuantity: number;
-  isSellEnabled: boolean;
+  buy: {
+    id?: number;
+    price: number;
+    quantity: number;
+    isEnabled: number;
+  };
+  sell: {
+    id?: number;
+    price: number;
+    quantity: number;
+    isEnabled: number;
+  };
 };
-
 export const convertFormToRequest = (form: Form) => {
-  const {
-    symbol,
-    buyId,
-    buyPrice,
-    buyQuantity,
-    sellId,
-    sellPrice,
-    sellQuantity,
-    isBuyEnabled,
-    isSellEnabled,
-  } = form;
+  const { symbol, buy, sell } = form;
 
   return [
     {
-      id: buyId,
+      id: buy.id,
       symbol,
-      targetPrice: buyPrice,
-      quantity: buyQuantity,
-      orderType: 0,
-      isEnabled: isBuyEnabled ? 1 : 0,
+      targetPrice: buy.price,
+      quantity: buy.quantity,
+      type: ORDER_TYPE.BUY,
+      isEnabled: buy.isEnabled,
     },
     {
-      id: sellId,
+      id: sell.id,
       symbol,
-      targetPrice: sellPrice,
-      quantity: sellQuantity,
-      orderType: 1,
-      isEnabled: isSellEnabled ? 1 : 0,
+      targetPrice: sell.price,
+      quantity: sell.quantity,
+      type: ORDER_TYPE.SELL,
+      isEnabled: sell.isEnabled,
     },
   ];
 };

@@ -1,14 +1,17 @@
 import axios from "axios";
 import db from "../db";
+import { LineRepository } from "../db/repositories/lineRepository";
+import { ID } from "./constants";
 
 export default class LineService {
-  db;
+  private repository: LineRepository;
   constructor() {
-    this.db = db;
+    this.repository = new LineRepository();
   }
 
   async find() {
-    const line = await this.db("line").where({ id: 1 }).first(); //アカウント機能はつけない想定なのでid固定
+    const line = await this.repository.findById(ID);
+    if (!line) return undefined;
 
     return {
       id: line.id,
@@ -24,14 +27,9 @@ export default class LineService {
     channelAccessToken: string;
     userId: string;
   }) {
-    const transaction = await this.db.transaction();
+    const transaction = await db.transaction();
     try {
-      await transaction("line").insert({
-        channel_access_token: channelAccessToken,
-        user_id: userId,
-        created_at: new Date(),
-      });
-
+      await this.repository.create(channelAccessToken, userId);
       await transaction.commit();
       return "success";
     } catch (error) {
@@ -49,14 +47,9 @@ export default class LineService {
     channelAccessToken: string;
     userId: string;
   }) {
-    const transaction = await this.db.transaction();
+    const transaction = await db.transaction();
     try {
-      await transaction("line").where({ id }).update({
-        channel_access_token: channelAccessToken,
-        user_id: userId,
-        updated_at: new Date(),
-      });
-
+      await this.repository.update(id, channelAccessToken, userId);
       await transaction.commit();
       return "success";
     } catch (error) {
@@ -64,39 +57,30 @@ export default class LineService {
       return "failure";
     }
   }
+
   async sendMessage(message: string) {
-    const line = await this.db("line").where({ id: 1 }).first();
+    const line = await this.repository.findById(ID);
     if (!line) return "systemError";
 
-    const channelAccessToken = line.channel_access_token;
-    const userId = line.user_id;
+    const { channel_access_token, user_id } = line;
+
     const body = {
-      to: userId,
-      messages: [
-        {
-          type: "text",
-          text: message,
-        },
-      ],
+      to: user_id,
+      messages: [{ type: "text", text: message }],
     };
 
     try {
       await axios.post("https://api.line.me/v2/bot/message/push", body, {
         headers: {
-          Authorization: `Bearer ${channelAccessToken}`,
+          Authorization: `Bearer ${channel_access_token}`,
           "Content-Type": "application/json",
         },
       });
       return "success";
     } catch (error: any) {
-      if (error?.response) {
-        const status = error.response.status;
-        if (status === 429) {
-          return "tooManyRequests";
-        } else if (status === 400) {
-          return "badRequest";
-        }
-      }
+      const status = error?.response?.status;
+      if (status === 429) return "tooManyRequests";
+      if (status === 400) return "badRequest";
       return "systemError";
     }
   }

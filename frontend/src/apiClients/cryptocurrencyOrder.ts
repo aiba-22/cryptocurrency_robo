@@ -1,14 +1,23 @@
 import axios from "axios";
+import { number } from "zod";
 export type Request = {
   id?: number;
   symbol: string;
   targetPrice: number;
   quantity: number;
-  orderType: number;
+  type: number;
   isEnabled: number;
-}[];
+};
 
-export const listCryptocurrencyOrder = async () => {
+type Response = {
+  id: number;
+  symbol: string;
+  targetPrice: number;
+  quantity: number;
+  type: number;
+  isEnabled: number;
+};
+export const listCryptocurrencyOrder = async (): Promise<Response[]> => {
   const response = await axios.get(
     `http://localhost:3001/api/cryptocurrencyOrder/list`
   );

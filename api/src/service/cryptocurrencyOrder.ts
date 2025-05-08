@@ -6,7 +6,7 @@ type Conditions = {
   symbol: string;
   targetPrice: number;
   quantity: number;
-  orderType: number;
+  type: number;
   isEnabled: number;
 };
 
@@ -24,7 +24,7 @@ export default class CryptocurrencyOrderService {
         symbol: cryptocurrencyOrder.symbol,
         targetPrice: cryptocurrencyOrder.target_price,
         quantity: cryptocurrencyOrder.quantity,
-        orderType: cryptocurrencyOrder.order_type,
+        type: cryptocurrencyOrder.type,
         isEnabled: cryptocurrencyOrder.is_enabled,
       };
     });
@@ -36,29 +36,24 @@ export default class CryptocurrencyOrderService {
       symbol: string;
       targetPrice: number;
       quantity: number;
-      orderType: number;
+      type: number;
       isEnabled: number;
     }[]
   ) {
-    const validationResult = this.validateConditions(conditions);
-    if (!validationResult) {
-      return "failure";
-    }
-
     const transaction = await this.db.transaction();
     try {
       for (const {
         symbol,
         targetPrice,
         quantity,
-        orderType,
+        type,
         isEnabled,
       } of conditions) {
         await transaction("cryptocurrency_order").insert({
           symbol,
           target_price: targetPrice,
           quantity,
-          order_type: orderType,
+          type: type,
           is_enabled: isEnabled,
           updated_at: new Date(),
         });
@@ -78,15 +73,10 @@ export default class CryptocurrencyOrderService {
       symbol: string;
       targetPrice: number;
       quantity: number;
-      orderType: number;
+      type: number;
       isEnabled: number;
     }[]
   ) {
-    const validationResult = this.validateConditions(conditions);
-    if (!validationResult) {
-      return "failure";
-    }
-
     const transaction = await this.db.transaction();
     try {
       for (const {
@@ -94,14 +84,14 @@ export default class CryptocurrencyOrderService {
         symbol,
         targetPrice,
         quantity,
-        orderType,
+        type,
         isEnabled,
       } of conditions) {
         await transaction("cryptocurrency_order").where({ id }).update({
           symbol,
           target_price: targetPrice,
           quantity: quantity,
-          order_type: orderType,
+          type: type,
           is_enabled: isEnabled,
           updated_at: new Date(),
         });
@@ -112,12 +102,5 @@ export default class CryptocurrencyOrderService {
       await transaction.rollback();
       return "failure";
     }
-  }
-  private validateConditions(conditions: Conditions[]): boolean {
-    const sell = conditions.find((c) => c.orderType === 0);
-    const buy = conditions.find((c) => c.orderType === 1);
-
-    if (!sell || !buy) return false;
-    return sell.targetPrice <= buy.targetPrice;
   }
 }

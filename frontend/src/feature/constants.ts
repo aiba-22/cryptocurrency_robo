@@ -1,4 +1,4 @@
-export const CRYPTOCURRENCYS = {
+export const CRYPTOCURRENCY = {
   BTC: "BTC",
   ETH: "ETH",
   BCH: "BCH",
@@ -25,4 +25,4 @@ export const CRYPTOCURRENCYS = {
   NAC: "NAC",
 };
 
-export const CRYPTOCURRENCY_LIST = Object.values(CRYPTOCURRENCYS);
+export const CRYPTOCURRENCY_LIST = Object.values(CRYPTOCURRENCY);

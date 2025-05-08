@@ -5,7 +5,7 @@ export const createCryptocurrencyOrderSchema = z.array(
     symbol: z.string(),
     targetPrice: z.number().positive(),
     quantity: z.number().positive(),
-    orderType: z.number(),
+    type: z.number(),
     isEnabled: z.number(),
   })
 );
@@ -16,7 +16,7 @@ export const updateCryptocurrencyOrderSchema = z.array(
     symbol: z.string(),
     targetPrice: z.number().positive(),
     quantity: z.number().positive(),
-    orderType: z.number(),
+    type: z.number(),
     isEnabled: z.number(),
   })
 );

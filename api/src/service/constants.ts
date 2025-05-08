@@ -1,4 +1,8 @@
-export const CRYPTOCURRENCYS = {
+// アカウント機能をつけない想定なのでlineやgmo等、各種テーブルから取得するIDは1に固定している。
+// userテーブルを作成したらそこに紐づく取得方法にする
+export const ID = 1;
+
+export const CRYPTOCURRENCY = {
   BTC: "BTC",
   ETH: "ETH",
   ETC: "ETC",
@@ -21,7 +25,7 @@ export const CRYPTOCURRENCYS = {
   BC: "BC",
 };
 
-export const CRYPTOCURRENCY_LIST = Object.values(CRYPTOCURRENCYS);
+export const CRYPTOCURRENCY_LIST = Object.values(CRYPTOCURRENCY);
 
 export const ORDER_TYPE = { BUY: 0, SELL: 1 } as const;
 export const ORDER_SIDE = {

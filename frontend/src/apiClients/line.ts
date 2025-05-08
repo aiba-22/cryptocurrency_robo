@@ -1,10 +1,13 @@
 import axios from "axios";
 
-export const findLine = async (): Promise<{
-  id: number;
-  channelAccessToken: string;
-  userId: string;
-}> => {
+export const findLine = async (): Promise<
+  | {
+      id: number;
+      channelAccessToken: string;
+      userId: string;
+    }
+  | undefined
+> => {
   const response = await axios.get(`http://localhost:3001/api/line`);
   return response.data;
 };

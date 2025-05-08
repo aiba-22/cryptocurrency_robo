@@ -15,10 +15,9 @@ import { SelectChangeEvent } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 
 import { useFindPriceAlertSetting } from "../feature/hooks/useFindPriceAlertSetting";
-import { CRYPTOCURRENCY_LIST } from "../feature/constants";
+import { CRYPTOCURRENCY, CRYPTOCURRENCY_LIST } from "../feature/constants";
 import { useSavePriceAlertSetting } from "../feature/hooks/useSavePriceAlertSetting";
 import SnackBer from "./snackBer";
-import { useListCryptocurrencyRate } from "../feature/hooks/useListCryptocurrencyRate";
 import Rate from "./rate";
 import Loading from "./loading";
 
@@ -39,7 +38,7 @@ function PriceAlertSetting() {
   } = useForm<PriceAlertSettingForm>({
     defaultValues: {
       id: undefined,
-      symbol: "",
+      symbol: CRYPTOCURRENCY.BTC,
       isUpperLimit: undefined,
       price: 0,
     },
@@ -78,7 +77,10 @@ function PriceAlertSetting() {
   }, [alertSettingSaveStatus, setSnackBarMessage]);
 
   useEffect(() => {
-    if (isAlertSettingFindError) setSnackBarMessage("システムエラー");
+    if (isAlertSettingFindError) {
+      setSnackBarMessage("システムエラー");
+      return;
+    }
   }, [isAlertSettingFindError, setSnackBarMessage]);
 
   return (

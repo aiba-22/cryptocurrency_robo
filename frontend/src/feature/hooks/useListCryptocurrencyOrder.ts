@@ -1,4 +1,3 @@
-// hooks/useListCryptocurrencyOrder.ts
 import { useQuery } from "react-query";
 import { listCryptocurrencyOrder } from "../../apiClients/cryptocurrencyOrder";
 
@@ -7,7 +6,7 @@ export type Request = {
   symbol: string;
   targetPrice: number;
   quantity: number;
-  orderType: number;
+  type: number;
   isEnabled: number;
 };
 

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import LineService from "../service/line";
-import { createLineSchema, upedateLineSchema } from "../schema/lineSchema";
+import { createLineSchema, updateLineSchema } from "../schema/lineSchema";
 
 export const get = async (req: Request, res: Response) => {
   const lineService = new LineService();
@@ -17,7 +17,7 @@ export const create = async (req: Request, res: Response) => {
 
 export const update = async (req: Request, res: Response) => {
   const lineService = new LineService();
-  const { id, channelAccessToken, userId } = upedateLineSchema.parse(req.body);
+  const { id, channelAccessToken, userId } = updateLineSchema.parse(req.body);
   const result = await lineService.update({
     id,
     channelAccessToken,

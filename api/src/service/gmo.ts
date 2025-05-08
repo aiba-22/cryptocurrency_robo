@@ -1,30 +1,27 @@
 import axios from "axios";
 import crypto from "crypto";
 import db from "../db";
+import { GmoRepository } from "../db/repositories/gmoRepository";
+import { ID } from "./constants";
 
 export default class GmoService {
-  db;
-  constructor() {
-    this.db = db;
-  }
-
   async find() {
-    const gmo = await this.db("gmo").where({ id: 1 }).first(); //アカウント機能はつけない想定なのでid固定
+    const gmoRepository = new GmoRepository();
+    const gmo = await gmoRepository.findById(ID);
     return {
-      id: gmo?.id || null,
-      apiKey: gmo?.api_key || null,
-      secretKey: gmo?.secret_key || null,
+      id: gmo?.id,
+      apiKey: gmo?.api_key,
+      secretKey: gmo?.secret_key,
     };
   }
 
   async create({ apiKey, secretKey }: { apiKey: string; secretKey: string }) {
-    const transaction = await this.db.transaction();
+    const transaction = await db.transaction();
+    const gmoRepository = new GmoRepository(transaction);
     try {
-      await transaction("gmo").insert({
-        id: 1, //アカウント機能はつけない想定なので固定
-        api_key: apiKey,
-        secret_key: secretKey,
-        created_at: new Date(),
+      await gmoRepository.create({
+        apiKey,
+        secretKey,
       });
       await transaction.commit();
       return "success";
@@ -43,14 +40,10 @@ export default class GmoService {
     apiKey: string;
     secretKey: string;
   }) {
-    const transaction = await this.db.transaction();
+    const transaction = await db.transaction();
+    const gmoRepository = new GmoRepository(transaction);
     try {
-      await transaction("gmo").where({ id }).update({
-        api_key: apiKey,
-        secret_key: secretKey,
-        updated_at: new Date(),
-      });
-
+      await gmoRepository.update({ id, apiKey, secretKey });
       await transaction.commit();
       return "success";
     } catch (error) {
@@ -125,10 +118,8 @@ export default class GmoService {
     price: number;
     size: number;
   }) {
-    console.log(symbol, side, price, size);
-    const { id, api_key, secret_key } = await this.db("gmo")
-      .where({ id: 1 }) //アカウント機能はつけない想定なのでid固定
-      .first();
+    const gmoRepository = new GmoRepository();
+    const { id, api_key, secret_key } = await gmoRepository.findById(ID);
     if (!id) return;
 
     const timestamp = Date.now().toString();

@@ -8,7 +8,7 @@ export const createLineSchema = z.object({
   userId: z.string(),
 });
 
-export const upedateLineSchema = z.object({
+export const updateLineSchema = z.object({
   id: z.number(),
   channelAccessToken: z.string(),
   userId: z.string(),

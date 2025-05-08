@@ -1,4 +1,6 @@
 import db from "../db";
+import { PriceAlertRepository } from "../db/repositories/priceAlertRepository";
+import { ID } from "./constants";
 
 export default class PriceAlertService {
   db;
@@ -7,13 +9,14 @@ export default class PriceAlertService {
   }
 
   async find() {
-    const priceNotification = await this.db("price_alert")
-      .where({ id: 1 }) //アカウント機能はつけない想定なのでid固定
-      .first();
+    const priceAlertRepository = new PriceAlertRepository(db);
+
+    const priceAlert = await priceAlertRepository.findById(ID);
+    if (!priceAlert) return;
 
     return {
-      id: priceNotification?.id || null,
-      conditions: priceNotification?.conditions || null,
+      id: priceAlert.id,
+      conditions: priceAlert.conditions,
     };
   }
 
@@ -22,12 +25,10 @@ export default class PriceAlertService {
     isUpperLimit: boolean;
     symbol: string;
   }) {
-    const transaction = await this.db.transaction();
+    const transaction = await db.transaction();
+    const priceAlertRepository = new PriceAlertRepository(transaction);
     try {
-      await transaction("price_alert").insert({
-        conditions,
-        created_at: new Date(),
-      });
+      await priceAlertRepository.create(conditions);
       await transaction.commit();
       return "success";
     } catch (error) {
@@ -47,14 +48,10 @@ export default class PriceAlertService {
       symbol: string;
     };
   }) {
-    const transaction = await this.db.transaction();
+    const transaction = await db.transaction();
+    const priceAlertRepository = new PriceAlertRepository(transaction);
     try {
-      await transaction("price_alert")
-        .where({ id })
-        .update({
-          conditions: JSON.stringify(conditions),
-          updated_at: new Date(),
-        });
+      await priceAlertRepository.update({ id, conditions });
       await transaction.commit();
       return "success";
     } catch (error) {

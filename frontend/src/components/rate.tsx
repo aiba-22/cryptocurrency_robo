@@ -1,4 +1,4 @@
-import { Container, Typography, Box, Paper, Grid } from "@mui/material";
+import { Container, Typography, Paper, Grid } from "@mui/material";
 import { useListCryptocurrencyRate } from "../feature/hooks/useListCryptocurrencyRate";
 import SnackBer from "./snackBer";
 import { useEffect, useState } from "react";
@@ -14,9 +14,6 @@ function Rate({ symbol }: { symbol: string }) {
     if (isRateListError) setSnackBarMessage("システムエラー");
   }, [isRateListError]);
 
-  const formatNumber = (num: number | undefined) =>
-    num?.toLocaleString("ja-JP", { maximumFractionDigits: 2 }) ?? "-";
-
   const rateEntries = rate
     ? [
         { label: "最終価格", value: rate.last },
@@ -27,6 +24,7 @@ function Rate({ symbol }: { symbol: string }) {
         { label: "取引量", value: rate.volume },
       ]
     : [];
+
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
@@ -44,7 +42,7 @@ function Rate({ symbol }: { symbol: string }) {
                   <Typography color="textSecondary">{label}</Typography>
                 </Grid>
                 <Grid item xs={6}>
-                  <Typography>{formatNumber(value)}</Typography>
+                  <Typography>{value}</Typography>
                 </Grid>
               </>
             ))}

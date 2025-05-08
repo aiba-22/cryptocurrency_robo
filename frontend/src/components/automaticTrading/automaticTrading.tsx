@@ -11,11 +11,11 @@ import {
   Switch,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
-import { useSaveCryptocurrencyOrdeSetting } from "../../feature/hooks/useSaveCryptocurrencyOrdeSetting";
+import { useSaveCryptocurrencyOrderSetting } from "../../feature/hooks/useSaveCryptocurrencyOrderSetting";
 import { useListCryptocurrencyOrder } from "../../feature/hooks/useListCryptocurrencyOrder";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { convertToFormData } from "../../feature/automaticTrading/convertToFormData";
-import { CRYPTOCURRENCY_LIST, CRYPTOCURRENCYS } from "../../feature/constants";
+import { CRYPTOCURRENCY_LIST, CRYPTOCURRENCY } from "../../feature/constants";
 import OrderForm, { Form } from "./orderForm";
 import SnackBer from "../snackBer";
 import Rate from "../rate";
@@ -32,20 +32,24 @@ function AutomaticTrading() {
     formState: { errors },
   } = useForm<Form>({
     defaultValues: {
-      symbol: CRYPTOCURRENCYS.BTC,
-      buyPrice: undefined,
-      buyQuantity: undefined,
-      sellPrice: undefined,
-      sellQuantity: undefined,
-      isBuyEnabled: false,
-      isSellEnabled: false,
-      buyId: undefined,
-      sellId: undefined,
+      symbol: CRYPTOCURRENCY.BTC,
+      buy: {
+        id: undefined,
+        price: 0,
+        quantity: 0,
+        isEnabled: 0,
+      },
+      sell: {
+        id: undefined,
+        price: 0,
+        quantity: 0,
+        isEnabled: 0,
+      },
     },
   });
 
   const { saveOrderSetting, orderSettingSaveStatus } =
-    useSaveCryptocurrencyOrdeSetting();
+    useSaveCryptocurrencyOrderSetting();
   const { cryptocurrencyOrderList, isOrderListError, isOrderListLoading } =
     useListCryptocurrencyOrder();
 
@@ -53,14 +57,14 @@ function AutomaticTrading() {
     saveOrderSetting(data);
   };
 
-  const isBuyEnabled = watch("isBuyEnabled");
-  const isSellEnabled = watch("isSellEnabled");
+  const isBuyEnabled = watch("buy.isEnabled");
+  const isSellEnabled = watch("sell.isEnabled");
   const symbol = watch("symbol");
 
   useEffect(() => {
     if (cryptocurrencyOrderList) {
-      const cryptocurrencyOrder = convertToFormData(cryptocurrencyOrderList);
-      reset(cryptocurrencyOrder);
+      const order = convertToFormData(cryptocurrencyOrderList);
+      reset(order);
     }
   }, [cryptocurrencyOrderList, reset]);
 
@@ -107,14 +111,14 @@ function AutomaticTrading() {
           </Box>
           <Box mb={2}>
             <Controller
-              name="isBuyEnabled"
+              name="buy.isEnabled"
               control={control}
               render={({ field }) => (
                 <FormControlLabel
                   control={
                     <Switch
-                      checked={field.value}
-                      onChange={(e) => field.onChange(e.target.checked)}
+                      checked={field.value === 1}
+                      onChange={(e) => field.onChange(e.target.checked ? 1 : 0)}
                       color="primary"
                     />
                   }
@@ -123,26 +127,25 @@ function AutomaticTrading() {
               )}
             />
           </Box>
-          {isBuyEnabled && (
+          {isBuyEnabled === 1 && (
             <OrderForm
               control={control}
-              enabledField="isBuyEnabled"
-              priceField="buyPrice"
-              quantityField="buyQuantity"
+              priceField="buy.price"
+              quantityField="buy.quantity"
               labelPrefix="買い"
               errors={errors}
             />
           )}
           <Box mb={2} mt={4}>
             <Controller
-              name="isSellEnabled"
+              name="sell.isEnabled"
               control={control}
               render={({ field }) => (
                 <FormControlLabel
                   control={
                     <Switch
-                      checked={field.value}
-                      onChange={(e) => field.onChange(e.target.checked)}
+                      checked={field.value === 1}
+                      onChange={(e) => field.onChange(e.target.checked ? 1 : 0)}
                       color="primary"
                     />
                   }
@@ -151,12 +154,11 @@ function AutomaticTrading() {
               )}
             />
           </Box>
-          {isSellEnabled && (
+          {isSellEnabled === 1 && (
             <OrderForm
               control={control}
-              enabledField="isSellEnabled"
-              priceField="sellPrice"
-              quantityField="sellQuantity"
+              priceField="sell.price"
+              quantityField="sell.quantity"
               labelPrefix="売り"
               errors={errors}
             />

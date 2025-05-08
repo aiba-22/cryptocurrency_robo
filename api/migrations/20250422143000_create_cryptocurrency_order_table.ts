@@ -4,7 +4,7 @@ export function up(knex: any) {
     table.string("symbol", 20).notNullable();
     table.integer("target_price").notNullable();
     table.integer("quantity").notNullable();
-    table.tinyint("order_type").notNullable();
+    table.tinyint("type").notNullable();
     table.tinyint("is_enabled").notNullable();
     table.timestamps(true, true);
   });

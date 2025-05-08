@@ -5,7 +5,7 @@ export const createGmoSchema = z.object({
   secretKey: z.string(),
 });
 
-export const upedateGmoSchema = z.object({
+export const updateGmoSchema = z.object({
   id: z.number(),
   apiKey: z.string(),
   secretKey: z.string(),

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useMutation } from "react-query";
 import {
   convertFormToRequest,
@@ -9,15 +8,17 @@ import {
   updateCryptocurrencyOrder,
 } from "../../apiClients/cryptocurrencyOrder";
 
-export const useSaveCryptocurrencyOrdeSetting = () => {
+export const useSaveCryptocurrencyOrderSetting = () => {
   const { mutate, status } = useMutation(
-    async (cryptocurrencyOrdeSetting: Form) => {
-      const orderList = convertFormToRequest(cryptocurrencyOrdeSetting);
-      if (orderList[0].id) {
-        await updateCryptocurrencyOrder(orderList);
-      } else {
-        await createCryptocurrencyOrder(orderList);
-      }
+    async (cryptocurrencyOrderSetting: Form) => {
+      const orderList = convertFormToRequest(cryptocurrencyOrderSetting);
+      orderList.forEach(async (order) => {
+        if (order.id) {
+          await updateCryptocurrencyOrder(order);
+        } else {
+          await createCryptocurrencyOrder(order);
+        }
+      });
     }
   );
 

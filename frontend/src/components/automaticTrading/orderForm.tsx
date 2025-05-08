@@ -1,28 +1,31 @@
+import { DoDisturbSharp } from "@mui/icons-material";
 import { Grid, TextField } from "@mui/material";
 import { Controller, Control, FieldErrors } from "react-hook-form";
 
 export type Form = {
   symbol: string;
-  buyId?: number;
-  buyPrice: number;
-  buyQuantity: number;
-  isBuyEnabled: boolean;
-  sellId?: number;
-  sellPrice: number;
-  sellQuantity: number;
-  isSellEnabled: boolean;
+  buy: {
+    id?: number;
+    price: number;
+    quantity: number;
+    isEnabled: number;
+  };
+  sell: {
+    id?: number;
+    price: number;
+    quantity: number;
+    isEnabled: number;
+  };
 };
 
 type Props = {
   control: Control<Form>;
   errors: FieldErrors<Form>;
-  enabledField: "isBuyEnabled" | "isSellEnabled";
-  priceField: "buyPrice" | "sellPrice";
-  quantityField: "buyQuantity" | "sellQuantity";
+  priceField: "buy.price" | "sell.price";
+  quantityField: "buy.quantity" | "sell.quantity";
   labelPrefix: string;
 };
-
-function OrderFormn({ control, errors, priceField, quantityField }: Props) {
+function OrderForm({ control, errors, priceField, quantityField }: Props) {
   return (
     <>
       <Grid container spacing={2}>
@@ -39,8 +42,6 @@ function OrderFormn({ control, errors, priceField, quantityField }: Props) {
                 label="価格"
                 type="number"
                 fullWidth
-                error={!!errors.buyPrice}
-                helperText={errors.buyPrice?.message}
               />
             )}
           />
@@ -59,8 +60,6 @@ function OrderFormn({ control, errors, priceField, quantityField }: Props) {
                 label="数量"
                 type="number"
                 fullWidth
-                error={!!errors.buyQuantity}
-                helperText={errors.buyQuantity?.message}
               />
             )}
           />
@@ -70,4 +69,4 @@ function OrderFormn({ control, errors, priceField, quantityField }: Props) {
   );
 }
 
-export default OrderFormn;
+export default OrderForm;

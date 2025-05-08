@@ -1,39 +1,37 @@
-import { Request } from "../hooks/useListCryptocurrencyOrder";
+import { symbol } from "zod";
+import { ORDER_TYPE } from "./constants";
 
-const getOrder = (orders: Request[], type: number) =>
-  orders.find((r) => r.orderType === type);
+type OrderList = {
+  id?: number;
+  symbol: string;
+  targetPrice: number;
+  quantity: number;
+  type: number;
+  isEnabled: number;
+};
 
-export const convertToFormData = (orders?: Request[]) => {
-  if (!orders) return undefined;
+export const convertToFormData = (orderList: OrderList[]) => {
+  if (orderList.length === 0) return undefined;
 
-  const buyOrder = getOrder(orders, 0);
-  const sellOrder = getOrder(orders, 1);
-
-  const buy = {
-    id: buyOrder?.id,
-    symbol: buyOrder?.symbol ?? "",
-    price: buyOrder?.targetPrice ?? 0,
-    quantity: buyOrder?.quantity ?? 0,
-    enabled: buyOrder?.isEnabled === 1 ? true : false,
-  };
-
-  const sell = {
-    id: sellOrder?.id,
-    symbol: sellOrder?.symbol ?? "",
-    price: sellOrder?.targetPrice ?? 0,
-    quantity: sellOrder?.quantity ?? 0,
-    enabled: sellOrder?.isEnabled === 1 ? true : false,
-  };
+  const buyOrder = findOrder(orderList, ORDER_TYPE.BUY);
+  const sellOrder = findOrder(orderList, ORDER_TYPE.SELL);
 
   return {
-    symbol: buy.symbol || sell.symbol,
-    buyId: buy.id,
-    buyPrice: buy.price,
-    buyQuantity: buy.quantity,
-    isBuyEnabled: buy.enabled,
-    sellId: sell.id,
-    sellPrice: sell.price,
-    sellQuantity: sell.quantity,
-    isSellEnabled: sell.enabled,
+    symbol: buyOrder?.symbol || sellOrder?.symbol,
+    buy: {
+      id: buyOrder?.id,
+      price: buyOrder?.targetPrice,
+      quantity: buyOrder?.quantity,
+      isEnabled: buyOrder?.isEnabled,
+    },
+    sell: {
+      id: sellOrder?.id,
+      price: sellOrder?.targetPrice,
+      quantity: sellOrder?.quantity,
+      isEnabled: sellOrder?.isEnabled,
+    },
   };
 };
+
+const findOrder = (orderList: OrderList[], type: number) =>
+  orderList.find((order) => order.type === type);

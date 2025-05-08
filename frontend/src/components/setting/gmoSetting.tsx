@@ -1,12 +1,5 @@
 import { Suspense, useEffect, useState } from "react";
-import {
-  Container,
-  Typography,
-  TextField,
-  Button,
-  Box,
-  Alert,
-} from "@mui/material";
+import { Container, Typography, TextField, Button, Box } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { useSaveGmoSetting } from "../../feature/hooks/useSaveGmoSetting";
 import { useFindGmoSetting } from "../../feature/hooks/useFindGmoSetting";
@@ -29,7 +22,6 @@ function GmoSetting() {
     formState: { errors },
   } = useForm<Form>({
     defaultValues: {
-      id: 1,
       apiKey: "",
       secretKey: "",
     },
@@ -51,10 +43,16 @@ function GmoSetting() {
 
   useEffect(() => {
     if (gmoSettingSaveStatus === "success") {
-      setSnackBarMessage("APIキーの保存に成功しました。");
+      setSnackBarMessage("保存に成功しました。");
+      return;
     }
-    if (gmoSettingSaveStatus === "error") {
-      setSnackBarMessage("APIキーの保存に失敗しました");
+    if (gmoSettingSaveStatus === "failure") {
+      setSnackBarMessage("保存に失敗しました。");
+      return;
+    }
+    if (gmoSettingSaveStatus === "systemError") {
+      setSnackBarMessage("システムエラー");
+      return;
     }
   }, [gmoSettingSaveStatus, setSnackBarMessage]);
 
