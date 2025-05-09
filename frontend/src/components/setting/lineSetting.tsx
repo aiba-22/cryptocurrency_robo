@@ -6,6 +6,19 @@ import { useFindLineSetting } from "../../feature/hooks/useFindLineSetting";
 import { useLineNotification } from "../../feature/hooks/useNotificationLine";
 import { useSaveLineSetting } from "../../feature/hooks/useSaveLineSetting";
 import Loading from "../loading";
+import {
+  isLineSettingSaveStatus,
+  isNotificationStatus,
+  LINE_NOTIFICATION_MESSAGES,
+  LINE_SETTING_SAVE_MESSAGES,
+  SYSTEM_ERROR,
+} from "../../feature/lineSetting/lineNotificationMessages";
+
+interface LineFormData {
+  id?: number;
+  channelAccessToken: string;
+  userId: string;
+}
 
 function LineSetting() {
   const [snackBarMessage, setSnackBarMessage] = useState("");
@@ -15,7 +28,7 @@ function LineSetting() {
     control,
     reset,
     formState: { errors },
-  } = useForm({
+  } = useForm<LineFormData>({
     defaultValues: {
       channelAccessToken: "",
       userId: "",
@@ -27,16 +40,12 @@ function LineSetting() {
   const { sendNotification, notificationSendStatus } = useLineNotification();
   const { saveLineSettings, lineSettingSaveStatus } = useSaveLineSetting();
 
-  const onSubmit = async (form: {
-    id?: number;
-    channelAccessToken: string;
-    userId: string;
-  }) => {
+  const onSubmit = (form: LineFormData) => {
     saveLineSettings(form);
   };
+
   const notificationLine = () => {
-    const message = "通知テスト";
-    sendNotification(message);
+    sendNotification("通知テスト");
   };
 
   useEffect(() => {
@@ -44,44 +53,28 @@ function LineSetting() {
   }, [lineSetting, reset]);
 
   useEffect(() => {
-    if (lineSettingSaveStatus === "success") {
-      setSnackBarMessage("保存に成功しました。");
+    if (isLineSettingSaveStatus(lineSettingSaveStatus)) {
+      setSnackBarMessage(LINE_SETTING_SAVE_MESSAGES[lineSettingSaveStatus]);
+      return;
     }
-    if (lineSettingSaveStatus === "error") {
-      setSnackBarMessage("保存に失敗しました。");
+    if (
+      notificationSendStatus &&
+      isNotificationStatus(notificationSendStatus)
+    ) {
+      setSnackBarMessage(LINE_NOTIFICATION_MESSAGES[notificationSendStatus]);
+      return;
     }
-  }, [lineSettingSaveStatus, setSnackBarMessage]);
-
-  useEffect(() => {
-    if (!notificationSendStatus) return;
-
-    switch (notificationSendStatus) {
-      case "success":
-        setSnackBarMessage("テスト送信に成功しました。");
-        break;
-      case "tooManyRequests":
-        setSnackBarMessage(
-          "メッセージの送信可能件数（月200件）を超過しました。"
-        );
-        break;
-      case "badRequest":
-        setSnackBarMessage("トークン情報が誤っています。");
-        break;
-      case "systemError":
-        setSnackBarMessage("システムエラー");
-        break;
+    if (isLineSettingFindError) {
+      setSnackBarMessage(SYSTEM_ERROR);
     }
-  }, [notificationSendStatus, setSnackBarMessage]);
-
-  useEffect(() => {
-    if (isLineSettingFindError) setSnackBarMessage("システムエラー");
-  }, [isLineSettingFindError, setSnackBarMessage]);
+  }, [lineSettingSaveStatus, notificationSendStatus, isLineSettingFindError]);
 
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
         LINE設定
       </Typography>
+
       {isLineSettingFindLoading ? (
         <Loading />
       ) : (
@@ -102,6 +95,7 @@ function LineSetting() {
               />
             )}
           />
+
           <Controller
             name="userId"
             control={control}
@@ -126,13 +120,14 @@ function LineSetting() {
             <Button
               variant="outlined"
               color="secondary"
-              onClick={handleSubmit(notificationLine)}
+              onClick={handleSubmit(() => notificationLine())}
             >
               通知テスト
             </Button>
           </Box>
         </form>
       )}
+
       {snackBarMessage && <SnackBer message={snackBarMessage} />}
     </Container>
   );

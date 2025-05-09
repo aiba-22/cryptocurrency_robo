@@ -21,6 +21,7 @@ export const create = async (req: Request, res: Response) => {
 export const update = async (req: Request, res: Response) => {
   const validatedData = updateCryptocurrencyOrderSchema.parse(req.body);
   const cryptocurrencyOrderService = new CryptocurrencyOrderService();
+  console.log(validatedData);
   const result = await cryptocurrencyOrderService.update(validatedData);
   res.status(200).json(result);
 };

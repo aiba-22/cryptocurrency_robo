@@ -1,6 +1,3 @@
-import { symbol } from "zod";
-import { ORDER_TYPE } from "../../components/automaticTrading/constants";
-
 type OrderList = {
   id?: number;
   symbol: string;
@@ -9,6 +6,8 @@ type OrderList = {
   type: number;
   isEnabled: number;
 };
+
+export const ORDER_TYPE = { BUY: 0, SELL: 1 };
 
 export const convertToFormData = (orderList: OrderList[]) => {
   if (orderList.length === 0) return undefined;

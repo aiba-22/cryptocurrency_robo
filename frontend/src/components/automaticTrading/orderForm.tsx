@@ -1,4 +1,3 @@
-import { DoDisturbSharp } from "@mui/icons-material";
 import { Grid, TextField } from "@mui/material";
 import { Controller, Control, FieldErrors } from "react-hook-form";
 
@@ -22,14 +21,14 @@ type OrderFormProps = {
   control: Control<Form>;
   errors: FieldErrors<Form>;
   targetPriceField: "buy.targetPrice" | "sell.targetPrice";
-  quantityField: "buy.volume" | "sell.volume";
+  volumeField: "buy.volume" | "sell.volume";
   labelPrefix: string;
 };
 function OrderForm({
   control,
   errors,
   targetPriceField,
-  quantityField,
+  volumeField,
 }: OrderFormProps) {
   const priceError =
     targetPriceField === "buy.targetPrice"
@@ -38,10 +37,10 @@ function OrderForm({
       ? errors.sell?.targetPrice
       : undefined;
 
-  const quantityError =
-    quantityField === "buy.volume"
+  const volumeError =
+    volumeField === "buy.volume"
       ? errors.buy?.volume
-      : quantityField === "sell.volume"
+      : volumeField === "sell.volume"
       ? errors.sell?.volume
       : undefined;
 
@@ -68,7 +67,7 @@ function OrderForm({
 
         <Grid item xs={6}>
           <Controller
-            name={quantityField}
+            name={volumeField}
             control={control}
             rules={{ required: "入力必須項目です" }}
             render={({ field }) => (
@@ -78,8 +77,8 @@ function OrderForm({
                 label="数量"
                 type="number"
                 fullWidth
-                error={!!quantityError}
-                helperText={quantityError?.message}
+                error={!!volumeError}
+                helperText={volumeError?.message}
               />
             )}
           />

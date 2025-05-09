@@ -1,10 +1,14 @@
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Container, Typography, TextField, Button, Box } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { useSaveGmoSetting } from "../../feature/hooks/useSaveGmoSetting";
 import { useFindGmoSetting } from "../../feature/hooks/useFindGmoSetting";
 import SnackBer from "../snackBer";
 import Loading from "../loading";
+import {
+  GMO_SETTING_MESSAGES,
+  isGmoSettingStatus,
+} from "../../feature/gmoSetting/gmoSettingMessages";
 
 type Form = {
   id: number;
@@ -12,7 +16,7 @@ type Form = {
   secretKey: string;
 };
 
-function GmoSetting() {
+const GmoSetting = () => {
   const [snackBarMessage, setSnackBarMessage] = useState("");
 
   const {
@@ -31,34 +35,23 @@ function GmoSetting() {
     useFindGmoSetting();
   const { saveGmoSetting, gmoSettingSaveStatus } = useSaveGmoSetting();
 
-  useEffect(() => {
-    if (gmoSetting) {
-      reset(gmoSetting);
-    }
-  }, [gmoSetting, reset]);
-
-  const onSubmit = async (formData: Form) => {
+  const onSubmit = (formData: Form) => {
     saveGmoSetting(formData);
   };
 
   useEffect(() => {
-    if (gmoSettingSaveStatus === "success") {
-      setSnackBarMessage("保存に成功しました。");
-      return;
-    }
-    if (gmoSettingSaveStatus === "failure") {
-      setSnackBarMessage("保存に失敗しました。");
-      return;
-    }
-    if (gmoSettingSaveStatus === "systemError") {
-      setSnackBarMessage("システムエラー");
-      return;
-    }
-  }, [gmoSettingSaveStatus, setSnackBarMessage]);
+    if (gmoSetting) reset(gmoSetting);
+  }, [gmoSetting, reset]);
 
   useEffect(() => {
-    if (isGmoSettingFindError) setSnackBarMessage("システムエラー");
-  }, [isGmoSettingFindError, setSnackBarMessage]);
+    if (isGmoSettingFindError) {
+      setSnackBarMessage(GMO_SETTING_MESSAGES.systemError);
+      return;
+    }
+    if (gmoSettingSaveStatus && isGmoSettingStatus(gmoSettingSaveStatus)) {
+      setSnackBarMessage(GMO_SETTING_MESSAGES[gmoSettingSaveStatus]);
+    }
+  }, [gmoSettingSaveStatus, isGmoSettingFindError]);
 
   return (
     <Container maxWidth="sm">
@@ -113,6 +106,6 @@ function GmoSetting() {
       {snackBarMessage && <SnackBer message={snackBarMessage} />}
     </Container>
   );
-}
+};
 
 export default GmoSetting;

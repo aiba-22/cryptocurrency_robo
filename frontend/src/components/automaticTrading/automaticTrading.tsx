@@ -4,92 +4,50 @@ import {
   Button,
   Box,
   FormControl,
-  FormControlLabel,
   InputLabel,
   MenuItem,
   Select,
-  Switch,
 } from "@mui/material";
-import { useForm, Controller } from "react-hook-form";
-import { useSaveCryptocurrencyOrderSetting } from "../../feature/hooks/useSaveCryptocurrencyOrderSetting";
-import { useListCryptocurrencyOrder } from "../../feature/hooks/useListCryptocurrencyOrder";
 import { useEffect, useState } from "react";
-import { convertToFormData } from "../../feature/automaticTrading/convertToFormData";
-import { CRYPTOCURRENCY_LIST, CRYPTOCURRENCY } from "../../feature/constants";
-import OrderForm, { Form } from "./orderForm";
+import OrderForm from "./orderForm";
 import SnackBer from "../snackBer";
 import Rate from "../rate";
 import Loading from "../loading";
-
-export const ORDER_TYPE = { BUY: 0, SELL: 1 };
-export const IS_ENABLED = { TRUE: 1, FALSE: 0 };
+import { CRYPTOCURRENCY_LIST } from "../../feature/constants";
+import { Controller } from "react-hook-form";
+import ToggleOrderSwitch from "./toggleOrderSwitch";
+import {
+  AUTOMATIC_TRADING_MESSAGES,
+  isOrderSettingSaveStatus,
+  SYSTEM_ERROR,
+} from "../../feature/automaticTrading/automaticTradingMessages";
+import { IS_ENABLED } from "../../feature/automaticTrading/constants";
+import { useOrderForm } from "../../feature/automaticTrading/hooks/useOrderForm";
 
 function AutomaticTrading() {
-  const [snackBarMessage, setSnackBarMessage] = useState("");
+  const [snackBarMessage, setSnackBarMessage] = useState<string>("");
 
   const {
     control,
-    handleSubmit,
+    submitForm,
     watch,
-    reset,
-    formState: { errors },
-  } = useForm<Form>({
-    defaultValues: {
-      symbol: CRYPTOCURRENCY.BTC,
-      buy: {
-        id: undefined,
-        targetPrice: undefined,
-        volume: undefined,
-        isEnabled: IS_ENABLED.FALSE,
-      },
-      sell: {
-        id: undefined,
-        targetPrice: undefined,
-        volume: undefined,
-        isEnabled: IS_ENABLED.FALSE,
-      },
-    },
-  });
-
-  const onSubmit = (data: Form) => {
-    const { symbol, buy, sell } = data;
-
-    if (buy.targetPrice && buy.volume) {
-      saveOrderSetting({ symbol, ...buy, type: ORDER_TYPE.BUY });
-    }
-    if (sell.targetPrice && sell.volume) {
-      saveOrderSetting({ symbol, ...buy, type: ORDER_TYPE.SELL });
-    }
-  };
-
-  const { saveOrderSetting, orderSettingSaveStatus } =
-    useSaveCryptocurrencyOrderSetting();
-  const { cryptocurrencyOrderList, isOrderListError, isOrderListLoading } =
-    useListCryptocurrencyOrder();
+    errors,
+    orderSettingSaveStatus,
+    isOrderListError,
+    isOrderListLoading,
+  } = useOrderForm();
 
   const isBuyEnabled = watch("buy.isEnabled");
   const isSellEnabled = watch("sell.isEnabled");
   const symbol = watch("symbol");
 
   useEffect(() => {
-    if (cryptocurrencyOrderList) {
-      const order = convertToFormData(cryptocurrencyOrderList);
-      reset(order);
+    if (isOrderSettingSaveStatus(orderSettingSaveStatus)) {
+      setSnackBarMessage(AUTOMATIC_TRADING_MESSAGES[orderSettingSaveStatus]);
+      return;
     }
-  }, [cryptocurrencyOrderList, reset]);
-
-  useEffect(() => {
-    if (orderSettingSaveStatus === "success") {
-      setSnackBarMessage("保存に成功しました。");
-    }
-    if (orderSettingSaveStatus === "error") {
-      setSnackBarMessage("保存に失敗しました。");
-    }
-  }, [orderSettingSaveStatus, setSnackBarMessage]);
-
-  useEffect(() => {
-    if (isOrderListError) setSnackBarMessage("システムエラー");
-  }, [isOrderListError, setSnackBarMessage]);
+    if (isOrderListError) setSnackBarMessage(SYSTEM_ERROR);
+  }, [orderSettingSaveStatus, isOrderListError]);
 
   return (
     <Container maxWidth="sm">
@@ -99,7 +57,7 @@ function AutomaticTrading() {
       {isOrderListLoading ? (
         <Loading />
       ) : (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={submitForm}>
           <Box mb={2}>
             <Controller
               name="symbol"
@@ -124,24 +82,15 @@ function AutomaticTrading() {
               name="buy.isEnabled"
               control={control}
               render={({ field }) => (
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={field.value === 1}
-                      onChange={(e) => field.onChange(e.target.checked ? 1 : 0)}
-                      color="primary"
-                    />
-                  }
-                  label="買い注文を設定"
-                />
+                <ToggleOrderSwitch field={field} label="買い注文を設定" />
               )}
             />
           </Box>
-          {isBuyEnabled === 1 && (
+          {isBuyEnabled === IS_ENABLED.TRUE && (
             <OrderForm
               control={control}
               targetPriceField="buy.targetPrice"
-              quantityField="buy.volume"
+              volumeField="buy.volume"
               labelPrefix="買い"
               errors={errors}
             />
@@ -151,24 +100,15 @@ function AutomaticTrading() {
               name="sell.isEnabled"
               control={control}
               render={({ field }) => (
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={field.value === 1}
-                      onChange={(e) => field.onChange(e.target.checked ? 1 : 0)}
-                      color="primary"
-                    />
-                  }
-                  label="売り注文を設定"
-                />
+                <ToggleOrderSwitch field={field} label="売り注文を設定" />
               )}
             />
           </Box>
-          {isSellEnabled === 1 && (
+          {isSellEnabled === IS_ENABLED.TRUE && (
             <OrderForm
               control={control}
               targetPriceField="sell.targetPrice"
-              quantityField="sell.volume"
+              volumeField="sell.volume"
               labelPrefix="売り"
               errors={errors}
             />
