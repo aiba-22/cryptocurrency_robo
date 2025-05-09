@@ -1,7 +1,7 @@
 // repositories/orderRepository.ts
 import db from "../db";
 
-export class OrderRepository {
+export class CryptocurrencyOrderRepository {
   private db;
 
   constructor(dbInstance = db) {
@@ -9,29 +9,27 @@ export class OrderRepository {
   }
 
   async list() {
-    return this.db("order");
+    return this.db("cryptocurrency_order");
   }
-
   async create({
     symbol,
     targetPrice,
-    quantity,
+    volume,
     type,
     isEnabled,
   }: {
     symbol: string;
     targetPrice: number;
-    quantity: number;
+    volume: number;
     type: number;
     isEnabled: number;
   }) {
-    return this.db("order").insert({
+    return this.db("cryptocurrency_order").insert({
       symbol,
       target_price: targetPrice,
-      quantity: quantity,
+      volume: volume,
       type: type,
       is_enabled: isEnabled,
-      updated_at: new Date(),
     });
   }
 
@@ -39,21 +37,21 @@ export class OrderRepository {
     id,
     symbol,
     targetPrice,
-    quantity,
+    volume,
     type,
     isEnabled,
   }: {
     id: number;
     symbol: string;
     targetPrice: number;
-    quantity: number;
+    volume: number;
     type: number;
     isEnabled: number;
   }) {
-    return this.db("order").where({ id }).update({
+    return this.db("cryptocurrency_order").where({ id }).update({
       symbol,
       target_price: targetPrice,
-      quantity: quantity,
+      volume: volume,
       type: type,
       is_enabled: isEnabled,
       updated_at: new Date(),

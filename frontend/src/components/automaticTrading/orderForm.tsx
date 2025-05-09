@@ -6,42 +6,61 @@ export type Form = {
   symbol: string;
   buy: {
     id?: number;
-    price: number;
-    quantity: number;
+    targetPrice: number;
+    volume: number;
     isEnabled: number;
   };
   sell: {
     id?: number;
-    price: number;
-    quantity: number;
+    targetPrice: number;
+    volume: number;
     isEnabled: number;
   };
 };
 
-type Props = {
+type OrderFormProps = {
   control: Control<Form>;
   errors: FieldErrors<Form>;
-  priceField: "buy.price" | "sell.price";
-  quantityField: "buy.quantity" | "sell.quantity";
+  targetPriceField: "buy.targetPrice" | "sell.targetPrice";
+  quantityField: "buy.volume" | "sell.volume";
   labelPrefix: string;
 };
-function OrderForm({ control, errors, priceField, quantityField }: Props) {
+function OrderForm({
+  control,
+  errors,
+  targetPriceField,
+  quantityField,
+}: OrderFormProps) {
+  const priceError =
+    targetPriceField === "buy.targetPrice"
+      ? errors.buy?.targetPrice
+      : targetPriceField === "sell.targetPrice"
+      ? errors.sell?.targetPrice
+      : undefined;
+
+  const quantityError =
+    quantityField === "buy.volume"
+      ? errors.buy?.volume
+      : quantityField === "sell.volume"
+      ? errors.sell?.volume
+      : undefined;
+
   return (
     <>
       <Grid container spacing={2}>
         <Grid item xs={6}>
           <Controller
-            name={priceField}
+            name={targetPriceField}
             control={control}
             rules={{ required: "入力必須項目です" }}
             render={({ field }) => (
               <TextField
                 {...field}
-                value={field.value}
-                onChange={(e) => field.onChange(parseInt(e.target.value))}
                 label="価格"
                 type="number"
                 fullWidth
+                error={!!priceError}
+                helperText={priceError?.message}
               />
             )}
           />
@@ -56,10 +75,11 @@ function OrderForm({ control, errors, priceField, quantityField }: Props) {
               <TextField
                 {...field}
                 value={field.value}
-                onChange={(e) => field.onChange(parseInt(e.target.value))}
                 label="数量"
                 type="number"
                 fullWidth
+                error={!!quantityError}
+                helperText={quantityError?.message}
               />
             )}
           />

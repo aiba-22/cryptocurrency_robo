@@ -4,7 +4,7 @@ export type Request = {
   id?: number;
   symbol: string;
   targetPrice: number;
-  quantity: number;
+  volume: number;
   type: number;
   isEnabled: number;
 };
@@ -13,7 +13,7 @@ type Response = {
   id: number;
   symbol: string;
   targetPrice: number;
-  quantity: number;
+  volume: number;
   type: number;
   isEnabled: number;
 };

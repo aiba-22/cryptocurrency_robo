@@ -1,8 +1,8 @@
 import axios from "axios";
 import crypto from "crypto";
-import db from "../db";
 import { GmoRepository } from "../db/repositories/gmoRepository";
 import { ID } from "./constants";
+import db from "../db/db";
 
 export default class GmoService {
   async find() {

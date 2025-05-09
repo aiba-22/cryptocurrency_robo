@@ -1,26 +1,26 @@
 import { useMutation } from "react-query";
 import {
-  convertFormToRequest,
-  Form,
-} from "../automaticTrading/convertFormToRequest";
-import {
   createCryptocurrencyOrder,
   updateCryptocurrencyOrder,
 } from "../../apiClients/cryptocurrencyOrder";
 
+export type Form = {
+  symbol: string;
+  id?: number;
+  targetPrice: number;
+  volume: number;
+  type: number;
+  isEnabled: number;
+};
+
 export const useSaveCryptocurrencyOrderSetting = () => {
-  const { mutate, status } = useMutation(
-    async (cryptocurrencyOrderSetting: Form) => {
-      const orderList = convertFormToRequest(cryptocurrencyOrderSetting);
-      orderList.forEach(async (order) => {
-        if (order.id) {
-          await updateCryptocurrencyOrder(order);
-        } else {
-          await createCryptocurrencyOrder(order);
-        }
-      });
+  const { mutate, status } = useMutation(async (order: Form) => {
+    if (order.id) {
+      await updateCryptocurrencyOrder(order);
+    } else {
+      await createCryptocurrencyOrder(order);
     }
-  );
+  });
 
   return {
     saveOrderSetting: mutate,

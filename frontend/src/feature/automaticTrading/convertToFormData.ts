@@ -1,11 +1,11 @@
 import { symbol } from "zod";
-import { ORDER_TYPE } from "./constants";
+import { ORDER_TYPE } from "../../components/automaticTrading/constants";
 
 type OrderList = {
   id?: number;
   symbol: string;
   targetPrice: number;
-  quantity: number;
+  volume: number;
   type: number;
   isEnabled: number;
 };
@@ -20,14 +20,14 @@ export const convertToFormData = (orderList: OrderList[]) => {
     symbol: buyOrder?.symbol || sellOrder?.symbol,
     buy: {
       id: buyOrder?.id,
-      price: buyOrder?.targetPrice,
-      quantity: buyOrder?.quantity,
+      targetPrice: buyOrder?.targetPrice,
+      volume: buyOrder?.volume,
       isEnabled: buyOrder?.isEnabled,
     },
     sell: {
       id: sellOrder?.id,
-      price: sellOrder?.targetPrice,
-      quantity: sellOrder?.quantity,
+      targetPrice: sellOrder?.targetPrice,
+      volume: sellOrder?.volume,
       isEnabled: sellOrder?.isEnabled,
     },
   };

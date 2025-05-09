@@ -1,7 +1,7 @@
 import axios from "axios";
-import db from "../db";
 import { LineRepository } from "../db/repositories/lineRepository";
 import { ID } from "./constants";
+import db from "../db/db";
 
 export default class LineService {
   private repository: LineRepository;

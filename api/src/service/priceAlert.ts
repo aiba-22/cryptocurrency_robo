@@ -1,4 +1,4 @@
-import db from "../db";
+import db from "../db/db";
 import { PriceAlertRepository } from "../db/repositories/priceAlertRepository";
 import { ID } from "./constants";
 

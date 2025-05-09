@@ -21,6 +21,9 @@ import SnackBer from "../snackBer";
 import Rate from "../rate";
 import Loading from "../loading";
 
+export const ORDER_TYPE = { BUY: 0, SELL: 1 };
+export const IS_ENABLED = { TRUE: 1, FALSE: 0 };
+
 function AutomaticTrading() {
   const [snackBarMessage, setSnackBarMessage] = useState("");
 
@@ -35,27 +38,34 @@ function AutomaticTrading() {
       symbol: CRYPTOCURRENCY.BTC,
       buy: {
         id: undefined,
-        price: 0,
-        quantity: 0,
-        isEnabled: 0,
+        targetPrice: undefined,
+        volume: undefined,
+        isEnabled: IS_ENABLED.FALSE,
       },
       sell: {
         id: undefined,
-        price: 0,
-        quantity: 0,
-        isEnabled: 0,
+        targetPrice: undefined,
+        volume: undefined,
+        isEnabled: IS_ENABLED.FALSE,
       },
     },
   });
+
+  const onSubmit = (data: Form) => {
+    const { symbol, buy, sell } = data;
+
+    if (buy.targetPrice && buy.volume) {
+      saveOrderSetting({ symbol, ...buy, type: ORDER_TYPE.BUY });
+    }
+    if (sell.targetPrice && sell.volume) {
+      saveOrderSetting({ symbol, ...buy, type: ORDER_TYPE.SELL });
+    }
+  };
 
   const { saveOrderSetting, orderSettingSaveStatus } =
     useSaveCryptocurrencyOrderSetting();
   const { cryptocurrencyOrderList, isOrderListError, isOrderListLoading } =
     useListCryptocurrencyOrder();
-
-  const onSubmit = (data: Form) => {
-    saveOrderSetting(data);
-  };
 
   const isBuyEnabled = watch("buy.isEnabled");
   const isSellEnabled = watch("sell.isEnabled");
@@ -130,8 +140,8 @@ function AutomaticTrading() {
           {isBuyEnabled === 1 && (
             <OrderForm
               control={control}
-              priceField="buy.price"
-              quantityField="buy.quantity"
+              targetPriceField="buy.targetPrice"
+              quantityField="buy.volume"
               labelPrefix="買い"
               errors={errors}
             />
@@ -157,8 +167,8 @@ function AutomaticTrading() {
           {isSellEnabled === 1 && (
             <OrderForm
               control={control}
-              priceField="sell.price"
-              quantityField="sell.quantity"
+              targetPriceField="sell.targetPrice"
+              quantityField="sell.volume"
               labelPrefix="売り"
               errors={errors}
             />

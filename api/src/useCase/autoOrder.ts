@@ -39,7 +39,7 @@ export const autoOrder = async () => {
       symbol: buyOrder.symbol,
       side: ORDER_SIDE.BUY,
       price: buyOrder.targetPrice,
-      size: buyOrder.quantity,
+      size: buyOrder.volume,
     });
     await lineService.sendMessage(
       `買い注文をしました${JSON.stringify(result)}`
@@ -52,7 +52,7 @@ export const autoOrder = async () => {
       symbol: sellOrder?.symbol,
       side: ORDER_SIDE.SELL,
       price: sellOrder?.targetPrice,
-      size: sellOrder?.quantity,
+      size: sellOrder?.volume,
     });
     await lineService.sendMessage(
       `売り注文をしました${JSON.stringify(result)}`

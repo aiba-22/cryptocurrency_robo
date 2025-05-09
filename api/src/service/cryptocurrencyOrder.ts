@@ -1,64 +1,54 @@
-import axios from "axios";
-import crypto from "crypto";
-import db from "../db";
+import db from "../db/db";
+import { CryptocurrencyOrderRepository } from "../db/repositories/cryptocurrencyOrderRepository";
 
-type Conditions = {
-  symbol: string;
-  targetPrice: number;
-  quantity: number;
-  type: number;
-  isEnabled: number;
-};
-
-export default class CryptocurrencyOrderService {
+export default class orderService {
   db;
   constructor() {
     this.db = db;
   }
 
   async list() {
-    const cryptocurrencyOrderList = await this.db("cryptocurrency_order");
-    const response = cryptocurrencyOrderList.map((cryptocurrencyOrder) => {
+    const orderRepository = new CryptocurrencyOrderRepository();
+    const orderList = await orderRepository.list();
+
+    if (orderList.length === 0) return;
+
+    const response = orderList.map((order) => {
       return {
-        id: cryptocurrencyOrder.id,
-        symbol: cryptocurrencyOrder.symbol,
-        targetPrice: cryptocurrencyOrder.target_price,
-        quantity: cryptocurrencyOrder.quantity,
-        type: cryptocurrencyOrder.type,
-        isEnabled: cryptocurrencyOrder.is_enabled,
+        id: order?.id,
+        symbol: order?.symbol,
+        targetPrice: order?.target_price,
+        volume: order?.volume,
+        type: order?.type,
+        isEnabled: order?.is_enabled,
       };
     });
     return response;
   }
 
-  async create(
-    conditions: {
-      symbol: string;
-      targetPrice: number;
-      quantity: number;
-      type: number;
-      isEnabled: number;
-    }[]
-  ) {
-    const transaction = await this.db.transaction();
+  async create({
+    symbol,
+    targetPrice,
+    volume,
+    type,
+    isEnabled,
+  }: {
+    symbol: string;
+    targetPrice: number;
+    volume: number;
+    type: number;
+    isEnabled: number;
+  }) {
+    const transaction = await db.transaction();
+    const orderRepository = new CryptocurrencyOrderRepository(transaction);
     try {
-      for (const {
+      await orderRepository.create({
         symbol,
         targetPrice,
-        quantity,
+        volume,
         type,
         isEnabled,
-      } of conditions) {
-        await transaction("cryptocurrency_order").insert({
-          symbol,
-          target_price: targetPrice,
-          quantity,
-          type: type,
-          is_enabled: isEnabled,
-          updated_at: new Date(),
-        });
-      }
-
+      });
       await transaction.commit();
       return "success";
     } catch (error) {
@@ -67,35 +57,32 @@ export default class CryptocurrencyOrderService {
     }
   }
 
-  async update(
-    conditions: {
-      id: number;
-      symbol: string;
-      targetPrice: number;
-      quantity: number;
-      type: number;
-      isEnabled: number;
-    }[]
-  ) {
-    const transaction = await this.db.transaction();
+  async update({
+    id,
+    symbol,
+    targetPrice,
+    volume,
+    type,
+    isEnabled,
+  }: {
+    id: number;
+    symbol: string;
+    targetPrice: number;
+    volume: number;
+    type: number;
+    isEnabled: number;
+  }) {
+    const transaction = await db.transaction();
+    const orderRepository = new CryptocurrencyOrderRepository(transaction);
     try {
-      for (const {
+      await orderRepository.update({
         id,
         symbol,
         targetPrice,
-        quantity,
+        volume,
         type,
         isEnabled,
-      } of conditions) {
-        await transaction("cryptocurrency_order").where({ id }).update({
-          symbol,
-          target_price: targetPrice,
-          quantity: quantity,
-          type: type,
-          is_enabled: isEnabled,
-          updated_at: new Date(),
-        });
-      }
+      });
       await transaction.commit();
       return "success";
     } catch (error) {
