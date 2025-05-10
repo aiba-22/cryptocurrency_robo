@@ -36,7 +36,6 @@ function AutomaticTrading() {
     isOrderListError,
     isOrderListLoading,
   } = useOrderForm();
-
   const isBuyEnabled = watch("buy.isEnabled");
   const isSellEnabled = watch("sell.isEnabled");
   const symbol = watch("symbol");

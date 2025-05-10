@@ -20,6 +20,11 @@ import { useSavePriceAlertSetting } from "../feature/hooks/useSavePriceAlertSett
 import SnackBer from "./snackBer";
 import Rate from "./rate";
 import Loading from "./loading";
+import {
+  isNotificationStatus,
+  SYSTEM_ERROR,
+} from "../feature/lineSetting/lineNotificationMessages";
+import { PRICE_ALERT_SETTING_SAVE_MESSAGES } from "../feature/priceAlert/priceAlertSettingMessage";
 
 type PriceAlertSettingForm = {
   id?: number;
@@ -68,20 +73,16 @@ function PriceAlertSetting() {
   }, [alertSetting, reset]);
 
   useEffect(() => {
-    if (alertSettingSaveStatus === "success") {
-      setSnackBarMessage("保存に成功しました。");
-    }
-    if (alertSettingSaveStatus === "error") {
-      setSnackBarMessage("保存に失敗しました。");
-    }
-  }, [alertSettingSaveStatus, setSnackBarMessage]);
-
-  useEffect(() => {
-    if (isAlertSettingFindError) {
-      setSnackBarMessage("システムエラー");
+    if (isNotificationStatus(alertSettingSaveStatus)) {
+      setSnackBarMessage(
+        PRICE_ALERT_SETTING_SAVE_MESSAGES[alertSettingSaveStatus]
+      );
       return;
     }
-  }, [isAlertSettingFindError, setSnackBarMessage]);
+    if (isAlertSettingFindError) {
+      setSnackBarMessage(SYSTEM_ERROR);
+    }
+  }, [alertSettingSaveStatus, isAlertSettingFindError, setSnackBarMessage]);
 
   return (
     <Container maxWidth="sm">

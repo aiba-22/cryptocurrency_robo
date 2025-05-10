@@ -1,5 +1,4 @@
 import axios from "axios";
-import { number } from "zod";
 export type Request = {
   id?: number;
   symbol: string;
