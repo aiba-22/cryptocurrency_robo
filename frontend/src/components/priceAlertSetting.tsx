@@ -17,7 +17,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useFindPriceAlertSetting } from "../feature/hooks/useFindPriceAlertSetting";
 import { CRYPTOCURRENCY, CRYPTOCURRENCY_LIST } from "../feature/constants";
 import { useSavePriceAlertSetting } from "../feature/hooks/useSavePriceAlertSetting";
-import SnackBer from "./snackBer";
+import SnackBar from "./snackBar";
 import Rate from "./rate";
 import Loading from "./loading";
 import {
@@ -171,7 +171,7 @@ function PriceAlertSetting() {
         </form>
       )}
 
-      {snackBarMessage && <SnackBer message={snackBarMessage} />}
+      {snackBarMessage && <SnackBar message={snackBarMessage} />}
       <Rate symbol={symbol} />
     </Container>
   );

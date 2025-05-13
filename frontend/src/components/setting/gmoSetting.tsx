@@ -3,7 +3,7 @@ import { Container, Typography, TextField, Button, Box } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { useSaveGmoSetting } from "../../feature/hooks/useSaveGmoSetting";
 import { useFindGmoSetting } from "../../feature/hooks/useFindGmoSetting";
-import SnackBer from "../snackBer";
+import SnackBar from "../snackBar";
 import Loading from "../loading";
 import {
   GMO_SETTING_MESSAGES,
@@ -103,7 +103,7 @@ const GmoSetting = () => {
           </Box>
         </form>
       )}
-      {snackBarMessage && <SnackBer message={snackBarMessage} />}
+      {snackBarMessage && <SnackBar message={snackBarMessage} />}
     </Container>
   );
 };

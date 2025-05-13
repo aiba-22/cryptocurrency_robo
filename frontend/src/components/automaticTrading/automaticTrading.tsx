@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import OrderForm from "./orderForm";
-import SnackBer from "../snackBer";
+import Snackbar from "../snackBar";
 import Rate from "../rate";
 import Loading from "../loading";
 import { CRYPTOCURRENCY_LIST } from "../../feature/constants";
@@ -43,9 +43,9 @@ function AutomaticTrading() {
   useEffect(() => {
     if (isOrderSettingSaveStatus(orderSettingSaveStatus)) {
       setSnackBarMessage(AUTOMATIC_TRADING_MESSAGES[orderSettingSaveStatus]);
-      return;
+    } else if (isOrderListError) {
+      setSnackBarMessage(SYSTEM_ERROR);
     }
-    if (isOrderListError) setSnackBarMessage(SYSTEM_ERROR);
   }, [orderSettingSaveStatus, isOrderListError]);
 
   return (
@@ -119,7 +119,7 @@ function AutomaticTrading() {
           </Box>
         </form>
       )}
-      {snackBarMessage && <SnackBer message={snackBarMessage} />}
+      {snackBarMessage && <Snackbar message={snackBarMessage} />}{" "}
       <Rate symbol={symbol} />
     </Container>
   );
