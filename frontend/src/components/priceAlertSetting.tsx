@@ -17,9 +17,9 @@ import { useForm, Controller } from "react-hook-form";
 import { useFindPriceAlertSetting } from "../feature/hooks/useFindPriceAlertSetting";
 import { CRYPTOCURRENCY, CRYPTOCURRENCY_LIST } from "../feature/constants";
 import { useSavePriceAlertSetting } from "../feature/hooks/useSavePriceAlertSetting";
-import SnackBar from "./snackBar";
+import { Snackbar } from "./snackBar";
 import Rate from "./rate";
-import Loading from "./loading";
+import { Loading } from "./loading";
 import {
   isNotificationStatus,
   SYSTEM_ERROR,
@@ -33,7 +33,7 @@ type PriceAlertSettingForm = {
   price: number;
 };
 
-function PriceAlertSetting() {
+export const PriceAlertSetting = () => {
   const {
     control,
     handleSubmit,
@@ -171,10 +171,8 @@ function PriceAlertSetting() {
         </form>
       )}
 
-      {snackBarMessage && <SnackBar message={snackBarMessage} />}
+      {snackBarMessage && <Snackbar message={snackBarMessage} />}
       <Rate symbol={symbol} />
     </Container>
   );
-}
-
-export default PriceAlertSetting;
+};

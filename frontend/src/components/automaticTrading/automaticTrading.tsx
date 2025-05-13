@@ -9,10 +9,10 @@ import {
   Select,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import OrderForm from "./orderForm";
-import Snackbar from "../snackBar";
+import { OrderForm } from "./orderForm";
+import { Snackbar } from "../snackBar";
 import Rate from "../rate";
-import Loading from "../loading";
+import { Loading } from "../loading";
 import { CRYPTOCURRENCY_LIST } from "../../feature/constants";
 import { Controller } from "react-hook-form";
 import ToggleOrderSwitch from "./toggleOrderSwitch";
@@ -24,7 +24,7 @@ import {
 import { IS_ENABLED } from "../../feature/automaticTrading/constants";
 import { useOrderForm } from "../../feature/automaticTrading/hooks/useOrderForm";
 
-function AutomaticTrading() {
+export const AutomaticTrading: React.FC = () => {
   const [snackBarMessage, setSnackBarMessage] = useState<string>("");
 
   const {
@@ -123,6 +123,4 @@ function AutomaticTrading() {
       <Rate symbol={symbol} />
     </Container>
   );
-}
-
-export default AutomaticTrading;
+};

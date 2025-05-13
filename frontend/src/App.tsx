@@ -1,10 +1,10 @@
 import "./App.css";
 import { Routes, Route, Link as RouterLink } from "react-router-dom";
-import PrieAlertSetting from "./components/priceAlertSetting";
-import AutomaticTrading from "./components/automaticTrading/automaticTrading";
+import { PriceAlertSetting } from "./components/priceAlertSetting";
+import { AutomaticTrading } from "./components/automaticTrading/automaticTrading";
 
 import { AppBar, Toolbar, Button, Container, Box } from "@mui/material";
-import Setting from "./components/setting/setting";
+import { Setting } from "./components/setting/setting";
 
 export default function App() {
   return (
@@ -30,7 +30,7 @@ export default function App() {
       <Container>
         <Box my={4}>
           <Routes>
-            <Route path="/priceAlertSetting" element={<PrieAlertSetting />} />
+            <Route path="/priceAlertSetting" element={<PriceAlertSetting />} />
             <Route path="/automaticTrading" element={<AutomaticTrading />} />
             <Route path="/setting" element={<Setting />} />
           </Routes>

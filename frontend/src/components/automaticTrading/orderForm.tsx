@@ -24,12 +24,12 @@ type OrderFormProps = {
   volumeField: "buy.volume" | "sell.volume";
   labelPrefix: string;
 };
-function OrderForm({
+export const OrderForm: React.FC<OrderFormProps> = ({
   control,
   errors,
   targetPriceField,
   volumeField,
-}: OrderFormProps) {
+}) => {
   const priceError =
     targetPriceField === "buy.targetPrice"
       ? errors.buy?.targetPrice
@@ -86,6 +86,4 @@ function OrderForm({
       </Grid>
     </>
   );
-}
-
-export default OrderForm;
+};

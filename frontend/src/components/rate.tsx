@@ -1,8 +1,9 @@
 import { Container, Typography, Paper, Grid } from "@mui/material";
 import { useListCryptocurrencyRate } from "../feature/hooks/useListCryptocurrencyRate";
-import SnackBer from "./snackBer";
+import { Snackbar } from "./snackBar";
 import { useEffect, useState } from "react";
-import Loading from "./loading";
+import { Loading } from "./loading";
+import { SYSTEM_ERROR } from "../feature/rate/rateMessages";
 
 function Rate({ symbol }: { symbol: string }) {
   const [snackBarMessage, setSnackBarMessage] = useState("");
@@ -11,7 +12,7 @@ function Rate({ symbol }: { symbol: string }) {
   const rate = cryptocurrencyRateMap?.get(symbol);
 
   useEffect(() => {
-    if (isRateListError) setSnackBarMessage("システムエラー");
+    if (isRateListError) setSnackBarMessage(SYSTEM_ERROR);
   }, [isRateListError]);
 
   const rateEntries = rate
@@ -54,7 +55,7 @@ function Rate({ symbol }: { symbol: string }) {
         </Typography>
       )}
 
-      {snackBarMessage && <SnackBer message={snackBarMessage} />}
+      {snackBarMessage && <Snackbar message={snackBarMessage} />}
     </Container>
   );
 }

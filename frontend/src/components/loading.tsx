@@ -1,12 +1,10 @@
 import { LinearProgress, Box, Typography } from "@mui/material";
 
-function Loading() {
+export const Loading = () => {
   return (
     <Box>
       <Typography>Loading...</Typography>
       <LinearProgress />
     </Box>
   );
-}
-
-export default Loading;
+};

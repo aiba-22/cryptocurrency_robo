@@ -1,14 +1,12 @@
 import { Container } from "@mui/material";
-import LineSetting from "./lineSetting";
-import GmoSetting from "./gmoSetting";
+import { LineSetting } from "./lineSetting";
+import { GmoSetting } from "./gmoSetting";
 
-function Setting() {
+export const Setting = () => {
   return (
     <Container>
       <LineSetting></LineSetting>
       <GmoSetting></GmoSetting>
     </Container>
   );
-}
-
-export default Setting;
+};

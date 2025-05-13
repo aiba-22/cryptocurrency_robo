@@ -1,16 +1,17 @@
 import { FormControlLabel, Switch } from "@mui/material";
 import { IS_ENABLED } from "../../feature/automaticTrading/constants";
 
-function ToggleOrderSwitch({
-  field,
-  label,
-}: {
+type ToggleOrderSwitchProps = {
   field: {
     value: number;
     onChange: (value: number) => void;
   };
   label: string;
-}) {
+};
+const ToggleOrderSwitch: React.FC<ToggleOrderSwitchProps> = ({
+  field,
+  label,
+}) => {
   return (
     <FormControlLabel
       control={
@@ -27,5 +28,5 @@ function ToggleOrderSwitch({
       label={label}
     />
   );
-}
+};
 export default ToggleOrderSwitch;

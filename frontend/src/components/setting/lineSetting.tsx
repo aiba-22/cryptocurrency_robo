@@ -1,11 +1,11 @@
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import SnackBar from "../snackBar";
+import { Snackbar } from "../snackBar";
 import { useFindLineSetting } from "../../feature/hooks/useFindLineSetting";
 import { useLineNotification } from "../../feature/hooks/useNotificationLine";
 import { useSaveLineSetting } from "../../feature/hooks/useSaveLineSetting";
-import Loading from "../loading";
+import { Loading } from "../loading";
 import {
   isLineSettingSaveStatus,
   isNotificationStatus,
@@ -20,7 +20,7 @@ interface LineFormData {
   userId: string;
 }
 
-function LineSetting() {
+export const LineSetting = () => {
   const [snackBarMessage, setSnackBarMessage] = useState("");
 
   const {
@@ -128,9 +128,7 @@ function LineSetting() {
         </form>
       )}
 
-      {snackBarMessage && <SnackBar message={snackBarMessage} />}
+      {snackBarMessage && <Snackbar message={snackBarMessage} />}
     </Container>
   );
-}
-
-export default LineSetting;
+};

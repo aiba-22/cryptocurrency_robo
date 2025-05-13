@@ -1,7 +1,7 @@
 import { Alert, Box } from "@mui/material";
 
-type snackberProps = { message: string };
-const SnackBer: React.FC<snackberProps> = ({ message }) => {
+type SnackBarProps = { message: string };
+export const Snackbar: React.FC<SnackBarProps> = ({ message }) => {
   return (
     <>
       {message && (
@@ -12,5 +12,3 @@ const SnackBer: React.FC<snackberProps> = ({ message }) => {
     </>
   );
 };
-
-export default SnackBer;
