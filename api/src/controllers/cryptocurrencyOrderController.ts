@@ -8,6 +8,7 @@ import {
 export const list = async (req: Request, res: Response) => {
   const cryptocurrencyOrderService = new CryptocurrencyOrderService();
   const result = await cryptocurrencyOrderService.list();
+  console.log("test");
   res.json(result);
 };
 
