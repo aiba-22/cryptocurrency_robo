@@ -4,19 +4,14 @@ import { ID } from "./constants";
 import db from "../db/db";
 
 export default class LineService {
-  private repository: LineRepository;
-  constructor() {
-    this.repository = new LineRepository();
-  }
-
   async find() {
-    const line = await this.repository.findById(ID);
-    if (!line) return undefined;
+    const repository = new LineRepository();
+    const line = await repository.findById(ID);
 
     return {
-      id: line.id,
-      channelAccessToken: line.channel_access_token,
-      userId: line.user_id,
+      id: line?.id,
+      channelAccessToken: line?.channel_access_token,
+      userId: line?.user_id,
     };
   }
 
@@ -28,8 +23,9 @@ export default class LineService {
     userId: string;
   }) {
     const transaction = await db.transaction();
+    const lineRepository = new LineRepository(transaction);
     try {
-      await this.repository.create(channelAccessToken, userId);
+      await lineRepository.create(channelAccessToken, userId);
       await transaction.commit();
       return "success";
     } catch (error) {
@@ -48,8 +44,9 @@ export default class LineService {
     userId: string;
   }) {
     const transaction = await db.transaction();
+    const lineRepository = new LineRepository(transaction);
     try {
-      await this.repository.update(id, channelAccessToken, userId);
+      await lineRepository.update(id, channelAccessToken, userId);
       await transaction.commit();
       return "success";
     } catch (error) {
@@ -59,7 +56,8 @@ export default class LineService {
   }
 
   async sendMessage(message: string) {
-    const line = await this.repository.findById(ID);
+    const lineRepository = new LineRepository();
+    const line = await lineRepository.findById(ID);
     if (!line) return "systemError";
 
     const { channel_access_token, user_id } = line;

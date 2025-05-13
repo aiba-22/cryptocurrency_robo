@@ -9,7 +9,7 @@ export class CryptocurrencyOrderRepository {
   }
 
   async list() {
-    return this.db("cryptocurrency_order");
+    return await this.db("cryptocurrency_order");
   }
   async create({
     symbol,
@@ -24,7 +24,7 @@ export class CryptocurrencyOrderRepository {
     type: number;
     isEnabled: number;
   }) {
-    return this.db("cryptocurrency_order").insert({
+    await this.db("cryptocurrency_order").insert({
       symbol,
       target_price: targetPrice,
       volume: volume,
@@ -48,7 +48,7 @@ export class CryptocurrencyOrderRepository {
     type: number;
     isEnabled: number;
   }) {
-    return this.db("cryptocurrency_order").where({ id }).update({
+    await this.db("cryptocurrency_order").where({ id }).update({
       symbol,
       target_price: targetPrice,
       volume: volume,

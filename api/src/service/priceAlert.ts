@@ -3,13 +3,8 @@ import { PriceAlertRepository } from "../db/repositories/priceAlertRepository";
 import { ID } from "./constants";
 
 export default class PriceAlertService {
-  db;
-  constructor() {
-    this.db = db;
-  }
-
   async find() {
-    const priceAlertRepository = new PriceAlertRepository(db);
+    const priceAlertRepository = new PriceAlertRepository();
 
     const priceAlert = await priceAlertRepository.findById(ID);
     if (!priceAlert) return;

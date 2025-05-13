@@ -3,8 +3,8 @@ import db from "../db";
 export class LineRepository {
   private db;
 
-  constructor() {
-    this.db = db;
+  constructor(dbInstance = db) {
+    this.db = dbInstance;
   }
 
   async findById(id: number) {
@@ -12,7 +12,7 @@ export class LineRepository {
   }
 
   async create(channelAccessToken: string, userId: string) {
-    this.db("line").insert({
+    await this.db("line").insert({
       channel_access_token: channelAccessToken,
       user_id: userId,
       created_at: new Date(),
@@ -20,7 +20,7 @@ export class LineRepository {
   }
 
   async update(id: number, channelAccessToken: string, userId: string) {
-    this.db("line").where({ id }).update({
+    await this.db("line").where({ id }).update({
       channel_access_token: channelAccessToken,
       user_id: userId,
       updated_at: new Date(),

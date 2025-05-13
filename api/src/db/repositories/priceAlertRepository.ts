@@ -1,4 +1,3 @@
-// src/repositories/PriceAlertRepository.ts
 import db from "../db";
 
 export class PriceAlertRepository {
@@ -9,7 +8,7 @@ export class PriceAlertRepository {
   }
 
   async findById(id: number) {
-    return this.db("price_alert").where({ id }).first();
+    return await this.db("price_alert").where({ id }).first();
   }
 
   async create(conditions: {
@@ -17,7 +16,7 @@ export class PriceAlertRepository {
     isUpperLimit: boolean;
     symbol: string;
   }) {
-    return this.db("price_alert").insert({
+    await this.db("price_alert").insert({
       conditions,
     });
   }
@@ -33,6 +32,11 @@ export class PriceAlertRepository {
       symbol: string;
     };
   }) {
-    return this.db("price_alert").where({ id }).update(conditions);
+    await db("price_alert")
+      .where({ id })
+      .update({
+        conditions: JSON.stringify(conditions),
+        updated_at: new Date(),
+      });
   }
 }

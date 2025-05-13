@@ -8,11 +8,11 @@ export class GmoRepository {
   }
 
   async findById(id: number) {
-    return this.db("gmo").where({ id }).first();
+    return await this.db("gmo").where({ id }).first();
   }
 
   async create({ apiKey, secretKey }: { apiKey: string; secretKey: string }) {
-    return this.db("gmo").insert({
+    await this.db("gmo").insert({
       api_key: apiKey,
       secret_key: secretKey,
       created_at: new Date(),
@@ -28,7 +28,7 @@ export class GmoRepository {
     apiKey: string;
     secretKey: string;
   }) {
-    return this.db("gmo").where({ id }).update({
+    await this.db("gmo").where({ id }).update({
       api_key: apiKey,
       secret_key: secretKey,
       updated_at: new Date(),
