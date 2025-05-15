@@ -15,12 +15,12 @@ export default class orderService {
 
     const response = orderList.map((order) => {
       return {
-        id: order?.id,
-        symbol: order?.symbol,
-        targetPrice: order?.target_price,
-        volume: order?.volume,
-        type: order?.type,
-        isEnabled: order?.is_enabled,
+        id: order.id,
+        symbol: order.symbol,
+        targetPrice: order.target_price,
+        volume: order.volume,
+        type: order.type,
+        isEnabled: order.is_enabled,
       };
     });
     return response;

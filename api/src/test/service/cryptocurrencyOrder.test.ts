@@ -1,4 +1,4 @@
-import orderService from "../../service/cryptocurrencyOrder";
+import OrderService from "../../service/cryptocurrencyOrder";
 import { CryptocurrencyOrderRepository } from "../../db/repositories/cryptocurrencyOrderRepository";
 import db from "../../db/db";
 
@@ -9,14 +9,14 @@ jest.mock("../../db/db", () => ({
 jest.mock("../../db/repositories/cryptocurrencyOrderRepository");
 
 describe("orderServiceのテスト", () => {
-  let service: orderService;
+  let orderService: OrderService;
 
   beforeEach(() => {
-    service = new orderService();
+    orderService = new OrderService();
     jest.clearAllMocks();
   });
 
-  describe("listメソッド", () => {
+  describe("list", () => {
     it("注文リストが存在する場合、整形されたリストを返す", async () => {
       const mockList = jest.fn().mockResolvedValue([
         {
@@ -32,7 +32,7 @@ describe("orderServiceのテスト", () => {
         list: mockList,
       }));
 
-      const result = await service.list();
+      const result = await orderService.list();
 
       expect(result).toEqual([
         {
@@ -46,19 +46,19 @@ describe("orderServiceのテスト", () => {
       ]);
     });
 
-    it("注文リストが空の場合、undefinedを返す", async () => {
+    it("注文リストがない場合、undefinedを返す", async () => {
       const mockList = jest.fn().mockResolvedValue([]);
       (CryptocurrencyOrderRepository as jest.Mock).mockImplementation(() => ({
         list: mockList,
       }));
 
-      const result = await service.list();
+      const result = await orderService.list();
 
       expect(result).toBeUndefined();
     });
   });
 
-  describe("createメソッド", () => {
+  describe("create", () => {
     it("注文作成が成功した場合、'success'を返す", async () => {
       const commit = jest.fn();
       const rollback = jest.fn();
@@ -69,7 +69,7 @@ describe("orderServiceのテスト", () => {
         create: mockCreate,
       }));
 
-      const result = await service.create({
+      const result = await orderService.create({
         symbol: "btc",
         targetPrice: 60000,
         volume: 1,
@@ -91,7 +91,7 @@ describe("orderServiceのテスト", () => {
         create: mockCreate,
       }));
 
-      const result = await service.create({
+      const result = await orderService.create({
         symbol: "eth",
         targetPrice: 2000,
         volume: 3,
@@ -104,7 +104,7 @@ describe("orderServiceのテスト", () => {
     });
   });
 
-  describe("updateメソッド", () => {
+  describe("update", () => {
     it("注文更新が成功した場合、'success'を返す", async () => {
       const commit = jest.fn();
       const rollback = jest.fn();
@@ -115,7 +115,7 @@ describe("orderServiceのテスト", () => {
         update: mockUpdate,
       }));
 
-      const result = await service.update({
+      const result = await orderService.update({
         id: 1,
         symbol: "btc",
         targetPrice: 50000,
@@ -138,7 +138,7 @@ describe("orderServiceのテスト", () => {
         update: mockUpdate,
       }));
 
-      const result = await service.update({
+      const result = await orderService.update({
         id: 2,
         symbol: "eth",
         targetPrice: 2500,

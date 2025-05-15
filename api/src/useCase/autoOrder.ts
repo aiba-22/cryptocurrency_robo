@@ -6,7 +6,7 @@ import LineService from "../service/line";
 export const autoOrder = async () => {
   const cryptocurrencyOrderService = new CryptocurrencyOrderService();
   const orderList = await cryptocurrencyOrderService.list();
-  if (orderList.length === 0) return;
+  if (!orderList) return;
 
   const buyOrder = orderList.find((order) => order.type === ORDER_TYPE.BUY);
   const sellOrder = orderList.find((order) => order.type === ORDER_TYPE.SELL);

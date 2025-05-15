@@ -5,7 +5,7 @@ import PriceAlertService from "../service/priceAlert";
 export const autoAlert = async () => {
   const priceAlertService = new PriceAlertService();
   const priceAlert = await priceAlertService.find();
-  if (!priceAlert.id) return;
+  if (!priceAlert) return;
 
   const { isUpperLimit, symbol, price } = priceAlert.conditions;
 
