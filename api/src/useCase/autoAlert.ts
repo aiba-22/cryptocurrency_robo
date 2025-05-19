@@ -12,6 +12,7 @@ export const autoAlert = async () => {
   const gmoService = new GmoService();
 
   const tradingPrice = await gmoService.fetchTradingPrice(symbol);
+  if (!tradingPrice) return;
 
   const shouldNotify =
     (isUpperLimit && tradingPrice > price) ||

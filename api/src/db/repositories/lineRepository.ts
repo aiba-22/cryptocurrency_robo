@@ -11,7 +11,13 @@ export class LineRepository {
     return await this.db("line").where({ id }).first();
   }
 
-  async create(channelAccessToken: string, userId: string) {
+  async create({
+    channelAccessToken,
+    userId,
+  }: {
+    channelAccessToken: string;
+    userId: string;
+  }) {
     await this.db("line").insert({
       channel_access_token: channelAccessToken,
       user_id: userId,
@@ -19,7 +25,15 @@ export class LineRepository {
     });
   }
 
-  async update(id: number, channelAccessToken: string, userId: string) {
+  async update({
+    id,
+    channelAccessToken,
+    userId,
+  }: {
+    id: number;
+    channelAccessToken: string;
+    userId: string;
+  }) {
     await this.db("line").where({ id }).update({
       channel_access_token: channelAccessToken,
       user_id: userId,

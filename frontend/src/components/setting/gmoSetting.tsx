@@ -55,6 +55,13 @@ export const GmoSetting = () => {
 
   return (
     <Container maxWidth="sm">
+      <input
+        onChange={(reset) => {
+          console.log(reset.target.value);
+          const value = reset.target.value;
+          console.log(value);
+        }}
+      />
       <Typography variant="h4" gutterBottom>
         GMO設定
       </Typography>
@@ -78,7 +85,6 @@ export const GmoSetting = () => {
               />
             )}
           />
-
           <Controller
             name="secretKey"
             control={control}
@@ -95,7 +101,6 @@ export const GmoSetting = () => {
               />
             )}
           />
-
           <Box mt={2} display="flex" justifyContent="flex-end">
             <Button type="submit" variant="contained" color="primary">
               保存

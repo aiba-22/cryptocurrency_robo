@@ -7,11 +7,11 @@ export default class LineService {
   async find() {
     const repository = new LineRepository();
     const line = await repository.findById(ID);
-
+    if (!line) return;
     return {
-      id: line?.id,
-      channelAccessToken: line?.channel_access_token,
-      userId: line?.user_id,
+      id: line.id,
+      channelAccessToken: line.channel_access_token,
+      userId: line.user_id,
     };
   }
 
@@ -25,7 +25,7 @@ export default class LineService {
     const transaction = await db.transaction();
     const lineRepository = new LineRepository(transaction);
     try {
-      await lineRepository.create(channelAccessToken, userId);
+      await lineRepository.create({ channelAccessToken, userId });
       await transaction.commit();
       return "success";
     } catch (error) {
@@ -46,7 +46,7 @@ export default class LineService {
     const transaction = await db.transaction();
     const lineRepository = new LineRepository(transaction);
     try {
-      await lineRepository.update(id, channelAccessToken, userId);
+      await lineRepository.update({ id, channelAccessToken, userId });
       await transaction.commit();
       return "success";
     } catch (error) {

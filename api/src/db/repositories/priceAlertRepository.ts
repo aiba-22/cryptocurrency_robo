@@ -32,7 +32,7 @@ export class PriceAlertRepository {
       symbol: string;
     };
   }) {
-    await db("price_alert")
+    await this.db("price_alert")
       .where({ id })
       .update({
         conditions: JSON.stringify(conditions),

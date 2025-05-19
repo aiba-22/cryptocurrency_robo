@@ -7,7 +7,7 @@ import { ZodError } from "zod";
 describe("createCryptocurrencyOrderSchema", () => {
   describe("symbol", () => {
     const invalidValues = [undefined, null, ""];
-    test.each(invalidValues)(
+    it.each(invalidValues)(
       "不正な値の時、バリデーションエラーが発生する",
       (value) => {
         const invalidData = {
@@ -27,7 +27,7 @@ describe("createCryptocurrencyOrderSchema", () => {
 
   describe("targetPrice", () => {
     const invalidValues = [undefined, null, -1, 0, "1"];
-    test.each(invalidValues)(
+    it.each(invalidValues)(
       "不正な値の場合、バリデーションエラーが発生する",
       (value) => {
         const invalidData = {
@@ -47,7 +47,7 @@ describe("createCryptocurrencyOrderSchema", () => {
 
   describe("volume", () => {
     const invalidValues = [undefined, null, -1, 0, "1"];
-    test.each(invalidValues)(
+    it.each(invalidValues)(
       "不正な値の場合、バリデーションエラーが発生する",
       (value) => {
         const invalidData = {
@@ -67,7 +67,7 @@ describe("createCryptocurrencyOrderSchema", () => {
 
   describe("type", () => {
     const invalidValues = [undefined, null, -1];
-    test.each(invalidValues)(
+    it.each(invalidValues)(
       "不正な値の場合、バリデーションエラーが発生する",
       (value) => {
         const invalidData = {
@@ -87,7 +87,7 @@ describe("createCryptocurrencyOrderSchema", () => {
 
   describe("isEnabled", () => {
     const invalidValues = [undefined, null, "1", 2];
-    test.each(invalidValues)(
+    it.each(invalidValues)(
       "不正な値の場合、バリデーションエラーが発生する",
       (value) => {
         const invalidData = {
@@ -121,9 +121,9 @@ describe("createCryptocurrencyOrderSchema", () => {
 });
 
 describe("updateCryptocurrencyOrderSchema", () => {
-  describe("symbol", () => {
-    const invalidValues = [undefined, null, "1"];
-    test.each(invalidValues)(
+  describe("id", () => {
+    const invalidValues = [undefined, null, "1", 0, -1];
+    it.each(invalidValues)(
       "不正な値の時、バリデーションエラーが発生する",
       (value) => {
         const invalidData = {
@@ -144,7 +144,7 @@ describe("updateCryptocurrencyOrderSchema", () => {
 
   describe("symbol", () => {
     const invalidValues = [undefined, null, ""];
-    test.each(invalidValues)(
+    it.each(invalidValues)(
       "不正な値の時、バリデーションエラーが発生する",
       (value) => {
         const invalidData = {
@@ -165,7 +165,7 @@ describe("updateCryptocurrencyOrderSchema", () => {
 
   describe("targetPrice", () => {
     const invalidValues = [undefined, null, -1, 0, "1"];
-    test.each(invalidValues)(
+    it.each(invalidValues)(
       "不正な値の場合、バリデーションエラーが発生する",
       (value) => {
         const invalidData = {
@@ -186,7 +186,7 @@ describe("updateCryptocurrencyOrderSchema", () => {
 
   describe("volume", () => {
     const invalidValues = [undefined, null, -1, 0, "1"];
-    test.each(invalidValues)(
+    it.each(invalidValues)(
       "不正な値の場合、バリデーションエラーが発生する",
       (value) => {
         const invalidData = {
@@ -207,7 +207,7 @@ describe("updateCryptocurrencyOrderSchema", () => {
 
   describe("type", () => {
     const invalidValues = [undefined, null, -1];
-    test.each(invalidValues)(
+    it.each(invalidValues)(
       "不正な値の場合、バリデーションエラーが発生する",
       (value) => {
         const invalidData = {
@@ -228,7 +228,7 @@ describe("updateCryptocurrencyOrderSchema", () => {
 
   describe("isEnabled", () => {
     const invalidValues = [undefined, null, "1", 2];
-    test.each(invalidValues)(
+    it.each(invalidValues)(
       "不正な値の場合、バリデーションエラーが発生する",
       (value) => {
         const invalidData = {

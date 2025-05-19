@@ -7,10 +7,12 @@ export default class GmoService {
   async find() {
     const gmoRepository = new GmoRepository();
     const gmo = await gmoRepository.findById(ID);
+    if (!gmo) return;
+
     return {
-      id: gmo?.id,
-      apiKey: gmo?.api_key,
-      secretKey: gmo?.secret_key,
+      id: gmo.id,
+      apiKey: gmo.api_key,
+      secretKey: gmo.secret_key,
     };
   }
 
@@ -51,29 +53,52 @@ export default class GmoService {
     }
   }
 
-  async fetchTradingPrice(symbol: string) {
+  async fetchTradingPrice(symbol: string): Promise<
+    | {
+        ask: string;
+        bid: string;
+        high: string;
+        last: string;
+        low: string;
+        symbol: string;
+        timestamp: string;
+        volume: string;
+      }[]
+    | undefined
+  > {
     const endPoint = "https://api.coin.z.com/public";
     const path = `/v1/ticker?symbol=${symbol}`;
-    const result = await axios.get(endPoint + path);
-    return result.data.data[0].last;
+    try {
+      const result = await axios.get(endPoint + path);
+      if (result?.data?.data.length === 0) {
+        return;
+      }
+      return result.data.data[0].last;
+    } catch (error) {}
   }
 
   async fetchTradingRateList(): Promise<
-    {
-      ask: string;
-      bid: string;
-      high: string;
-      last: string;
-      low: string;
-      symbol: string;
-      timestamp: string;
-      volume: string;
-    }[]
+    | {
+        ask: string;
+        bid: string;
+        high: string;
+        last: string;
+        low: string;
+        symbol: string;
+        timestamp: string;
+        volume: string;
+      }[]
+    | undefined
   > {
     const endPoint = "https://api.coin.z.com/public";
     const path = `/v1/ticker?symbol=`;
-    const result = await axios.get(endPoint + path);
-    return result.data.data;
+    try {
+      const result = await axios.get(endPoint + path);
+      if (result?.data?.data.length === 0) {
+        return;
+      }
+      return result.data.data;
+    } catch (error) {}
   }
 
   async fetchAssets({
@@ -101,9 +126,11 @@ export default class GmoService {
         "API-SIGN": sign,
       },
     };
-
-    const response = await axios.get(endPoint + path, options);
-    return response.data;
+    try {
+      const response = await axios.get(endPoint + path, options);
+      if (!response?.data) return;
+      return response.data;
+    } catch (error) {}
   }
 
   async order({
@@ -147,7 +174,11 @@ export default class GmoService {
     };
     try {
       const result = await axios.post(endPoint + path, reqBody, options);
-      return result.data;
+      if (result?.status === 1) {
+        return "success";
+      } else {
+        return "failure";
+      }
     } catch (error) {
       return "failure";
     }

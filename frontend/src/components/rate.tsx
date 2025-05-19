@@ -38,14 +38,14 @@ function Rate({ symbol }: { symbol: string }) {
         <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
           <Grid container spacing={1}>
             {rateEntries.map(({ label, value }) => (
-              <>
+              <Grid container key={label}>
                 <Grid item xs={6}>
                   <Typography color="textSecondary">{label}</Typography>
                 </Grid>
                 <Grid item xs={6}>
                   <Typography>{value}</Typography>
                 </Grid>
-              </>
+              </Grid>
             ))}
           </Grid>
         </Paper>

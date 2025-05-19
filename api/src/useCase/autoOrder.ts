@@ -13,7 +13,7 @@ export const autoOrder = async () => {
 
   const gmoService = new GmoService();
   const tradingRateList = await gmoService.fetchTradingRateList();
-  if (tradingRateList.length === 0) return;
+  if (!tradingRateList) return;
 
   const isTargetBuyPrice = checkPrice({
     tradingRateList,
@@ -41,10 +41,8 @@ export const autoOrder = async () => {
       price: buyOrder.targetPrice,
       size: buyOrder.volume,
     });
-    await lineService.sendMessage(
-      `買い注文をしました${JSON.stringify(result)}`
-    );
-    return;
+    const resultMessage = result === "success" ? "成功" : "失敗";
+    await lineService.sendMessage(`売り注文に${resultMessage}しました。`);
   }
 
   if (isTargetSellPrice && sellOrder) {
@@ -54,9 +52,8 @@ export const autoOrder = async () => {
       price: sellOrder?.targetPrice,
       size: sellOrder?.volume,
     });
-    await lineService.sendMessage(
-      `売り注文をしました${JSON.stringify(result)}`
-    );
+    const resultMessage = result === "success" ? "成功" : "失敗";
+    await lineService.sendMessage(`買い注文に${resultMessage}しました。`);
   }
 };
 

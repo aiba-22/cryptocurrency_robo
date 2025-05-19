@@ -9,7 +9,7 @@ export const createCryptocurrencyOrderSchema = z.object({
 });
 
 export const updateCryptocurrencyOrderSchema = z.object({
-  id: z.number(),
+  id: z.number().positive(),
   symbol: z.string().min(1),
   targetPrice: z.number().positive(),
   volume: z.number().positive(),
