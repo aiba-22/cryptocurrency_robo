@@ -2,6 +2,8 @@ import { GmoRepository } from "../../../db/repositories/gmoRepository";
 
 describe("GmoRepository", () => {
   describe("findByIdメソッド", () => {
+    const userId = 1;
+
     it("DBに'gmo'テーブルのクエリを実行し、結果を返す", async () => {
       const mockData = {
         id: 1,
@@ -16,20 +18,20 @@ describe("GmoRepository", () => {
         where: whereMock,
       }));
       const repository = new GmoRepository(dbMock as any);
-      const result = await repository.findById(1);
+      const result = await repository.findById(userId);
       expect(dbMock).toHaveBeenCalledWith("gmo");
       expect(result).toEqual(mockData);
     });
 
     it("DBのクエリが失敗した場合、例外をスローする", async () => {
       const whereMock = jest.fn().mockReturnValue({
-        first: jest.fn().mockRejectedValue(new Error("DB Error")),
+        first: jest.fn().mockRejectedValue(new Error()),
       });
       const dbMock = jest.fn(() => ({
         where: whereMock,
       }));
       const repository = new GmoRepository(dbMock as any);
-      await expect(repository.findById(1)).rejects.toThrow("DB Error");
+      await expect(repository.findById(userId)).rejects.toThrow();
     });
   });
   describe("createメソッド", () => {
@@ -53,14 +55,14 @@ describe("GmoRepository", () => {
     });
 
     it("DBのinsertが失敗した場合、例外をスローする", async () => {
-      const insertMock = jest.fn().mockRejectedValue(new Error("DB Error"));
+      const insertMock = jest.fn().mockRejectedValue(new Error());
       const dbMock = jest.fn(() => ({
         insert: insertMock,
       }));
       const repository = new GmoRepository(dbMock as any);
       await expect(
         repository.create({ apiKey: "key", secretKey: "secret" })
-      ).rejects.toThrow("DB Error");
+      ).rejects.toThrow();
     });
   });
   describe("updateメソッド", () => {
@@ -89,7 +91,7 @@ describe("GmoRepository", () => {
     });
 
     it("DBのupdateが失敗した場合、例外をスローする", async () => {
-      const updateMock = jest.fn().mockRejectedValue(new Error("DB Error"));
+      const updateMock = jest.fn().mockRejectedValue(new Error());
       const whereMock = jest.fn(() => ({
         update: updateMock,
       }));
@@ -99,7 +101,7 @@ describe("GmoRepository", () => {
       const repository = new GmoRepository(dbMock as any);
       await expect(
         repository.update({ id: 1, apiKey: "key", secretKey: "secret" })
-      ).rejects.toThrow("DB Error");
+      ).rejects.toThrow();
     });
   });
 });

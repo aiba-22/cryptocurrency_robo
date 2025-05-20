@@ -1,58 +1,6 @@
 import axios from "axios";
 import crypto from "crypto";
-import { GmoRepository } from "../db/repositories/gmoRepository";
-import { ID } from "./constants";
-import db from "../db/db";
-export default class GmoService {
-  async find() {
-    const gmoRepository = new GmoRepository();
-    const gmo = await gmoRepository.findById(ID);
-    if (!gmo) return;
-
-    return {
-      id: gmo.id,
-      apiKey: gmo.api_key,
-      secretKey: gmo.secret_key,
-    };
-  }
-
-  async create({ apiKey, secretKey }: { apiKey: string; secretKey: string }) {
-    const transaction = await db.transaction();
-    const gmoRepository = new GmoRepository(transaction);
-    try {
-      await gmoRepository.create({
-        apiKey,
-        secretKey,
-      });
-      await transaction.commit();
-      return "success";
-    } catch (error) {
-      await transaction.rollback();
-      return "failure";
-    }
-  }
-
-  async update({
-    id,
-    apiKey,
-    secretKey,
-  }: {
-    id: number;
-    apiKey: string;
-    secretKey: string;
-  }) {
-    const transaction = await db.transaction();
-    const gmoRepository = new GmoRepository(transaction);
-    try {
-      await gmoRepository.update({ id, apiKey, secretKey });
-      await transaction.commit();
-      return "success";
-    } catch (error) {
-      await transaction.rollback();
-      return "failure";
-    }
-  }
-
+export default class GmoApiService {
   async fetchTradingPrice(symbol: string): Promise<
     | {
         ask: string;
@@ -138,16 +86,16 @@ export default class GmoService {
     side,
     price,
     size,
+    secretKey,
+    apiKey,
   }: {
     symbol: string;
     side: string;
     price: number;
     size: number;
+    secretKey: string;
+    apiKey: string;
   }) {
-    const gmoRepository = new GmoRepository();
-    const { id, api_key, secret_key } = await gmoRepository.findById(ID);
-    if (!id) return;
-
     const timestamp = Date.now().toString();
     const method = "POST";
     const endPoint = "https://api.coin.z.com/private";
@@ -162,12 +110,12 @@ export default class GmoService {
     });
     const text = timestamp + method + path + reqBody;
     const sign = crypto
-      .createHmac("sha256", secret_key)
+      .createHmac("sha256", secretKey)
       .update(text)
       .digest("hex");
     const options = {
       headers: {
-        "API-KEY": api_key,
+        "API-KEY": apiKey,
         "API-TIMESTAMP": timestamp,
         "API-SIGN": sign,
       },

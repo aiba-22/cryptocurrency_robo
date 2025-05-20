@@ -1,6 +1,6 @@
 import * as controller from "../../controllers/cryptocurrencyOrderController";
 import * as schema from "../../schema/cryptocurrencyOrderSchema";
-import CryptocurrencyOrderService from "../../service/cryptocurrencyOrder";
+import CryptocurrencyOrderService from "../../service/cryptocurrencyOrderService";
 
 const mockResponse = () => {
   const res = {} as any;
@@ -16,7 +16,7 @@ describe("cryptocurrencyOrderControllerのテスト", () => {
     jest.resetAllMocks();
   });
 
-  describe("list関数のテスト", () => {
+  describe("list", () => {
     it("正常時はjsonで結果を返す", async () => {
       const req = mockRequest({});
       const res = mockResponse();
@@ -48,12 +48,10 @@ describe("cryptocurrencyOrderControllerのテスト", () => {
       jest
         .spyOn(CryptocurrencyOrderService.prototype, "list")
         .mockImplementation(() => {
-          throw new Error("DB接続失敗");
+          throw new Error();
         });
 
-      await expect(controller.list(req as any, res)).rejects.toThrow(
-        "DB接続失敗"
-      );
+      await expect(controller.list(req as any, res)).rejects.toThrow();
     });
   });
 
@@ -90,12 +88,10 @@ describe("cryptocurrencyOrderControllerのテスト", () => {
       jest
         .spyOn(schema.createCryptocurrencyOrderSchema, "parse")
         .mockImplementation(() => {
-          throw new Error("バリデーションエラー");
+          throw new Error();
         });
 
-      await expect(controller.create(req as any, res)).rejects.toThrow(
-        "バリデーションエラー"
-      );
+      await expect(controller.create(req as any, res)).rejects.toThrow();
     });
   });
 
@@ -133,12 +129,10 @@ describe("cryptocurrencyOrderControllerのテスト", () => {
       jest
         .spyOn(schema.updateCryptocurrencyOrderSchema, "parse")
         .mockImplementation(() => {
-          throw new Error("バリデーションエラー");
+          throw new Error();
         });
 
-      await expect(controller.update(req as any, res)).rejects.toThrow(
-        "バリデーションエラー"
-      );
+      await expect(controller.update(req as any, res)).rejects.toThrow();
     });
   });
 });

@@ -1,12 +1,12 @@
 import db from "../db/db";
 import { PriceAlertRepository } from "../db/repositories/priceAlertRepository";
-import { ID } from "./constants";
+import { USER_ID } from "./constants";
 
 export default class PriceAlertService {
   async find() {
     const priceAlertRepository = new PriceAlertRepository();
 
-    const priceAlert = await priceAlertRepository.findById(ID);
+    const priceAlert = await priceAlertRepository.findById(USER_ID);
     if (!priceAlert) return;
 
     return {

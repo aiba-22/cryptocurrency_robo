@@ -7,8 +7,8 @@ export class LineRepository {
     this.db = dbInstance;
   }
 
-  async findById(id: number) {
-    return await this.db("line").where({ id }).first();
+  async findById(userId: number) {
+    return await this.db("line").where({ user_id: userId }).first();
   }
 
   async create({

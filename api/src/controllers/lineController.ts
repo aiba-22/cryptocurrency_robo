@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import LineService from "../service/line";
+import LineService from "../service/lineService";
 import { createLineSchema, updateLineSchema } from "../schema/lineSchema";
 
 export const get = async (req: Request, res: Response) => {

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import PriceAlertService from "../service/priceAlert";
+import PriceAlertService from "../service/priceAlertService";
 import {
   createPriceAlertSchema,
   updatePriceAlertSchema,

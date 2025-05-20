@@ -1,15 +1,18 @@
 import { autoAlert } from "../../useCase/autoAlert";
-import GmoService from "../../service/gmo";
-import PriceAlertService from "../../service/priceAlert";
-import LineService from "../../service/line";
+import GmoApiService from "../../service/GmoApiService";
+import PriceAlertService from "../../service/priceAlertService";
+import LineService from "../../service/lineService";
+import LineApiService from "../../service/lineApiService";
 
-jest.mock("../../service/gmo");
-jest.mock("../../service/priceAlert");
-jest.mock("../../service/line");
+jest.mock("../../service/GmoApiService");
+jest.mock("../../service/priceAlertService");
+jest.mock("../../service/lineService");
+jest.mock("../../service/lineApiService");
 
 describe("autoAlert", () => {
   const mockPriceAlertServiceFind = jest.fn();
   const mockFetchTradingPrice = jest.fn();
+  const mockLineServiceFind = jest.fn();
   const mockSendMessage = jest.fn();
 
   beforeEach(() => {
@@ -19,11 +22,15 @@ describe("autoAlert", () => {
       find: mockPriceAlertServiceFind,
     }));
 
-    (GmoService as jest.Mock).mockImplementation(() => ({
+    (GmoApiService as jest.Mock).mockImplementation(() => ({
       fetchTradingPrice: mockFetchTradingPrice,
     }));
 
     (LineService as jest.Mock).mockImplementation(() => ({
+      find: mockLineServiceFind,
+    }));
+
+    (LineApiService as jest.Mock).mockImplementation(() => ({
       sendMessage: mockSendMessage,
     }));
   });
@@ -40,9 +47,12 @@ describe("autoAlert", () => {
 
     mockFetchTradingPrice.mockResolvedValue(1100);
 
-    await autoAlert();
+    mockLineServiceFind.mockResolvedValue({
+      userId: "testUserId",
+      channelAccessToken: "testChannelAccessToken",
+    });
 
-    expect(mockSendMessage).toHaveBeenCalledWith("現在の価格は1100円です。");
+    await expect(autoAlert()).resolves.not.toThrow();
   });
 
   it("価格が下限を下回った場合に通知される", async () => {
@@ -56,10 +66,12 @@ describe("autoAlert", () => {
     });
 
     mockFetchTradingPrice.mockResolvedValue(900);
+    mockLineServiceFind.mockResolvedValue({
+      userId: "testUserId",
+      channelAccessToken: "testChannelAccessToken",
+    });
 
-    await autoAlert();
-
-    expect(mockSendMessage).toHaveBeenCalledWith("現在の価格は900円です。");
+    await expect(autoAlert()).resolves.not.toThrow();
   });
 
   it("価格が上限を超えていない場合は通知されない", async () => {

@@ -7,8 +7,8 @@ export class GmoRepository {
     this.db = dbInstance;
   }
 
-  async findById(id: number) {
-    return await this.db("gmo").where({ id }).first();
+  async findById(userId: number) {
+    return await this.db("gmo").where({ user_id: userId }).first();
   }
 
   async create({ apiKey, secretKey }: { apiKey: string; secretKey: string }) {

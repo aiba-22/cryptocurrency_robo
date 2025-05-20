@@ -7,8 +7,8 @@ export class PriceAlertRepository {
     this.db = dbInstance;
   }
 
-  async findById(id: number) {
-    return await this.db("price_alert").where({ id }).first();
+  async findById(userId: number) {
+    return await this.db("price_alert").where({ user_id: userId }).first();
   }
 
   async create(conditions: {

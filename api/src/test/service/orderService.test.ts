@@ -1,4 +1,4 @@
-import OrderService from "../../service/cryptocurrencyOrder";
+import OrderService from "../../service/cryptocurrencyOrderService";
 import { CryptocurrencyOrderRepository } from "../../db/repositories/cryptocurrencyOrderRepository";
 import db from "../../db/db";
 
@@ -86,7 +86,7 @@ describe("orderServiceのテスト", () => {
       const rollback = jest.fn();
       (db.transaction as jest.Mock).mockResolvedValue({ commit, rollback });
 
-      const mockCreate = jest.fn().mockRejectedValue(new Error("DB Error"));
+      const mockCreate = jest.fn().mockRejectedValue(new Error());
       (CryptocurrencyOrderRepository as jest.Mock).mockImplementation(() => ({
         create: mockCreate,
       }));

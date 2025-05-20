@@ -8,9 +8,12 @@ export class CryptocurrencyOrderRepository {
     this.db = dbInstance;
   }
 
-  async list() {
-    return await this.db("cryptocurrency_order");
+  async list(userId: number) {
+    return await this.db("cryptocurrency_order").where({
+      user_id: userId,
+    });
   }
+
   async create({
     symbol,
     targetPrice,

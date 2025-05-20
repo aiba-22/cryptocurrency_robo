@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import CryptocurrencyOrderService from "../service/cryptocurrencyOrder";
+import CryptocurrencyOrderService from "../service/cryptocurrencyOrderService";
 import {
   createCryptocurrencyOrderSchema,
   updateCryptocurrencyOrderSchema,

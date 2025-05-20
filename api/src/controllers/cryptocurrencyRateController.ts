@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import GmoService from "../service/gmo";
+import GmoService from "../service/GmoApiService";
 
 export const get = async (req: Request, res: Response) => {
   const gmoService = new GmoService();

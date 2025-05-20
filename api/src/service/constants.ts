@@ -1,6 +1,6 @@
-// アカウント機能をつけない想定なのでlineやgmo等、各種テーブルから取得するIDは1に固定している。
+// アカウント機能をつけない想定なのでlineやgmo等、各種テーブルから取得するuserIdは1に固定している。
 // userテーブルを作成したらそこに紐づく取得方法にする
-export const ID = 1;
+export const USER_ID = 1;
 
 export const CRYPTOCURRENCY = {
   BTC: "BTC",

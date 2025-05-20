@@ -1,4 +1,4 @@
-import PriceAlertService from "../../service/priceAlert";
+import PriceAlertService from "../../service/priceAlertService";
 import db from "../../db/db";
 import { PriceAlertRepository } from "../../db/repositories/priceAlertRepository";
 import { ID } from "../../service/constants";
@@ -84,7 +84,7 @@ describe("PriceAlertService", () => {
       const rollback = jest.fn();
       (db.transaction as jest.Mock).mockResolvedValue({ commit, rollback });
 
-      const mockCreate = jest.fn().mockRejectedValue(new Error("DB Error"));
+      const mockCreate = jest.fn().mockRejectedValue(new Error());
 
       (PriceAlertRepository as jest.Mock).mockImplementation(() => ({
         create: mockCreate,

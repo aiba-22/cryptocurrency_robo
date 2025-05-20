@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import GmoService from "../service/gmo";
+import GmoService from "../service/gmoService";
 import { createGmoSchema, updateGmoSchema } from "../schema/gmoSchema";
 
 export const get = async (req: Request, res: Response) => {

@@ -1,7 +1,9 @@
 import { ORDER_SIDE, ORDER_TYPE } from "../service/constants";
-import CryptocurrencyOrderService from "../service/cryptocurrencyOrder";
-import GmoService from "../service/gmo";
-import LineService from "../service/line";
+import CryptocurrencyOrderService from "../service/cryptocurrencyOrderService";
+import GmoService from "../service/gmoService";
+import GmoApiService from "../service/GmoApiService";
+import LineService from "../service/lineService";
+import LineApiService from "../service/lineApiService";
 
 export const autoOrder = async () => {
   const cryptocurrencyOrderService = new CryptocurrencyOrderService();
@@ -12,7 +14,12 @@ export const autoOrder = async () => {
   const sellOrder = orderList.find((order) => order.type === ORDER_TYPE.SELL);
 
   const gmoService = new GmoService();
-  const tradingRateList = await gmoService.fetchTradingRateList();
+  const gmo = await gmoService.find();
+  if (!gmo?.apiKey || !gmo?.secretKey) return;
+  const { apiKey, secretKey } = gmo;
+
+  const gmoApiService = new GmoApiService();
+  const tradingRateList = await gmoApiService.fetchTradingRateList();
   if (!tradingRateList) return;
 
   const isTargetBuyPrice = checkPrice({
@@ -30,30 +37,44 @@ export const autoOrder = async () => {
   });
 
   const lineService = new LineService();
-  await lineService.sendMessage(
-    `チェック中です、買い判定：${isTargetBuyPrice},売り判定：${isTargetSellPrice}`
-  );
+  const line = await lineService.find();
+  if (!line?.channelAccessToken || !line?.userId) return;
+  const { userId, channelAccessToken } = line;
+
+  const lineApiService = new LineApiService();
 
   if (isTargetBuyPrice && buyOrder) {
-    const result = await gmoService.order({
+    const result = await gmoApiService.order({
       symbol: buyOrder.symbol,
       side: ORDER_SIDE.BUY,
       price: buyOrder.targetPrice,
       size: buyOrder.volume,
+      apiKey,
+      secretKey,
     });
     const resultMessage = result === "success" ? "成功" : "失敗";
-    await lineService.sendMessage(`売り注文に${resultMessage}しました。`);
+    await lineApiService.sendMessage({
+      message: `売り注文に${resultMessage}しました。`,
+      userId,
+      channelAccessToken,
+    });
   }
 
   if (isTargetSellPrice && sellOrder) {
-    const result = await gmoService.order({
+    const result = await gmoApiService.order({
       symbol: sellOrder?.symbol,
       side: ORDER_SIDE.SELL,
       price: sellOrder?.targetPrice,
       size: sellOrder?.volume,
+      apiKey,
+      secretKey,
     });
     const resultMessage = result === "success" ? "成功" : "失敗";
-    await lineService.sendMessage(`買い注文に${resultMessage}しました。`);
+    await lineApiService.sendMessage({
+      message: `買い注文に${resultMessage}しました。`,
+      userId,
+      channelAccessToken,
+    });
   }
 };
 

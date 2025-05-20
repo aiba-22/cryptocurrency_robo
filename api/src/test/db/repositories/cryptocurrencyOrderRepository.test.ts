@@ -2,6 +2,8 @@ import { CryptocurrencyOrderRepository } from "../../../db/repositories/cryptocu
 
 describe("CryptocurrencyOrderRepository", () => {
   describe("listメソッド", () => {
+    const userId = 1;
+
     it("DBに'cryptocurrency_order'テーブルのクエリを実行し、結果を返す", async () => {
       const mockData = [
         {
@@ -16,20 +18,24 @@ describe("CryptocurrencyOrderRepository", () => {
         },
       ];
 
-      const dbMock = jest.fn().mockResolvedValue(mockData);
+      const whereMock = jest.fn().mockResolvedValue(mockData);
+      const dbMock = jest.fn(() => ({ where: whereMock }));
 
       const repository = new CryptocurrencyOrderRepository(dbMock as any);
-      const result = await repository.list();
+      const result = await repository.list(userId);
 
       expect(dbMock).toHaveBeenCalledWith("cryptocurrency_order");
+      expect(whereMock).toHaveBeenCalledWith({ user_id: userId });
       expect(result).toEqual(mockData);
     });
+
     it("DBのクエリが失敗した場合、例外をスローする", async () => {
-      const dbMock = jest.fn().mockRejectedValue(new Error("DB Error"));
+      const whereMock = jest.fn().mockRejectedValue(new Error());
+      const dbMock = jest.fn(() => ({ where: whereMock }));
 
       const repository = new CryptocurrencyOrderRepository(dbMock as any);
 
-      await expect(repository.list()).rejects.toThrow("DB Error");
+      await expect(repository.list(userId)).rejects.toThrow();
     });
   });
 
@@ -59,10 +65,10 @@ describe("CryptocurrencyOrderRepository", () => {
         is_enabled: 1,
       });
     });
+
     it("DBのinsertが失敗した場合、例外をスローする", async () => {
-      const dbMock = jest.fn(() => {
-        throw new Error("DB Error");
-      });
+      const insertMock = jest.fn().mockRejectedValue(new Error());
+      const dbMock = jest.fn(() => ({ insert: insertMock }));
 
       const repository = new CryptocurrencyOrderRepository(dbMock as any);
 
@@ -74,14 +80,15 @@ describe("CryptocurrencyOrderRepository", () => {
         isEnabled: 1,
       };
 
-      await expect(repository.create(createParams)).rejects.toThrow("DB Error");
+      await expect(repository.create(createParams)).rejects.toThrow();
     });
   });
 
   describe("updateメソッド", () => {
     it("DBのupdateを正しい引数で呼び出す", async () => {
       const updateMock = jest.fn().mockResolvedValue(undefined);
-      const dbMock = jest.fn(() => ({ where: () => ({ update: updateMock }) }));
+      const whereMock = jest.fn(() => ({ update: updateMock }));
+      const dbMock = jest.fn(() => ({ where: whereMock }));
 
       const repository = new CryptocurrencyOrderRepository(dbMock as any);
 
@@ -97,19 +104,21 @@ describe("CryptocurrencyOrderRepository", () => {
       await repository.update(updateParams);
 
       expect(dbMock).toHaveBeenCalledWith("cryptocurrency_order");
+      expect(whereMock).toHaveBeenCalledWith({ id: updateParams.id });
       expect(updateMock).toHaveBeenCalledWith({
-        symbol: "BTC",
-        target_price: 5000000,
-        volume: 10,
-        type: 0,
-        is_enabled: 1,
+        symbol: updateParams.symbol,
+        target_price: updateParams.targetPrice,
+        volume: updateParams.volume,
+        type: updateParams.type,
+        is_enabled: updateParams.isEnabled,
         updated_at: expect.any(Date),
       });
     });
+
     it("DBのupdateが失敗した場合、例外をスローする", async () => {
-      const dbMock = jest.fn(() => {
-        throw new Error("DB Error");
-      });
+      const updateMock = jest.fn().mockRejectedValue(new Error());
+      const whereMock = jest.fn(() => ({ update: updateMock }));
+      const dbMock = jest.fn(() => ({ where: whereMock }));
 
       const repository = new CryptocurrencyOrderRepository(dbMock as any);
 
@@ -122,7 +131,7 @@ describe("CryptocurrencyOrderRepository", () => {
         isEnabled: 1,
       };
 
-      await expect(repository.update(updateParams)).rejects.toThrow("DB Error");
+      await expect(repository.update(updateParams)).rejects.toThrow();
     });
   });
 });

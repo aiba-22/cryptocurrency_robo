@@ -1,5 +1,6 @@
 import db from "../db/db";
 import { CryptocurrencyOrderRepository } from "../db/repositories/cryptocurrencyOrderRepository";
+import { USER_ID } from "./constants";
 
 export default class orderService {
   db;
@@ -9,7 +10,7 @@ export default class orderService {
 
   async list() {
     const orderRepository = new CryptocurrencyOrderRepository();
-    const orderList = await orderRepository.list();
+    const orderList = await orderRepository.list(USER_ID);
 
     if (orderList.length === 0) return;
 

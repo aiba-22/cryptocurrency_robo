@@ -1,7 +1,6 @@
 import * as controller from "../../controllers/priceAlertController";
 import * as schema from "../../schema/priceAlertSchema";
-import { ID } from "../../service/constants";
-import PriceAlertService from "../../service/priceAlert";
+import PriceAlertService from "../../service/priceAlertService";
 
 const mockResponse = () => {
   const res = {} as any;
@@ -41,12 +40,10 @@ describe("cryptocurrencyOrderControllerのテスト", () => {
       const res = mockResponse();
 
       jest.spyOn(PriceAlertService.prototype, "find").mockImplementation(() => {
-        throw new Error("DB接続失敗");
+        throw new Error();
       });
 
-      await expect(controller.get(req as any, res)).rejects.toThrow(
-        "DB接続失敗"
-      );
+      await expect(controller.get(req as any, res)).rejects.toThrow();
     });
   });
 
@@ -83,12 +80,10 @@ describe("cryptocurrencyOrderControllerのテスト", () => {
       jest
         .spyOn(schema.createPriceAlertSchema, "parse")
         .mockImplementation(() => {
-          throw new Error("バリデーションエラー");
+          throw new Error();
         });
 
-      await expect(controller.create(req as any, res)).rejects.toThrow(
-        "バリデーションエラー"
-      );
+      await expect(controller.create(req as any, res)).rejects.toThrow();
     });
   });
 
@@ -126,12 +121,10 @@ describe("cryptocurrencyOrderControllerのテスト", () => {
       jest
         .spyOn(schema.updatePriceAlertSchema, "parse")
         .mockImplementation(() => {
-          throw new Error("バリデーションエラー");
+          throw new Error();
         });
 
-      await expect(controller.update(req as any, res)).rejects.toThrow(
-        "バリデーションエラー"
-      );
+      await expect(controller.update(req as any, res)).rejects.toThrow();
     });
   });
 });

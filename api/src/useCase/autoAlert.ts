@@ -1,6 +1,7 @@
-import GmoService from "../service/gmo";
-import LineService from "../service/line";
-import PriceAlertService from "../service/priceAlert";
+import GmoApiService from "../service/GmoApiService";
+import LineService from "../service/lineService";
+import LineApiService from "../service/lineApiService";
+import PriceAlertService from "../service/priceAlertService";
 
 export const autoAlert = async () => {
   const priceAlertService = new PriceAlertService();
@@ -9,9 +10,9 @@ export const autoAlert = async () => {
 
   const { isUpperLimit, symbol, price } = priceAlert.conditions;
 
-  const gmoService = new GmoService();
+  const gmoApiService = new GmoApiService();
 
-  const tradingPrice = await gmoService.fetchTradingPrice(symbol);
+  const tradingPrice = await gmoApiService.fetchTradingPrice(symbol);
   if (!tradingPrice) return;
 
   const shouldNotify =
@@ -21,5 +22,14 @@ export const autoAlert = async () => {
   if (!shouldNotify) return;
 
   const lineService = new LineService();
-  await lineService.sendMessage(`現在の価格は${tradingPrice}円です。`);
+  const line = await lineService.find();
+  if (!line?.channelAccessToken || !line?.userId) return;
+  const { userId, channelAccessToken } = line;
+
+  const lineApiService = new LineApiService();
+  await lineApiService.sendMessage({
+    message: `アラート通知です。${symbol}の価格が${tradingPrice}になりました。`,
+    userId,
+    channelAccessToken,
+  });
 };

@@ -1,5 +1,5 @@
 import { get } from "../../controllers/cryptocurrencyRateController";
-import GmoService from "../../service/gmo";
+import GmoApiService from "../../service/GmoApiService";
 
 const mockResponse = () => {
   const res = {} as any;
@@ -31,7 +31,7 @@ describe("cryptocurrencyRateControllerのテスト", () => {
       },
     ];
     jest
-      .spyOn(GmoService.prototype, "fetchTradingRateList")
+      .spyOn(GmoApiService.prototype, "fetchTradingRateList")
       .mockResolvedValue(mockResult);
 
     await get(req as any, res);
@@ -44,7 +44,7 @@ describe("cryptocurrencyRateControllerのテスト", () => {
     const res = mockResponse();
 
     jest
-      .spyOn(GmoService.prototype, "fetchTradingRateList")
+      .spyOn(GmoApiService.prototype, "fetchTradingRateList")
       .mockImplementation(() => {
         throw new Error();
       });

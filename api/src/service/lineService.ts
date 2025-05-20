@@ -1,12 +1,12 @@
 import axios from "axios";
 import { LineRepository } from "../db/repositories/lineRepository";
-import { ID } from "./constants";
 import db from "../db/db";
+import { USER_ID } from "./constants";
 
 export default class LineService {
   async find() {
     const repository = new LineRepository();
-    const line = await repository.findById(ID);
+    const line = await repository.findById(USER_ID);
     if (!line) return;
     return {
       id: line.id,
@@ -52,34 +52,6 @@ export default class LineService {
     } catch (error) {
       await transaction.rollback();
       return "failure";
-    }
-  }
-
-  async sendMessage(message: string) {
-    const lineRepository = new LineRepository();
-    const line = await lineRepository.findById(ID);
-    if (!line) return "systemError";
-
-    const { channel_access_token, user_id } = line;
-
-    const body = {
-      to: user_id,
-      messages: [{ type: "text", text: message }],
-    };
-
-    try {
-      await axios.post("https://api.line.me/v2/bot/message/push", body, {
-        headers: {
-          Authorization: `Bearer ${channel_access_token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      return "success";
-    } catch (error: any) {
-      const status = error?.response?.status;
-      if (status === 429) return "tooManyRequests";
-      if (status === 400) return "badRequest";
-      return "systemError";
     }
   }
 }

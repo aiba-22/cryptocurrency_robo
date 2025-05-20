@@ -1,6 +1,9 @@
-import { lineNotification } from "../../controllers/notificationController";
-import LineNotificationService from "../../service/line";
+import { sendLineTestAlert } from "../../controllers/notificationController";
 import { lineNotificationSchema } from "../../schema/lineSchema";
+import { testAlert } from "../../useCase/testAlert";
+
+jest.mock("../../useCase/testAlert");
+
 const mockResponse = () => {
   const res = {} as any;
   res.status = jest.fn().mockReturnValue(res);
@@ -15,30 +18,29 @@ describe("lineNotificationControllerのテスト", () => {
     jest.resetAllMocks();
   });
 
-  it("正常時はjsonで結果を返す", async () => {
-    const res = mockResponse();
-    const validBody = { message: "test message" };
+  describe("sendLineTestAlert関数のテスト", () => {
+    it("正常時はjsonで結果を返す", async () => {
+      const res = mockResponse();
+      const message = "test_message";
+      const mockResult = "success";
 
-    jest.spyOn(lineNotificationSchema, "parse").mockReturnValue(validBody);
-    jest
-      .spyOn(LineNotificationService.prototype, "sendMessage")
-      .mockResolvedValue("success");
+      jest.spyOn(lineNotificationSchema, "parse").mockReturnValue({ message });
 
-    await lineNotification(req as any, res);
+      (testAlert as jest.Mock).mockReturnValue("success");
 
-    expect(res.json).toHaveBeenCalledWith("success");
-  });
+      await sendLineTestAlert(req as any, res);
 
-  it("例外発生時は例外がthrowされる", async () => {
-    const req = mockRequest({});
-    const res = mockResponse();
-
-    jest.spyOn(lineNotificationSchema, "parse").mockImplementation(() => {
-      throw new Error("バリデーションエラー");
+      expect(res.json).toHaveBeenCalledWith(mockResult);
     });
 
-    await expect(lineNotification(req as any, res)).rejects.toThrow(
-      "バリデーションエラー"
-    );
+    it("例外発生時は例外がthrowされる", async () => {
+      const res = mockResponse();
+
+      jest.spyOn(lineNotificationSchema, "parse").mockImplementation(() => {
+        throw new Error();
+      });
+
+      await expect(sendLineTestAlert(req as any, res)).rejects.toThrow();
+    });
   });
 });

@@ -1,4 +1,4 @@
-import LineService from "../../service/line";
+import LineService from "../../service/lineService";
 import { LineRepository } from "../../db/repositories/lineRepository";
 import db from "../../db/db";
 import axios from "axios";
@@ -88,89 +88,6 @@ describe("LineService", () => {
       setupRepositoryMock({ update: jest.fn().mockRejectedValue(new Error()) });
       const result = await service.update(params);
       expect(result).toBe("failure");
-    });
-  });
-
-  describe("sendMessage", () => {
-    const message = "test message";
-
-    it("送信成功時、'success'を返す", async () => {
-      setupRepositoryMock({
-        findById: jest.fn().mockResolvedValue(mockLineData),
-      });
-
-      const axiosPostMock = jest.spyOn(axios, "post").mockResolvedValue({});
-
-      const result = await service.sendMessage(message);
-
-      expect(result).toBe("success");
-      expect(axiosPostMock).toHaveBeenCalledWith(
-        "https://api.line.me/v2/bot/message/push",
-        {
-          to: mockLineData.user_id,
-          messages: [{ type: "text", text: message }],
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${mockLineData.channel_access_token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      axiosPostMock.mockRestore();
-    });
-
-    it("LINE設定が存在しない場合、'systemError'を返す", async () => {
-      setupRepositoryMock({ findById: jest.fn().mockResolvedValue(null) });
-
-      const result = await service.sendMessage(message);
-      expect(result).toBe("systemError");
-    });
-
-    it("APIが 429 を返すと、'tooManyRequests'を返す", async () => {
-      setupRepositoryMock({
-        findById: jest.fn().mockResolvedValue(mockLineData),
-      });
-
-      const axiosPostMock = jest.spyOn(axios, "post").mockRejectedValue({
-        response: { status: 429 },
-      });
-
-      const result = await service.sendMessage(message);
-      expect(result).toBe("tooManyRequests");
-
-      axiosPostMock.mockRestore();
-    });
-
-    it("APIが 400 を返すと、'badRequest'を返す", async () => {
-      setupRepositoryMock({
-        findById: jest.fn().mockResolvedValue(mockLineData),
-      });
-
-      const axiosPostMock = jest.spyOn(axios, "post").mockRejectedValue({
-        response: { status: 400 },
-      });
-
-      const result = await service.sendMessage(message);
-      expect(result).toBe("badRequest");
-
-      axiosPostMock.mockRestore();
-    });
-
-    it("その他のエラー時、'systemError'を返す", async () => {
-      setupRepositoryMock({
-        findById: jest.fn().mockResolvedValue(mockLineData),
-      });
-
-      const axiosPostMock = jest
-        .spyOn(axios, "post")
-        .mockRejectedValue(new Error());
-
-      const result = await service.sendMessage(message);
-      expect(result).toBe("systemError");
-
-      axiosPostMock.mockRestore();
     });
   });
 });

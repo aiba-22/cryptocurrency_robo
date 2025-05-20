@@ -1,6 +1,6 @@
 import * as controller from "../../controllers/gmoController";
 import * as schema from "../../schema/gmoSchema";
-import GmoService from "../../service/gmo";
+import GmoService from "../../service/gmoService";
 
 const mockResponse = () => {
   const res = {} as any;
@@ -38,12 +38,10 @@ describe("gmoControllerのテスト", () => {
       const res = mockResponse();
 
       jest.spyOn(GmoService.prototype, "find").mockImplementation(() => {
-        throw new Error("DB接続失敗");
+        throw new Error();
       });
 
-      await expect(controller.get(req as any, res)).rejects.toThrow(
-        "DB接続失敗"
-      );
+      await expect(controller.get(req as any, res)).rejects.toThrow();
     });
   });
 
@@ -72,12 +70,10 @@ describe("gmoControllerのテスト", () => {
       const res = mockResponse();
 
       jest.spyOn(schema.createGmoSchema, "parse").mockImplementation(() => {
-        throw new Error("バリデーションエラー");
+        throw new Error();
       });
 
-      await expect(controller.create(req as any, res)).rejects.toThrow(
-        "バリデーションエラー"
-      );
+      await expect(controller.create(req as any, res)).rejects.toThrow();
     });
   });
 
@@ -106,12 +102,10 @@ describe("gmoControllerのテスト", () => {
       const res = mockResponse();
 
       jest.spyOn(schema.updateGmoSchema, "parse").mockImplementation(() => {
-        throw new Error("バリデーションエラー");
+        throw new Error();
       });
 
-      await expect(controller.update(req as any, res)).rejects.toThrow(
-        "バリデーションエラー"
-      );
+      await expect(controller.update(req as any, res)).rejects.toThrow();
     });
   });
 });

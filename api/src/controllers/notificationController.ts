@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
-import LineService from "../service/line";
 import { lineNotificationSchema } from "../schema/lineSchema";
+import { testAlert } from "../useCase/testAlert";
 
-export const lineNotification = async (req: Request, res: Response) => {
-  const lineService = new LineService();
+export const sendLineTestAlert = async (req: Request, res: Response) => {
   const { message } = lineNotificationSchema.parse(req.body);
-  const result = await lineService.sendMessage(message);
+  const result = testAlert(message);
   res.status(200).json(result);
 };

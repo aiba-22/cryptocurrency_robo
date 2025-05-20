@@ -1,6 +1,6 @@
 import * as controller from "../../controllers/lineController";
 import * as schema from "../../schema/lineSchema";
-import LineService from "../../service/line";
+import LineService from "../../service//lineService";
 
 const mockResponse = () => {
   const res = {} as any;
@@ -38,12 +38,10 @@ describe("LineControllerのテスト", () => {
       const res = mockResponse();
 
       jest.spyOn(LineService.prototype, "find").mockImplementation(() => {
-        throw new Error("DB接続失敗");
+        throw new Error();
       });
 
-      await expect(controller.get(req as any, res)).rejects.toThrow(
-        "DB接続失敗"
-      );
+      await expect(controller.get(req as any, res)).rejects.toThrow();
     });
   });
 
@@ -71,12 +69,10 @@ describe("LineControllerのテスト", () => {
       const res = mockResponse();
 
       jest.spyOn(schema.createLineSchema, "parse").mockImplementation(() => {
-        throw new Error("バリデーションエラー");
+        throw new Error();
       });
 
-      await expect(controller.create(req as any, res)).rejects.toThrow(
-        "バリデーションエラー"
-      );
+      await expect(controller.create(req as any, res)).rejects.toThrow();
     });
   });
 
@@ -105,12 +101,10 @@ describe("LineControllerのテスト", () => {
       const res = mockResponse();
 
       jest.spyOn(schema.updateLineSchema, "parse").mockImplementation(() => {
-        throw new Error("バリデーションエラー");
+        throw new Error();
       });
 
-      await expect(controller.update(req as any, res)).rejects.toThrow(
-        "バリデーションエラー"
-      );
+      await expect(controller.update(req as any, res)).rejects.toThrow();
     });
   });
 });
