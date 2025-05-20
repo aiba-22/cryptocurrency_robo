@@ -1,10 +1,10 @@
 import { autoAlert } from "../../useCase/autoAlert";
-import GmoApiService from "../../service/GmoApiService";
+import GmoApiService from "../../service/gmoApiService";
 import PriceAlertService from "../../service/priceAlertService";
 import LineService from "../../service/lineService";
 import LineApiService from "../../service/lineApiService";
 
-jest.mock("../../service/GmoApiService");
+jest.mock("../../service/gmoApiService");
 jest.mock("../../service/priceAlertService");
 jest.mock("../../service/lineService");
 jest.mock("../../service/lineApiService");

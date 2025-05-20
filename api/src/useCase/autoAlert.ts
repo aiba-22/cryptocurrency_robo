@@ -1,4 +1,4 @@
-import GmoApiService from "../service/GmoApiService";
+import GmoApiService from "../service/gmoApiService";
 import LineService from "../service/lineService";
 import LineApiService from "../service/lineApiService";
 import PriceAlertService from "../service/priceAlertService";

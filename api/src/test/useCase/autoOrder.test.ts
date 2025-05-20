@@ -1,6 +1,6 @@
 import { autoOrder } from "../../useCase/autoOrder";
 import CryptocurrencyOrderService from "../../service/cryptocurrencyOrderService";
-import GmoApiService from "../../service/GmoApiService";
+import GmoApiService from "../../service/gmoApiService";
 import GmoService from "../../service/gmoService";
 import LineService from "../../service/lineService";
 import LineApiService from "../../service/lineApiService";

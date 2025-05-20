@@ -1,4 +1,4 @@
-import GmoApiService from "../../service/GmoApiService";
+import GmoApiService from "../../service/gmoApiService";
 import db from "../../db/db";
 import { GmoRepository } from "../../db/repositories/gmoRepository";
 import axios from "axios";

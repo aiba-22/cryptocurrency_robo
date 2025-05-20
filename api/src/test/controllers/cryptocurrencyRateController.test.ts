@@ -1,5 +1,5 @@
 import { get } from "../../controllers/cryptocurrencyRateController";
-import GmoApiService from "../../service/GmoApiService";
+import GmoApiService from "../../service/gmoApiService";
 
 const mockResponse = () => {
   const res = {} as any;
