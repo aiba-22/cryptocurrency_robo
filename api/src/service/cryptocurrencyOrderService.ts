@@ -44,6 +44,7 @@ export default class CryptocurrencyOrderService {
     const orderRepository = new CryptocurrencyOrderRepository(transaction);
     try {
       await orderRepository.create({
+        userId: USER_ID,
         symbol,
         targetPrice,
         volume,
@@ -53,6 +54,7 @@ export default class CryptocurrencyOrderService {
       await transaction.commit();
       return "success";
     } catch (error) {
+      console.error("Error creating order:", error);
       await transaction.rollback();
       return "systemError";
     }

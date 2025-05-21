@@ -88,14 +88,15 @@ export const AutomaticTrading: React.FC = () => {
               )}
             />
           </Box>
-
-          <OrderForm
-            control={control}
-            targetPriceField="buy.targetPrice"
-            volumeField="buy.volume"
-            labelPrefix="買い"
-            errors={errors}
-          />
+          {isBuyEnabled === IS_ENABLED.TRUE && (
+            <OrderForm
+              control={control}
+              targetPriceField="buy.targetPrice"
+              volumeField="buy.volume"
+              labelPrefix="買い"
+              errors={errors}
+            />
+          )}
 
           <Box mb={2} mt={4}>
             <Controller
@@ -106,14 +107,15 @@ export const AutomaticTrading: React.FC = () => {
               )}
             />
           </Box>
-
-          <OrderForm
-            control={control}
-            targetPriceField="sell.targetPrice"
-            volumeField="sell.volume"
-            labelPrefix="売り"
-            errors={errors}
-          />
+          {isSellEnabled === IS_ENABLED.TRUE && (
+            <OrderForm
+              control={control}
+              targetPriceField="sell.targetPrice"
+              volumeField="sell.volume"
+              labelPrefix="売り"
+              errors={errors}
+            />
+          )}
 
           <Box mt={4} display="flex" justifyContent="flex-end">
             <Button type="submit" variant="contained" color="primary">

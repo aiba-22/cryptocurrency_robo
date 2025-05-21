@@ -15,12 +15,14 @@ export class CryptocurrencyOrderRepository {
   }
 
   async create({
+    userId,
     symbol,
     targetPrice,
     volume,
     type,
     isEnabled,
   }: {
+    userId: number;
     symbol: string;
     targetPrice: number;
     volume: number;
@@ -28,6 +30,7 @@ export class CryptocurrencyOrderRepository {
     isEnabled: number;
   }) {
     await this.db("cryptocurrency_order").insert({
+      user_id: userId,
       symbol,
       target_price: targetPrice,
       volume: volume,
