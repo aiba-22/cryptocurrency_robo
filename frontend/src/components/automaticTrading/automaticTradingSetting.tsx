@@ -24,7 +24,7 @@ import {
 import { IS_ENABLED } from "../../feature/automaticTrading/constants";
 import { useOrderForm } from "../../feature/automaticTrading/hooks/useOrderForm";
 
-export const AutomaticTrading: React.FC = () => {
+export const AutomaticTradingSetting: React.FC = () => {
   const [snackBarMessage, setSnackBarMessage] = useState<string>("");
 
   const {
@@ -32,6 +32,7 @@ export const AutomaticTrading: React.FC = () => {
     submitForm,
     watch,
     errors,
+
     orderSettingSaveStatus,
     isOrderListError,
     isOrderListLoading,
