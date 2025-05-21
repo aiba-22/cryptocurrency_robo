@@ -97,7 +97,7 @@ export const PriceAlertSetting = () => {
       ) : (
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl fullWidth margin="normal">
-            <InputLabel id="virtual-currency-type-label">指定通貨</InputLabel>
+            <InputLabel id="virtual-currency-type-label">対象通貨</InputLabel>
             <Controller
               name="symbol"
               control={control}

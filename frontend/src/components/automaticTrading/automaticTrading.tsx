@@ -67,7 +67,7 @@ export const AutomaticTrading: React.FC = () => {
               rules={{ required: "通貨を選択してください" }}
               render={({ field }) => (
                 <FormControl fullWidth>
-                  <InputLabel id="symbol-label">通貨</InputLabel>
+                  <InputLabel id="symbol-label">対象通貨</InputLabel>
                   <Select {...field} labelId="symbol-label" label="通貨">
                     {CRYPTOCURRENCY_LIST.map((cryptocurrency) => (
                       <MenuItem key={cryptocurrency} value={cryptocurrency}>

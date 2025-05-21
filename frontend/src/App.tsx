@@ -22,7 +22,7 @@ export default function App() {
             自動取引
           </Button>
           <Button color="inherit" component={RouterLink} to="/setting">
-            設定
+            各種設定
           </Button>
         </Toolbar>
       </AppBar>
