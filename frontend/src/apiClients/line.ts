@@ -29,7 +29,7 @@ export const updateLine = async (request: {
 
 export const sendLineNotification = async (message: string) => {
   const result = await axios.post<string>(
-    "http://localhost:3001/api/notification/sendLineTestAlert",
+    "http://localhost:3001/api/notification/sendLineTest",
     { message }
   );
   return result.data;

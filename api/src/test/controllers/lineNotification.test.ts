@@ -1,4 +1,4 @@
-import { sendLineTestAlert } from "../../controllers/notificationController";
+import { sendLineTest } from "../../controllers/notificationController";
 import { lineNotificationSchema } from "../../schema/lineSchema";
 import { sendTestNotification } from "../../useCase/sendLineNotification";
 
@@ -18,7 +18,7 @@ describe("lineNotificationControllerのテスト", () => {
     jest.resetAllMocks();
   });
 
-  describe("sendLineTestAlert関数のテスト", () => {
+  describe("sendLineTest関数のテスト", () => {
     it("正常時はjsonで結果を返す", async () => {
       const res = mockResponse();
       const message = "test_message";
@@ -28,7 +28,7 @@ describe("lineNotificationControllerのテスト", () => {
 
       (sendTestNotification as jest.Mock).mockReturnValue("success");
 
-      await sendLineTestAlert(req as any, res);
+      await sendLineTest(req as any, res);
 
       expect(res.json).toHaveBeenCalledWith(mockResult);
     });
@@ -40,7 +40,7 @@ describe("lineNotificationControllerのテスト", () => {
         throw new Error();
       });
 
-      await expect(sendLineTestAlert(req as any, res)).rejects.toThrow();
+      await expect(sendLineTest(req as any, res)).rejects.toThrow();
     });
   });
 });
