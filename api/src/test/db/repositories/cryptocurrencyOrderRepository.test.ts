@@ -39,6 +39,46 @@ describe("CryptocurrencyOrderRepository", () => {
     });
   });
 
+  describe("findByIdAndUserId", () => {
+    it("DBに'cryptocurrency_order'テーブルのクエリを実行し、結果を返す", async () => {
+      const mockData = {
+        id: 1,
+        user_id: 1,
+      };
+
+      const firstMock = jest.fn().mockResolvedValue(mockData);
+      const whereMock = jest.fn(() => ({ first: firstMock }));
+      const dbMock = jest.fn(() => ({ where: whereMock }));
+
+      const repository = new CryptocurrencyOrderRepository(dbMock as any);
+      const result = await repository.findByIdAndUserId({
+        id: mockData.id,
+        userId: 1,
+      });
+
+      expect(dbMock).toHaveBeenCalledWith("cryptocurrency_order");
+      expect(whereMock).toHaveBeenCalledWith({
+        id: mockData.id,
+        user_id: 1,
+      });
+      expect(firstMock).toHaveBeenCalled();
+      expect(result).toEqual(mockData);
+    });
+
+    it("DBがエラーを返した場合に例外を投げる", async () => {
+      const error = new Error("DB error");
+      const firstMock = jest.fn().mockRejectedValue(error);
+      const whereMock = jest.fn(() => ({ first: firstMock }));
+      const dbMock = jest.fn(() => ({ where: whereMock }));
+
+      const repository = new CryptocurrencyOrderRepository(dbMock as any);
+
+      await expect(
+        repository.findByIdAndUserId({ id: 1, userId: 1 })
+      ).rejects.toThrow("DB error");
+    });
+  });
+
   describe("createメソッド", () => {
     it("DBのinsertを正しい引数で呼び出す", async () => {
       const insertMock = jest.fn().mockResolvedValue(undefined);
@@ -47,6 +87,7 @@ describe("CryptocurrencyOrderRepository", () => {
       const repository = new CryptocurrencyOrderRepository(dbMock as any);
 
       const createParams = {
+        userId: 1,
         symbol: "BTC",
         targetPrice: 5000000,
         volume: 10,
@@ -58,6 +99,7 @@ describe("CryptocurrencyOrderRepository", () => {
 
       expect(dbMock).toHaveBeenCalledWith("cryptocurrency_order");
       expect(insertMock).toHaveBeenCalledWith({
+        user_id: 1,
         symbol: "BTC",
         target_price: 5000000,
         volume: 10,
@@ -73,6 +115,7 @@ describe("CryptocurrencyOrderRepository", () => {
       const repository = new CryptocurrencyOrderRepository(dbMock as any);
 
       const createParams = {
+        userId: 1,
         symbol: "BTC",
         targetPrice: 5000000,
         volume: 10,

@@ -1,7 +1,7 @@
 import { GmoRepository } from "../../../db/repositories/gmoRepository";
 
 describe("GmoRepository", () => {
-  describe("findByIdメソッド", () => {
+  describe("findByUserIdメソッド", () => {
     const userId = 1;
 
     it("DBに'gmo'テーブルのクエリを実行し、結果を返す", async () => {
@@ -18,7 +18,7 @@ describe("GmoRepository", () => {
         where: whereMock,
       }));
       const repository = new GmoRepository(dbMock as any);
-      const result = await repository.findById(userId);
+      const result = await repository.findByUserId(userId);
       expect(dbMock).toHaveBeenCalledWith("gmo");
       expect(result).toEqual(mockData);
     });
@@ -31,7 +31,7 @@ describe("GmoRepository", () => {
         where: whereMock,
       }));
       const repository = new GmoRepository(dbMock as any);
-      await expect(repository.findById(userId)).rejects.toThrow();
+      await expect(repository.findByUserId(userId)).rejects.toThrow();
     });
   });
   describe("createメソッド", () => {

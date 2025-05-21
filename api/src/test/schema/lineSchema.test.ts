@@ -5,127 +5,129 @@ import {
 } from "../../schema/lineSchema";
 import { ZodError } from "zod";
 
-describe("getLineSchema", () => {
-  describe("id", () => {
-    const invalidValues = [undefined, null, "1", 0, -1];
-    it.each(invalidValues)(
-      "不正な値の場合、バリデーションエラーが発生する",
-      (value) => {
-        const invalidData = {
-          id: value,
-        };
+describe("lineSchema", () => {
+  describe("getLineSchema", () => {
+    describe("id", () => {
+      const invalidValues = [undefined, null, "1", 0, -1];
+      it.each(invalidValues)(
+        "不正な値の場合、バリデーションエラーが発生する",
+        (value) => {
+          const invalidData = {
+            id: value,
+          };
 
-        expect(() => getLineSchema.parse(invalidData)).toThrow(ZodError);
-      }
-    );
+          expect(() => getLineSchema.parse(invalidData)).toThrow(ZodError);
+        }
+      );
+    });
+
+    it("有効な値の時、バリデーションが通る", () => {
+      const validData = {
+        id: 1,
+      };
+
+      expect(() => getLineSchema.parse(validData)).not.toThrow();
+    });
   });
 
-  it("有効な値の時、バリデーションが通る", () => {
-    const validData = {
-      id: 1,
-    };
+  describe("createLineSchema", () => {
+    describe("channelAccessToken", () => {
+      const invalidValues = [undefined, null, ""];
+      it.each(invalidValues)(
+        "不正な値の場合、バリデーションエラーが発生する",
+        (value) => {
+          const invalidData = {
+            channelAccessToken: value,
+            lineUserId: "validLineUserId",
+          };
 
-    expect(() => getLineSchema.parse(validData)).not.toThrow();
-  });
-});
+          expect(() => createLineSchema.parse(invalidData)).toThrow(ZodError);
+        }
+      );
+    });
 
-describe("createLineSchema", () => {
-  describe("channelAccessToken", () => {
-    const invalidValues = [undefined, null, ""];
-    it.each(invalidValues)(
-      "不正な値の場合、バリデーションエラーが発生する",
-      (value) => {
-        const invalidData = {
-          channelAccessToken: value,
-          lineUserId: "validLineUserId",
-        };
+    describe("lineUserId", () => {
+      const invalidValues = [undefined, null, ""];
+      it.each(invalidValues)(
+        "不正な値の場合、バリデーションエラーが発生する",
+        (value) => {
+          const invalidData = {
+            channelAccessToken: "validChannelAccessToken",
+            lineUserId: value,
+          };
 
-        expect(() => createLineSchema.parse(invalidData)).toThrow(ZodError);
-      }
-    );
-  });
+          expect(() => createLineSchema.parse(invalidData)).toThrow(ZodError);
+        }
+      );
+    });
 
-  describe("lineUserId", () => {
-    const invalidValues = [undefined, null, ""];
-    it.each(invalidValues)(
-      "不正な値の場合、バリデーションエラーが発生する",
-      (value) => {
-        const invalidData = {
-          channelAccessToken: "validChannelAccessToken",
-          lineUserId: value,
-        };
+    it("有効な値の時、バリデーションが通る", () => {
+      const validData = {
+        channelAccessToken: "validChannelAccessToken",
+        lineUserId: "validLineUserId",
+      };
 
-        expect(() => createLineSchema.parse(invalidData)).toThrow(ZodError);
-      }
-    );
-  });
-
-  it("有効な値の時、バリデーションが通る", () => {
-    const validData = {
-      channelAccessToken: "validChannelAccessToken",
-      lineUserId: "validLineUserId",
-    };
-
-    expect(() => createLineSchema.parse(validData)).not.toThrow();
-  });
-});
-
-describe("updateLineSchema", () => {
-  describe("id", () => {
-    const invalidValues = [undefined, null, "1", 0, -1];
-    it.each(invalidValues)(
-      "不正な値の場合、バリデーションエラーが発生する",
-      (value) => {
-        const invalidData = {
-          id: value,
-          channelAccessToken: "invalidChannelAccessToken",
-          lineUserId: "validLineUserId",
-        };
-
-        expect(() => updateLineSchema.parse(invalidData)).toThrow(ZodError);
-      }
-    );
+      expect(() => createLineSchema.parse(validData)).not.toThrow();
+    });
   });
 
-  describe("channelAccessToken", () => {
-    const invalidValues = [undefined, null, ""];
-    it.each(invalidValues)(
-      "不正な値の場合、バリデーションエラーが発生する",
-      (value) => {
-        const invalidData = {
-          id: 1,
-          channelAccessToken: value,
-          lineUserId: "validLineUserId",
-        };
+  describe("updateLineSchema", () => {
+    describe("id", () => {
+      const invalidValues = [undefined, null, "1", 0, -1];
+      it.each(invalidValues)(
+        "不正な値の場合、バリデーションエラーが発生する",
+        (value) => {
+          const invalidData = {
+            id: value,
+            channelAccessToken: "invalidChannelAccessToken",
+            lineUserId: "validLineUserId",
+          };
 
-        expect(() => updateLineSchema.parse(invalidData)).toThrow(ZodError);
-      }
-    );
-  });
+          expect(() => updateLineSchema.parse(invalidData)).toThrow(ZodError);
+        }
+      );
+    });
 
-  describe("lineUserId", () => {
-    const invalidValues = [undefined, null, ""];
-    it.each(invalidValues)(
-      "不正な値の場合、バリデーションエラーが発生する",
-      (value) => {
-        const invalidData = {
-          id: 1,
-          channelAccessToken: "validChannelAccessToken",
-          lineUserId: value,
-        };
+    describe("channelAccessToken", () => {
+      const invalidValues = [undefined, null, ""];
+      it.each(invalidValues)(
+        "不正な値の場合、バリデーションエラーが発生する",
+        (value) => {
+          const invalidData = {
+            id: 1,
+            channelAccessToken: value,
+            lineUserId: "validLineUserId",
+          };
 
-        expect(() => updateLineSchema.parse(invalidData)).toThrow(ZodError);
-      }
-    );
-  });
+          expect(() => updateLineSchema.parse(invalidData)).toThrow(ZodError);
+        }
+      );
+    });
 
-  it("有効な値の時、バリデーションが通る", () => {
-    const validData = {
-      id: 1,
-      channelAccessToken: "validChannelAccessToken",
-      lineUserId: "validLineUserId",
-    };
+    describe("lineUserId", () => {
+      const invalidValues = [undefined, null, ""];
+      it.each(invalidValues)(
+        "不正な値の場合、バリデーションエラーが発生する",
+        (value) => {
+          const invalidData = {
+            id: 1,
+            channelAccessToken: "validChannelAccessToken",
+            lineUserId: value,
+          };
 
-    expect(() => updateLineSchema.parse(validData)).not.toThrow();
+          expect(() => updateLineSchema.parse(invalidData)).toThrow(ZodError);
+        }
+      );
+    });
+
+    it("有効な値の時、バリデーションが通る", () => {
+      const validData = {
+        id: 1,
+        channelAccessToken: "validChannelAccessToken",
+        lineUserId: "validLineUserId",
+      };
+
+      expect(() => updateLineSchema.parse(validData)).not.toThrow();
+    });
   });
 });

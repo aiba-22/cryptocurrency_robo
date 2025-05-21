@@ -10,7 +10,7 @@ export default class LineService {
   }
   async find() {
     const repository = new LineRepository();
-    const line = await repository.findById(USER_ID);
+    const line = await repository.findByUserId(USER_ID);
     if (!line) return;
     return {
       id: line.id,

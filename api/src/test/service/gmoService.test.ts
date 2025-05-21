@@ -8,7 +8,7 @@ jest.mock("../../db/db", () => ({
 jest.mock("../../db/repositories/gmoRepository", () => {
   return {
     GmoRepository: jest.fn().mockImplementation(() => ({
-      findById: jest.fn(),
+      findByUserId: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
     })),
@@ -35,13 +35,13 @@ describe("GmoService", () => {
 
   describe("find", () => {
     it("GMO情報が存在する場合、整形して返す", async () => {
-      const mockFindById = jest.fn().mockResolvedValue({
+      const mockFindByUserId = jest.fn().mockResolvedValue({
         id: 1,
         api_key: "apiKey",
         secret_key: "secretKey",
       });
       (GmoRepository as jest.Mock).mockImplementation(() => ({
-        findById: mockFindById,
+        findByUserId: mockFindByUserId,
       }));
 
       const result = await gmoService.find();
@@ -54,9 +54,9 @@ describe("GmoService", () => {
     });
 
     it("GMO情報が存在しない場合、undefinedを返す", async () => {
-      const mockFindById = jest.fn().mockResolvedValue(undefined);
+      const mockFindByUserId = jest.fn().mockResolvedValue(undefined);
       (GmoRepository as jest.Mock).mockImplementation(() => ({
-        findById: mockFindById,
+        findByUserId: mockFindByUserId,
       }));
 
       const result = await gmoService.find();

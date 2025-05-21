@@ -8,7 +8,7 @@ export class GmoRepository {
     this.db = dbInstance;
   }
 
-  async findById(userId: number) {
+  async findByUserId(userId: number) {
     return await this.db("gmo").where({ user_id: userId }).first();
   }
 

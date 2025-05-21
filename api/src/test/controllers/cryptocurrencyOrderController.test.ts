@@ -55,7 +55,7 @@ describe("cryptocurrencyOrderControllerのテスト", () => {
     });
   });
 
-  describe("create関数のテスト", () => {
+  describe("create", () => {
     const validBody = {
       symbol: "BTC",
       targetPrice: 50000,
@@ -95,7 +95,7 @@ describe("cryptocurrencyOrderControllerのテスト", () => {
     });
   });
 
-  describe("update関数のテスト", () => {
+  describe("update", () => {
     const validBody = {
       id: 1,
       symbol: "BTC",

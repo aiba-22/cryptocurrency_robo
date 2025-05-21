@@ -1,7 +1,7 @@
 import { PriceAlertRepository } from "../../../db/repositories/priceAlertRepository";
 
 describe("priceAlertRepository", () => {
-  describe("findByIdメソッド", () => {
+  describe("findByUserIdメソッド", () => {
     const userId = 1;
 
     it("DBに'priceAlert'テーブルのクエリを実行し、結果を返す", async () => {
@@ -21,7 +21,7 @@ describe("priceAlertRepository", () => {
         where: whereMock,
       }));
       const repository = new PriceAlertRepository(dbMock as any);
-      const result = await repository.findById(userId);
+      const result = await repository.findByUserId(userId);
       expect(dbMock).toHaveBeenCalledWith("price_alert");
       expect(result).toEqual(mockData);
     });
@@ -34,7 +34,7 @@ describe("priceAlertRepository", () => {
         where: whereMock,
       }));
       const repository = new PriceAlertRepository(dbMock as any);
-      await expect(repository.findById(userId)).rejects.toThrow();
+      await expect(repository.findByUserId(userId)).rejects.toThrow();
     });
   });
   describe("createメソッド", () => {

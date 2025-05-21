@@ -18,7 +18,7 @@ describe("PriceAlertService", () => {
 
   describe("find", () => {
     it("条件アラートが存在する場合、整形されたオブジェクトを返す", async () => {
-      const mockFindById = jest.fn().mockResolvedValue({
+      const mockFindByUserId = jest.fn().mockResolvedValue({
         id: 1,
         conditions: {
           price: 10000,
@@ -28,7 +28,7 @@ describe("PriceAlertService", () => {
       });
 
       (PriceAlertRepository as jest.Mock).mockImplementation(() => ({
-        findById: mockFindById,
+        findByUserId: mockFindByUserId,
       }));
 
       const result = await priceAlertService.find();
@@ -44,10 +44,10 @@ describe("PriceAlertService", () => {
     });
 
     it("条件アラートが存在しない場合、undefinedを返す", async () => {
-      const mockFindById = jest.fn().mockResolvedValue(undefined);
+      const mockFindByUserId = jest.fn().mockResolvedValue(undefined);
 
       (PriceAlertRepository as jest.Mock).mockImplementation(() => ({
-        findById: mockFindById,
+        findByUserId: mockFindByUserId,
       }));
 
       const result = await priceAlertService.find();

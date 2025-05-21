@@ -9,7 +9,7 @@ export default class GmoService {
 
   async find() {
     const gmoRepository = new GmoRepository();
-    const gmo = await gmoRepository.findById(USER_ID);
+    const gmo = await gmoRepository.findByUserId(USER_ID);
     if (!gmo) return;
 
     return {

@@ -18,7 +18,7 @@ describe("LineRepository", () => {
         where: whereMock,
       }));
       const repository = new LineRepository(dbMock as any);
-      const result = await repository.findById(lineUserId);
+      const result = await repository.findByUserId(lineUserId);
       expect(dbMock).toHaveBeenCalledWith("line");
       expect(result).toEqual(mockData);
     });
@@ -31,7 +31,7 @@ describe("LineRepository", () => {
         where: whereMock,
       }));
       const repository = new LineRepository(dbMock as any);
-      await expect(repository.findById(lineUserId)).rejects.toThrow();
+      await expect(repository.findByUserId(lineUserId)).rejects.toThrow();
     });
   });
   describe("createメソッド", () => {

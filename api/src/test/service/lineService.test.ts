@@ -8,7 +8,7 @@ jest.mock("../../db/db", () => ({
 jest.mock("../../db/repositories/lineRepository", () => {
   return {
     LineRepository: jest.fn().mockImplementation(() => ({
-      findById: jest.fn(),
+      findByUserId: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
     })),
@@ -35,13 +35,13 @@ describe("LineService", () => {
 
   describe("find", () => {
     it("正常にレコードが見つかれば、整形されたオブジェクトを返す", async () => {
-      const mockFindById = jest.fn().mockResolvedValue({
+      const mockFindByUserId = jest.fn().mockResolvedValue({
         id: 1,
         channel_access_token: "channelAccessToken",
         line_user_id: "lineUserId",
       });
       (LineRepository as jest.Mock).mockImplementation(() => ({
-        findById: mockFindById,
+        findByUserId: mockFindByUserId,
       }));
 
       const result = await lineService.find();
@@ -53,9 +53,9 @@ describe("LineService", () => {
     });
 
     it("レコードが見つからない場合、undefinedを返す", async () => {
-      const mockFindById = jest.fn().mockResolvedValue(undefined);
+      const mockFindByUserId = jest.fn().mockResolvedValue(undefined);
       (LineRepository as jest.Mock).mockImplementation(() => ({
-        findById: mockFindById,
+        findByUserId: mockFindByUserId,
       }));
       const result = await lineService.find();
       expect(result).toBeUndefined();

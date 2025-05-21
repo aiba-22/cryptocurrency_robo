@@ -11,7 +11,7 @@ export default class PriceAlertService {
   async find() {
     const priceAlertRepository = new PriceAlertRepository();
 
-    const priceAlert = await priceAlertRepository.findById(USER_ID);
+    const priceAlert = await priceAlertRepository.findByUserId(USER_ID);
     if (!priceAlert) return;
 
     return {

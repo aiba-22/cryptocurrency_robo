@@ -14,6 +14,12 @@ export class CryptocurrencyOrderRepository {
     });
   }
 
+  async findByIdAndUserId({ id, userId }: { id: number; userId: number }) {
+    return await this.db("cryptocurrency_order")
+      .where({ id, user_id: userId })
+      .first();
+  }
+
   async create({
     userId,
     symbol,

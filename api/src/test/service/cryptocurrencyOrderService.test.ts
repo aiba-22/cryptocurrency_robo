@@ -5,6 +5,7 @@ jest.mock("../../db/repositories/cryptocurrencyOrderRepository", () => {
   return {
     CryptocurrencyOrderRepository: jest.fn().mockImplementation(() => ({
       list: jest.fn(),
+      findByIdAndUserId: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
     })),
@@ -130,7 +131,7 @@ describe("cryptocurrencyOrderService", () => {
     });
 
     it("注文更新時にエラーが発生した場合、'systemError'を返す", async () => {
-      const mockUpdate = jest.fn().mockRejectedValue(new Error("DB error"));
+      const mockUpdate = jest.fn().mockRejectedValue(new Error());
       (CryptocurrencyOrderRepository as jest.Mock).mockImplementation(() => ({
         update: mockUpdate,
       }));
