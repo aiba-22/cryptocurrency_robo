@@ -5,7 +5,7 @@ import {
   updateCryptocurrencyOrderSchema,
 } from "../schema/cryptocurrencyOrderSchema";
 
-export const list = async (req: Request, res: Response) => {
+export const list = async (_req: Request, res: Response) => {
   const cryptocurrencyOrderService = new CryptocurrencyOrderService();
   const result = await cryptocurrencyOrderService.list();
   res.json(result);

@@ -17,7 +17,7 @@ import {
 interface LineFormData {
   id?: number;
   channelAccessToken: string;
-  userId: string;
+  lineUserId: string;
 }
 
 export const LineSetting = () => {
@@ -31,7 +31,7 @@ export const LineSetting = () => {
   } = useForm<LineFormData>({
     defaultValues: {
       channelAccessToken: "",
-      userId: "",
+      lineUserId: "",
     },
   });
 
@@ -97,7 +97,7 @@ export const LineSetting = () => {
           />
 
           <Controller
-            name="userId"
+            name="lineUserId"
             control={control}
             rules={{ required: "入力必須項目です" }}
             render={({ field }) => (
@@ -107,8 +107,8 @@ export const LineSetting = () => {
                 margin="normal"
                 label="LINEユーザーID"
                 type="password"
-                error={!!errors.userId}
-                helperText={errors.userId?.message}
+                error={!!errors.lineUserId}
+                helperText={errors.lineUserId?.message}
               />
             )}
           />

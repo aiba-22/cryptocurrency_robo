@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import GmoService from "../service/gmoApiService";
+import GmoApiService from "../service/gmoApiService";
 
-export const get = async (req: Request, res: Response) => {
-  const gmoService = new GmoService();
-  const result = await gmoService.fetchTradingRateList();
+export const get = async (_req: Request, res: Response) => {
+  const gmoApiService = new GmoApiService();
+  const result = await gmoApiService.fetchTradingRateList();
   res.json(result);
 };

@@ -24,7 +24,7 @@ describe("LineControllerのテスト", () => {
       const mockResult = {
         id: 1,
         channelAccessToken: "line_api_key",
-        userId: "line_user_id",
+        lineUserId: "line_user_id",
       };
       jest.spyOn(LineService.prototype, "find").mockResolvedValue(mockResult);
 
@@ -48,7 +48,7 @@ describe("LineControllerのテスト", () => {
   describe("create関数のテスト", () => {
     const validBody = {
       channelAccessToken: "line_api_key",
-      userId: "line_user_id",
+      lineUserId: "line_user_id",
     };
 
     it("正常時は200でsuccessを返す", async () => {
@@ -80,7 +80,7 @@ describe("LineControllerのテスト", () => {
     const validBody = {
       id: 1,
       channelAccessToken: "line_api_key",
-      userId: "line_user_id",
+      lineUserId: "line_user_id",
     };
 
     it("正常時は200でsuccessを返す", async () => {

@@ -2,10 +2,10 @@ import db from "../db/db";
 import { CryptocurrencyOrderRepository } from "../db/repositories/cryptocurrencyOrderRepository";
 import { USER_ID } from "./constants";
 
-export default class orderService {
-  db;
-  constructor() {
-    this.db = db;
+export default class CryptocurrencyOrderService {
+  private db;
+  constructor(dbInstance = db) {
+    this.db = dbInstance;
   }
 
   async list() {
@@ -40,7 +40,7 @@ export default class orderService {
     type: number;
     isEnabled: number;
   }) {
-    const transaction = await db.transaction();
+    const transaction = await this.db.transaction();
     const orderRepository = new CryptocurrencyOrderRepository(transaction);
     try {
       await orderRepository.create({
@@ -73,7 +73,7 @@ export default class orderService {
     type: number;
     isEnabled: number;
   }) {
-    const transaction = await db.transaction();
+    const transaction = await this.db.transaction();
     const orderRepository = new CryptocurrencyOrderRepository(transaction);
     try {
       await orderRepository.update({

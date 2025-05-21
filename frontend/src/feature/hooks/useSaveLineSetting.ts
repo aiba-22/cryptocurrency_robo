@@ -6,17 +6,17 @@ import { useState } from "react";
 type SaveLineParams = {
   id?: number;
   channelAccessToken: string;
-  userId: string;
+  lineUserId: string;
 };
 
 export const useSaveLineSetting = () => {
   const { mutate, status } = useMutation(async (params: SaveLineParams) => {
-    const { id, channelAccessToken, userId } = params;
+    const { id, channelAccessToken, lineUserId } = params;
 
     if (id) {
-      await updateLine({ id, channelAccessToken, userId });
+      await updateLine({ id, channelAccessToken, lineUserId });
     } else {
-      await createLine({ channelAccessToken, userId });
+      await createLine({ channelAccessToken, lineUserId });
     }
   });
 

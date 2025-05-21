@@ -4,7 +4,7 @@ export const findLine = async (): Promise<
   | {
       id: number;
       channelAccessToken: string;
-      userId: string;
+      lineUserId: string;
     }
   | undefined
 > => {
@@ -14,7 +14,7 @@ export const findLine = async (): Promise<
 
 export const createLine = async (request: {
   channelAccessToken: string;
-  userId: string;
+  lineUserId: string;
 }): Promise<void> => {
   await axios.post("http://localhost:3001/api/line", request);
 };
@@ -22,7 +22,7 @@ export const createLine = async (request: {
 export const updateLine = async (request: {
   id: number;
   channelAccessToken: string;
-  userId: string;
+  lineUserId: string;
 }): Promise<void> => {
   await axios.put("http://localhost:3001/api/line", request);
 };

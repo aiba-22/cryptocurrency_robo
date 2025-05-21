@@ -1,82 +1,73 @@
 import axios from "axios";
 import crypto from "crypto";
+
+const BASE_PUBLIC = "https://api.coin.z.com/public";
+const BASE_PRIVATE = "https://api.coin.z.com/private";
+
+type TickerData = {
+  ask: string;
+  bid: string;
+  high: string;
+  last: string;
+  low: string;
+  symbol: string;
+  timestamp: string;
+  volume: string;
+};
+
 export default class GmoApiService {
-  async fetchTradingPrice(symbol: string): Promise<
-    | {
-        ask: string;
-        bid: string;
-        high: string;
-        last: string;
-        low: string;
-        symbol: string;
-        timestamp: string;
-        volume: string;
-      }[]
-    | undefined
-  > {
-    const endPoint = "https://api.coin.z.com/public";
+  private apiKey?: string;
+  private secretKey?: string;
+
+  constructor(params?: { apiKey?: string; secretKey?: string }) {
+    this.apiKey = params?.apiKey;
+    this.secretKey = params?.secretKey;
+  }
+
+  async fetchTradingPrice(symbol: string): Promise<string | undefined> {
     const path = `/v1/ticker?symbol=${symbol}`;
     try {
-      const result = await axios.get(endPoint + path);
-      if (result?.data?.data.length === 0) {
-        return;
-      }
+      const result = await axios.get(BASE_PUBLIC + path);
+      if (!result?.data?.data.length) return undefined;
       return result.data.data[0].last;
     } catch (error) {}
   }
 
-  async fetchTradingRateList(): Promise<
-    | {
-        ask: string;
-        bid: string;
-        high: string;
-        last: string;
-        low: string;
-        symbol: string;
-        timestamp: string;
-        volume: string;
-      }[]
-    | undefined
-  > {
-    const endPoint = "https://api.coin.z.com/public";
+  async fetchTradingRateList(): Promise<TickerData[] | undefined> {
     const path = `/v1/ticker?symbol=`;
     try {
-      const result = await axios.get(endPoint + path);
-      if (result?.data?.data.length === 0) {
-        return;
-      }
+      const result = await axios.get(BASE_PUBLIC + path);
+      if (!result?.data?.data.length) return undefined;
       return result.data.data;
     } catch (error) {}
   }
 
-  async fetchAssets({
-    apiKey,
-    secretKey,
-  }: {
-    apiKey: string;
-    secretKey: string;
-  }) {
+  private generateHeaders(method: "GET" | "POST", path: string, body = "") {
+    if (!this.apiKey || !this.secretKey) {
+      return;
+    }
     const timestamp = Date.now().toString();
-    const method = "GET";
-    const endPoint = "https://api.coin.z.com/private";
-    const path = "/v1/account/assets";
-
-    const text = timestamp + method + path;
+    const text = timestamp + method + path + body;
     const sign = crypto
-      .createHmac("sha256", secretKey)
+      .createHmac("sha256", this.secretKey)
       .update(text)
       .digest("hex");
 
-    const options = {
-      headers: {
-        "API-KEY": apiKey,
-        "API-TIMESTAMP": timestamp,
-        "API-SIGN": sign,
-      },
+    return {
+      "API-KEY": this.apiKey,
+      "API-TIMESTAMP": timestamp,
+      "API-SIGN": sign,
     };
+  }
+
+  async fetchAssets() {
+    if (!this.apiKey || !this.secretKey) {
+      return;
+    }
+    const path = "/v1/account/assets";
+    const headers = this.generateHeaders("GET", path);
     try {
-      const response = await axios.get(endPoint + path, options);
-      if (!response?.data) return;
+      const response = await axios.get(BASE_PRIVATE + path, { headers });
       return response.data;
     } catch (error) {}
   }
@@ -86,21 +77,17 @@ export default class GmoApiService {
     side,
     price,
     size,
-    secretKey,
-    apiKey,
   }: {
     symbol: string;
     side: string;
     price: number;
     size: number;
-    secretKey: string;
-    apiKey: string;
-  }) {
-    const timestamp = Date.now().toString();
-    const method = "POST";
-    const endPoint = "https://api.coin.z.com/private";
+  }): Promise<"success" | "failure"> {
+    if (!this.apiKey || !this.secretKey) {
+      throw new Error("APIキーとシークレットキーが設定されていません");
+    }
     const path = "/v1/order";
-    const reqBody = JSON.stringify({
+    const body = JSON.stringify({
       symbol,
       side,
       executionType: "LIMIT",
@@ -108,25 +95,10 @@ export default class GmoApiService {
       price,
       size,
     });
-    const text = timestamp + method + path + reqBody;
-    const sign = crypto
-      .createHmac("sha256", secretKey)
-      .update(text)
-      .digest("hex");
-    const options = {
-      headers: {
-        "API-KEY": apiKey,
-        "API-TIMESTAMP": timestamp,
-        "API-SIGN": sign,
-      },
-    };
+    const headers = this.generateHeaders("POST", path, body);
     try {
-      const result = await axios.post(endPoint + path, reqBody, options);
-      if (result?.status === 1) {
-        return "success";
-      } else {
-        return "failure";
-      }
+      const result = await axios.post(BASE_PRIVATE + path, body, { headers });
+      return result?.status === 1 ? "success" : "failure";
     } catch (error) {
       return "failure";
     }

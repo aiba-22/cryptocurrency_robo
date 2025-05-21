@@ -2,13 +2,13 @@ import { LineRepository } from "../../../db/repositories/lineRepository";
 
 describe("LineRepository", () => {
   describe("findByIdメソッド", () => {
-    const userId = 1;
+    const lineUserId = 1;
 
     it("DBに'line'テーブルのクエリを実行し、結果を返す", async () => {
       const mockData = {
         id: 1,
-        api_key: "test_api_key",
-        secret_key: "test_secret_key",
+        api_key: "api_key",
+        secret_key: "secret_key",
         created_at: new Date("2024-01-01T00:00:00Z"),
       };
       const whereMock = jest.fn().mockReturnValue({
@@ -18,7 +18,7 @@ describe("LineRepository", () => {
         where: whereMock,
       }));
       const repository = new LineRepository(dbMock as any);
-      const result = await repository.findById(userId);
+      const result = await repository.findById(lineUserId);
       expect(dbMock).toHaveBeenCalledWith("line");
       expect(result).toEqual(mockData);
     });
@@ -31,13 +31,14 @@ describe("LineRepository", () => {
         where: whereMock,
       }));
       const repository = new LineRepository(dbMock as any);
-      await expect(repository.findById(userId)).rejects.toThrow();
+      await expect(repository.findById(lineUserId)).rejects.toThrow();
     });
   });
   describe("createメソッド", () => {
     const createParams = {
-      channelAccessToken: "test_channel_access_token",
-      userId: "test_user_id",
+      userId: 1,
+      channelAccessToken: "channelAccessToken",
+      lineUserId: "lineUserId",
     };
 
     it("DBのinsertを正しい引数で呼び出す", async () => {
@@ -50,8 +51,9 @@ describe("LineRepository", () => {
       await repository.create(createParams);
       expect(dbMock).toHaveBeenCalledWith("line");
       expect(insertMock).toHaveBeenCalledWith({
-        channel_access_token: "test_channel_access_token",
-        user_id: "test_user_id",
+        user_id: 1,
+        channel_access_token: "channelAccessToken",
+        line_user_id: "lineUserId",
         created_at: expect.any(Date),
       });
     });
@@ -68,8 +70,8 @@ describe("LineRepository", () => {
   describe("updateメソッド", () => {
     const updateParams = {
       id: 1,
-      channelAccessToken: "test_channel_access_token",
-      userId: "test_user_id",
+      channelAccessToken: "channelAccessToken",
+      lineUserId: "lineUserId",
     };
 
     it("DBのupdateを正しい引数で呼び出す", async () => {
@@ -86,8 +88,8 @@ describe("LineRepository", () => {
       expect(dbMock).toHaveBeenCalledWith("line");
       expect(whereMock).toHaveBeenCalledWith({ id: 1 });
       expect(updateMock).toHaveBeenCalledWith({
-        channel_access_token: "test_channel_access_token",
-        user_id: "test_user_id",
+        channel_access_token: "channelAccessToken",
+        line_user_id: "lineUserId",
         updated_at: expect.any(Date),
       });
     });

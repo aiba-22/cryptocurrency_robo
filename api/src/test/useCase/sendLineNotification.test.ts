@@ -1,4 +1,4 @@
-import { testAlert } from "../../useCase/testAlert";
+import { sendTestNotification } from "../../useCase/sendLineNotification";
 import LineService from "../../service/lineService";
 import LineApiService from "../../service/lineApiService";
 
@@ -7,7 +7,7 @@ jest.mock("../../service/gmoApiService");
 jest.mock("../../service/lineService");
 jest.mock("../../service/lineApiService");
 
-describe("testAlert", () => {
+describe("sendTestNotification", () => {
   const mockLineServiceFind = jest.fn();
   const mockSendMessage = jest.fn();
 
@@ -29,18 +29,16 @@ describe("testAlert", () => {
       channelAccessToken: "testChannelAccessToken",
     });
 
-    await expect(testAlert("test_message")).resolves.toEqual("success");
-    expect(mockSendMessage).toHaveBeenCalledWith({
-      message: "test_message",
-      userId: "testUserId",
-      channelAccessToken: "testChannelAccessToken",
-    });
+    await expect(sendTestNotification("testMessage")).resolves.toEqual(
+      "success"
+    );
+    expect(mockSendMessage).toHaveBeenCalledWith("testMessage");
   });
 
   it("異常系: Line設定がない場合", async () => {
     mockLineServiceFind.mockResolvedValue(null);
 
-    await expect(testAlert("test_message")).resolves.toBeUndefined();
+    await expect(sendTestNotification("testMessage")).resolves.toBeUndefined();
     expect(mockSendMessage).not.toHaveBeenCalled();
   });
 
@@ -49,8 +47,10 @@ describe("testAlert", () => {
       userId: "testUserId",
       channelAccessToken: "testChannelAccessToken",
     });
-    mockSendMessage.mockRejectedValue(new Error("Network error"));
+    mockSendMessage.mockRejectedValue(new Error());
 
-    await expect(testAlert("Test message")).resolves.toEqual("failure");
+    await expect(sendTestNotification("testMessage")).resolves.toEqual(
+      "failure"
+    );
   });
 });

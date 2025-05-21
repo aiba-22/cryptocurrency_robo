@@ -1,53 +1,63 @@
 import LineService from "../../service/lineService";
 import { LineRepository } from "../../db/repositories/lineRepository";
-import db from "../../db/db";
-import axios from "axios";
 
 jest.mock("../../db/db", () => ({
-  transaction: jest.fn().mockResolvedValue({
-    commit: jest.fn(),
-    rollback: jest.fn(),
-  }),
+  transaction: jest.fn(),
 }));
 
-jest.mock("../../db/repositories/lineRepository");
+jest.mock("../../db/repositories/lineRepository", () => {
+  return {
+    LineRepository: jest.fn().mockImplementation(() => ({
+      findById: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+    })),
+  };
+});
 
 describe("LineService", () => {
-  let service: LineService;
+  let lineService: LineService;
+
+  const mockCommit = jest.fn();
+  const mockRollback = jest.fn();
+  const mockTransaction = {
+    commit: mockCommit,
+    rollback: mockRollback,
+  };
+  const mockDb = {
+    transaction: jest.fn().mockResolvedValue(mockTransaction),
+  };
 
   beforeEach(() => {
-    service = new LineService();
     jest.clearAllMocks();
+    lineService = new LineService(mockDb as any);
   });
-
-  const mockLineData = {
-    id: 1,
-    channel_access_token: "channelAccessToken",
-    user_id: "userId",
-  };
-
-  const setupRepositoryMock = (methods: Partial<LineRepository>) => {
-    (LineRepository as jest.Mock).mockImplementation(() => methods);
-  };
 
   describe("find", () => {
     it("正常にレコードが見つかれば、整形されたオブジェクトを返す", async () => {
-      setupRepositoryMock({
-        findById: jest.fn().mockResolvedValue(mockLineData),
+      const mockFindById = jest.fn().mockResolvedValue({
+        id: 1,
+        channel_access_token: "channelAccessToken",
+        line_user_id: "lineUserId",
       });
+      (LineRepository as jest.Mock).mockImplementation(() => ({
+        findById: mockFindById,
+      }));
 
-      const result = await service.find();
+      const result = await lineService.find();
       expect(result).toEqual({
         id: 1,
         channelAccessToken: "channelAccessToken",
-        userId: "userId",
+        lineUserId: "lineUserId",
       });
     });
 
     it("レコードが見つからない場合、undefinedを返す", async () => {
-      setupRepositoryMock({ findById: jest.fn().mockResolvedValue(null) });
-
-      const result = await service.find();
+      const mockFindById = jest.fn().mockResolvedValue(undefined);
+      (LineRepository as jest.Mock).mockImplementation(() => ({
+        findById: mockFindById,
+      }));
+      const result = await lineService.find();
       expect(result).toBeUndefined();
     });
   });
@@ -55,18 +65,26 @@ describe("LineService", () => {
   describe("create", () => {
     const params = {
       channelAccessToken: "channelAccessToken",
-      userId: "userId",
+      lineUserId: "lineUserId",
     };
 
     it("作成成功時、'success'を返す", async () => {
-      setupRepositoryMock({ create: jest.fn().mockResolvedValue(undefined) });
-      const result = await service.create(params);
+      const mockCreate = jest.fn().mockResolvedValue(undefined);
+      (LineRepository as jest.Mock).mockImplementation(() => ({
+        create: mockCreate,
+      }));
+
+      const result = await lineService.create(params);
       expect(result).toBe("success");
     });
 
     it("作成失敗時、'failure'を返す", async () => {
-      setupRepositoryMock({ create: jest.fn().mockRejectedValue(new Error()) });
-      const result = await service.create(params);
+      const mockCreate = jest.fn().mockRejectedValue(new Error());
+      (LineRepository as jest.Mock).mockImplementation(() => ({
+        create: mockCreate,
+      }));
+
+      const result = await lineService.create(params);
       expect(result).toBe("failure");
     });
   });
@@ -75,18 +93,26 @@ describe("LineService", () => {
     const params = {
       id: 1,
       channelAccessToken: "channelAccessToken",
-      userId: "userId",
+      lineUserId: "userId",
     };
 
     it("更新成功時、'success'を返す", async () => {
-      setupRepositoryMock({ update: jest.fn().mockResolvedValue(undefined) });
-      const result = await service.update(params);
+      const mockCreate = jest.fn().mockResolvedValue(undefined);
+      (LineRepository as jest.Mock).mockImplementation(() => ({
+        update: mockCreate,
+      }));
+
+      const result = await lineService.update(params);
       expect(result).toBe("success");
     });
 
     it("更新失敗時、'failure'を返す", async () => {
-      setupRepositoryMock({ update: jest.fn().mockRejectedValue(new Error()) });
-      const result = await service.update(params);
+      const mockCreate = jest.fn().mockRejectedValue(new Error());
+      (LineRepository as jest.Mock).mockImplementation(() => ({
+        update: mockCreate,
+      }));
+
+      const result = await lineService.update(params);
       expect(result).toBe("failure");
     });
   });

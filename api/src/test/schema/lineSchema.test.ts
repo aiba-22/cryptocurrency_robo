@@ -37,7 +37,7 @@ describe("createLineSchema", () => {
       (value) => {
         const invalidData = {
           channelAccessToken: value,
-          userId: "validUserId",
+          lineUserId: "validLineUserId",
         };
 
         expect(() => createLineSchema.parse(invalidData)).toThrow(ZodError);
@@ -45,14 +45,14 @@ describe("createLineSchema", () => {
     );
   });
 
-  describe("userId", () => {
+  describe("lineUserId", () => {
     const invalidValues = [undefined, null, ""];
     it.each(invalidValues)(
       "不正な値の場合、バリデーションエラーが発生する",
       (value) => {
         const invalidData = {
           channelAccessToken: "validChannelAccessToken",
-          userId: value,
+          lineUserId: value,
         };
 
         expect(() => createLineSchema.parse(invalidData)).toThrow(ZodError);
@@ -63,7 +63,7 @@ describe("createLineSchema", () => {
   it("有効な値の時、バリデーションが通る", () => {
     const validData = {
       channelAccessToken: "validChannelAccessToken",
-      userId: "validSecretKey",
+      lineUserId: "validLineUserId",
     };
 
     expect(() => createLineSchema.parse(validData)).not.toThrow();
@@ -79,7 +79,7 @@ describe("updateLineSchema", () => {
         const invalidData = {
           id: value,
           channelAccessToken: "invalidChannelAccessToken",
-          userId: "validUserId",
+          lineUserId: "validLineUserId",
         };
 
         expect(() => updateLineSchema.parse(invalidData)).toThrow(ZodError);
@@ -95,7 +95,7 @@ describe("updateLineSchema", () => {
         const invalidData = {
           id: 1,
           channelAccessToken: value,
-          userId: "validUserId",
+          lineUserId: "validLineUserId",
         };
 
         expect(() => updateLineSchema.parse(invalidData)).toThrow(ZodError);
@@ -103,7 +103,7 @@ describe("updateLineSchema", () => {
     );
   });
 
-  describe("userId", () => {
+  describe("lineUserId", () => {
     const invalidValues = [undefined, null, ""];
     it.each(invalidValues)(
       "不正な値の場合、バリデーションエラーが発生する",
@@ -111,7 +111,7 @@ describe("updateLineSchema", () => {
         const invalidData = {
           id: 1,
           channelAccessToken: "validChannelAccessToken",
-          userId: value,
+          lineUserId: value,
         };
 
         expect(() => updateLineSchema.parse(invalidData)).toThrow(ZodError);
@@ -123,7 +123,7 @@ describe("updateLineSchema", () => {
     const validData = {
       id: 1,
       channelAccessToken: "validChannelAccessToken",
-      userId: "validSecretKey",
+      lineUserId: "validLineUserId",
     };
 
     expect(() => updateLineSchema.parse(validData)).not.toThrow();

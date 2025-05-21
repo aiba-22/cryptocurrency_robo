@@ -1,30 +1,45 @@
 import GmoService from "../../service/gmoService";
-import db from "../../db/db";
 import { GmoRepository } from "../../db/repositories/gmoRepository";
 
-jest.mock("axios");
-jest.mock("crypto");
 jest.mock("../../db/db", () => ({
   transaction: jest.fn(),
 }));
-jest.mock("../../db/repositories/gmoRepository");
+
+jest.mock("../../db/repositories/gmoRepository", () => {
+  return {
+    GmoRepository: jest.fn().mockImplementation(() => ({
+      findById: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+    })),
+  };
+});
 
 describe("GmoService", () => {
   let gmoService: GmoService;
 
+  const mockCommit = jest.fn();
+  const mockRollback = jest.fn();
+  const mockTransaction = {
+    commit: mockCommit,
+    rollback: mockRollback,
+  };
+  const mockDb = {
+    transaction: jest.fn().mockResolvedValue(mockTransaction),
+  };
+
   beforeEach(() => {
-    gmoService = new GmoService();
     jest.clearAllMocks();
+    gmoService = new GmoService(mockDb as any);
   });
 
   describe("find", () => {
     it("GMO情報が存在する場合、整形して返す", async () => {
       const mockFindById = jest.fn().mockResolvedValue({
         id: 1,
-        api_key: "testKey",
+        api_key: "apiKey",
         secret_key: "secretKey",
       });
-
       (GmoRepository as jest.Mock).mockImplementation(() => ({
         findById: mockFindById,
       }));
@@ -33,14 +48,13 @@ describe("GmoService", () => {
 
       expect(result).toEqual({
         id: 1,
-        apiKey: "testKey",
+        apiKey: "apiKey",
         secretKey: "secretKey",
       });
     });
 
     it("GMO情報が存在しない場合、undefinedを返す", async () => {
       const mockFindById = jest.fn().mockResolvedValue(undefined);
-
       (GmoRepository as jest.Mock).mockImplementation(() => ({
         findById: mockFindById,
       }));
@@ -53,12 +67,7 @@ describe("GmoService", () => {
 
   describe("create", () => {
     it("正常に作成できた場合、'success' を返す", async () => {
-      const commit = jest.fn();
-      const rollback = jest.fn();
-      (db.transaction as jest.Mock).mockResolvedValue({ commit, rollback });
-
       const mockCreate = jest.fn().mockResolvedValue(undefined);
-
       (GmoRepository as jest.Mock).mockImplementation(() => ({
         create: mockCreate,
       }));
@@ -69,16 +78,11 @@ describe("GmoService", () => {
       });
 
       expect(result).toBe("success");
-      expect(commit).toHaveBeenCalled();
+      expect(mockCommit).toHaveBeenCalled();
     });
 
     it("作成失敗時、'failure' を返す", async () => {
-      const commit = jest.fn();
-      const rollback = jest.fn();
-      (db.transaction as jest.Mock).mockResolvedValue({ commit, rollback });
-
       const mockCreate = jest.fn().mockRejectedValue(new Error());
-
       (GmoRepository as jest.Mock).mockImplementation(() => ({
         create: mockCreate,
       }));
@@ -89,18 +93,13 @@ describe("GmoService", () => {
       });
 
       expect(result).toBe("failure");
-      expect(rollback).toHaveBeenCalled();
+      expect(mockRollback).toHaveBeenCalled();
     });
   });
 
   describe("update", () => {
     it("正常に更新できた場合、'success' を返す", async () => {
-      const commit = jest.fn();
-      const rollback = jest.fn();
-      (db.transaction as jest.Mock).mockResolvedValue({ commit, rollback });
-
       const mockUpdate = jest.fn().mockResolvedValue(undefined);
-
       (GmoRepository as jest.Mock).mockImplementation(() => ({
         update: mockUpdate,
       }));
@@ -112,16 +111,11 @@ describe("GmoService", () => {
       });
 
       expect(result).toBe("success");
-      expect(commit).toHaveBeenCalled();
+      expect(mockCommit).toHaveBeenCalled();
     });
 
     it("更新失敗時、'failure' を返す", async () => {
-      const commit = jest.fn();
-      const rollback = jest.fn();
-      (db.transaction as jest.Mock).mockResolvedValue({ commit, rollback });
-
       const mockUpdate = jest.fn().mockRejectedValue(new Error());
-
       (GmoRepository as jest.Mock).mockImplementation(() => ({
         update: mockUpdate,
       }));
@@ -133,7 +127,7 @@ describe("GmoService", () => {
       });
 
       expect(result).toBe("failure");
-      expect(rollback).toHaveBeenCalled();
+      expect(mockRollback).toHaveBeenCalled();
     });
   });
 });

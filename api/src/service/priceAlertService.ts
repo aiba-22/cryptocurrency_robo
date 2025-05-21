@@ -3,6 +3,11 @@ import { PriceAlertRepository } from "../db/repositories/priceAlertRepository";
 import { USER_ID } from "./constants";
 
 export default class PriceAlertService {
+  private db;
+  constructor(dbInstance = db) {
+    this.db = dbInstance;
+  }
+
   async find() {
     const priceAlertRepository = new PriceAlertRepository();
 
@@ -20,7 +25,7 @@ export default class PriceAlertService {
     isUpperLimit: boolean;
     symbol: string;
   }) {
-    const transaction = await db.transaction();
+    const transaction = await this.db.transaction();
     const priceAlertRepository = new PriceAlertRepository(transaction);
     try {
       await priceAlertRepository.create(conditions);
@@ -43,7 +48,7 @@ export default class PriceAlertService {
       symbol: string;
     };
   }) {
-    const transaction = await db.transaction();
+    const transaction = await this.db.transaction();
     const priceAlertRepository = new PriceAlertRepository(transaction);
     try {
       await priceAlertRepository.update({ id, conditions });

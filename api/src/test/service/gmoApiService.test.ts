@@ -1,5 +1,4 @@
 import GmoApiService from "../../service/gmoApiService";
-import db from "../../db/db";
 import { GmoRepository } from "../../db/repositories/gmoRepository";
 import axios from "axios";
 import crypto from "crypto";
@@ -12,10 +11,13 @@ jest.mock("../../db/db", () => ({
 jest.mock("../../db/repositories/gmoRepository");
 
 describe("GmoApiService", () => {
-  let gmoService: GmoApiService;
+  let gmoApiService: GmoApiService;
 
   beforeEach(() => {
-    gmoService = new GmoApiService();
+    gmoApiService = new GmoApiService({
+      apiKey: "apiKey",
+      secretKey: "secretKey",
+    });
     jest.clearAllMocks();
   });
 
@@ -25,7 +27,7 @@ describe("GmoApiService", () => {
         data: { data: [{ last: "1000" }] },
       });
 
-      const result = await gmoService.fetchTradingPrice("BTC");
+      const result = await gmoApiService.fetchTradingPrice("BTC");
 
       expect(result).toBe("1000");
     });
@@ -35,7 +37,7 @@ describe("GmoApiService", () => {
         data: { data: [] },
       });
 
-      const result = await gmoService.fetchTradingPrice("BTC");
+      const result = await gmoApiService.fetchTradingPrice("BTC");
 
       expect(result).toBeUndefined();
     });
@@ -60,7 +62,7 @@ describe("GmoApiService", () => {
         data: { data: mockData },
       });
 
-      const result = await gmoService.fetchTradingRateList();
+      const result = await gmoApiService.fetchTradingRateList();
 
       expect(result).toEqual(mockData);
     });
@@ -68,7 +70,7 @@ describe("GmoApiService", () => {
     it("空データならundefined", async () => {
       (axios.get as jest.Mock).mockResolvedValue({ data: { data: [] } });
 
-      const result = await gmoService.fetchTradingRateList();
+      const result = await gmoApiService.fetchTradingRateList();
 
       expect(result).toBeUndefined();
     });
@@ -84,10 +86,7 @@ describe("GmoApiService", () => {
 
       (axios.get as jest.Mock).mockResolvedValue({ data: { assets: [] } });
 
-      const result = await gmoService.fetchAssets({
-        apiKey: "key",
-        secretKey: "secret",
-      });
+      const result = await gmoApiService.fetchAssets();
 
       expect(result).toEqual({ assets: [] });
     });
@@ -97,8 +96,8 @@ describe("GmoApiService", () => {
     it("注文成功時に'success'を返す", async () => {
       const mockFindById = jest.fn().mockResolvedValue({
         id: 1,
-        api_key: "api",
-        secret_key: "secret",
+        api_key: "api_key",
+        secret_key: "secret_key",
       });
 
       (GmoRepository as jest.Mock).mockImplementation(() => ({
@@ -113,13 +112,11 @@ describe("GmoApiService", () => {
 
       (axios.post as jest.Mock).mockResolvedValue({ status: 1 });
 
-      const result = await gmoService.order({
+      const result = await gmoApiService.order({
         symbol: "BTC",
         side: "BUY",
         price: 1000,
         size: 0.01,
-        secretKey: "secretKey",
-        apiKey: "apiKey",
       });
 
       expect(result).toBe("success");
@@ -128,8 +125,8 @@ describe("GmoApiService", () => {
     it("注文失敗時に'failure'を返す", async () => {
       const mockFindById = jest.fn().mockResolvedValue({
         id: 1,
-        api_key: "api",
-        secret_key: "secret",
+        api_key: "api_key",
+        secret_key: "secret_key",
       });
 
       (GmoRepository as jest.Mock).mockImplementation(() => ({
@@ -138,13 +135,11 @@ describe("GmoApiService", () => {
 
       (axios.post as jest.Mock).mockResolvedValue({ status: 0 });
 
-      const result = await gmoService.order({
+      const result = await gmoApiService.order({
         symbol: "BTC",
         side: "SELL",
         price: 900,
         size: 0.02,
-        secretKey: "secretKey",
-        apiKey: "apiKey",
       });
 
       expect(result).toBe("failure");

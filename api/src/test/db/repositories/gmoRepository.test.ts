@@ -7,8 +7,8 @@ describe("GmoRepository", () => {
     it("DBに'gmo'テーブルのクエリを実行し、結果を返す", async () => {
       const mockData = {
         id: 1,
-        api_key: "test_api_key",
-        secret_key: "test_secret_key",
+        apiKey: "apiKey",
+        secretKey: "secretKey",
         created_at: new Date("2024-01-01T00:00:00Z"),
       };
       const whereMock = jest.fn().mockReturnValue({
@@ -42,14 +42,16 @@ describe("GmoRepository", () => {
       }));
       const repository = new GmoRepository(dbMock as any);
       const createParams = {
-        apiKey: "test_api_key",
-        secretKey: "test_secret_key",
+        userId: 1,
+        apiKey: "apiKey",
+        secretKey: "secretKey",
       };
       await repository.create(createParams);
       expect(dbMock).toHaveBeenCalledWith("gmo");
       expect(insertMock).toHaveBeenCalledWith({
-        api_key: "test_api_key",
-        secret_key: "test_secret_key",
+        user_id: 1,
+        api_key: "apiKey",
+        secret_key: "secretKey",
         created_at: expect.any(Date),
       });
     });
@@ -61,7 +63,11 @@ describe("GmoRepository", () => {
       }));
       const repository = new GmoRepository(dbMock as any);
       await expect(
-        repository.create({ apiKey: "key", secretKey: "secret" })
+        repository.create({
+          userId: 1,
+          apiKey: "apiKey",
+          secretKey: "secretKey",
+        })
       ).rejects.toThrow();
     });
   });
@@ -77,15 +83,15 @@ describe("GmoRepository", () => {
       const repository = new GmoRepository(dbMock as any);
       const updateParams = {
         id: 1,
-        apiKey: "test_api_key",
-        secretKey: "test_secret_key",
+        apiKey: "apiKey",
+        secretKey: "secretKey",
       };
       await repository.update(updateParams);
       expect(dbMock).toHaveBeenCalledWith("gmo");
       expect(whereMock).toHaveBeenCalledWith({ id: 1 });
       expect(updateMock).toHaveBeenCalledWith({
-        api_key: "test_api_key",
-        secret_key: "test_secret_key",
+        api_key: "apiKey",
+        secret_key: "secretKey",
         updated_at: expect.any(Date),
       });
     });

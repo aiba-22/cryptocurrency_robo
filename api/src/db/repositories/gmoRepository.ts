@@ -1,3 +1,4 @@
+import { userInfo } from "os";
 import db from "../db";
 
 export class GmoRepository {
@@ -11,8 +12,17 @@ export class GmoRepository {
     return await this.db("gmo").where({ user_id: userId }).first();
   }
 
-  async create({ apiKey, secretKey }: { apiKey: string; secretKey: string }) {
+  async create({
+    userId,
+    apiKey,
+    secretKey,
+  }: {
+    userId: number;
+    apiKey: string;
+    secretKey: string;
+  }) {
     await this.db("gmo").insert({
+      user_id: userId,
       api_key: apiKey,
       secret_key: secretKey,
       created_at: new Date(),

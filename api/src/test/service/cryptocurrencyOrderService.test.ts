@@ -1,19 +1,32 @@
-import OrderService from "../../service/cryptocurrencyOrderService";
+import CryptocurrencyOrderService from "../../service/cryptocurrencyOrderService";
 import { CryptocurrencyOrderRepository } from "../../db/repositories/cryptocurrencyOrderRepository";
-import db from "../../db/db";
 
-jest.mock("../../db/db", () => ({
-  transaction: jest.fn(),
-}));
+jest.mock("../../db/repositories/cryptocurrencyOrderRepository", () => {
+  return {
+    CryptocurrencyOrderRepository: jest.fn().mockImplementation(() => ({
+      list: jest.fn(),
+      create: jest.fn(),
+      update: jest.fn(),
+    })),
+  };
+});
 
-jest.mock("../../db/repositories/cryptocurrencyOrderRepository");
+describe("cryptocurrencyOrderService", () => {
+  let orderService: CryptocurrencyOrderService;
 
-describe("orderServiceのテスト", () => {
-  let orderService: OrderService;
+  const mockCommit = jest.fn().mockResolvedValue(undefined);
+  const mockRollback = jest.fn().mockResolvedValue(undefined);
+  const mockTransaction = {
+    commit: mockCommit,
+    rollback: mockRollback,
+  };
+  const mockDb = {
+    transaction: jest.fn().mockResolvedValue(mockTransaction),
+  };
 
   beforeEach(() => {
-    orderService = new OrderService();
     jest.clearAllMocks();
+    orderService = new CryptocurrencyOrderService(mockDb as any);
   });
 
   describe("list", () => {
@@ -60,10 +73,6 @@ describe("orderServiceのテスト", () => {
 
   describe("create", () => {
     it("注文作成が成功した場合、'success'を返す", async () => {
-      const commit = jest.fn();
-      const rollback = jest.fn();
-      (db.transaction as jest.Mock).mockResolvedValue({ commit, rollback });
-
       const mockCreate = jest.fn().mockResolvedValue(undefined);
       (CryptocurrencyOrderRepository as jest.Mock).mockImplementation(() => ({
         create: mockCreate,
@@ -78,14 +87,10 @@ describe("orderServiceのテスト", () => {
       });
 
       expect(result).toBe("success");
-      expect(commit).toHaveBeenCalled();
+      expect(mockCommit).toHaveBeenCalled();
     });
 
     it("注文作成時にエラーが発生した場合、'failure'を返す", async () => {
-      const commit = jest.fn();
-      const rollback = jest.fn();
-      (db.transaction as jest.Mock).mockResolvedValue({ commit, rollback });
-
       const mockCreate = jest.fn().mockRejectedValue(new Error());
       (CryptocurrencyOrderRepository as jest.Mock).mockImplementation(() => ({
         create: mockCreate,
@@ -100,16 +105,12 @@ describe("orderServiceのテスト", () => {
       });
 
       expect(result).toBe("failure");
-      expect(rollback).toHaveBeenCalled();
+      expect(mockRollback).toHaveBeenCalled();
     });
   });
 
   describe("update", () => {
     it("注文更新が成功した場合、'success'を返す", async () => {
-      const commit = jest.fn();
-      const rollback = jest.fn();
-      (db.transaction as jest.Mock).mockResolvedValue({ commit, rollback });
-
       const mockUpdate = jest.fn().mockResolvedValue(undefined);
       (CryptocurrencyOrderRepository as jest.Mock).mockImplementation(() => ({
         update: mockUpdate,
@@ -125,14 +126,10 @@ describe("orderServiceのテスト", () => {
       });
 
       expect(result).toBe("success");
-      expect(commit).toHaveBeenCalled();
+      expect(mockCommit).toHaveBeenCalled();
     });
 
     it("注文更新時にエラーが発生した場合、'failure'を返す", async () => {
-      const commit = jest.fn();
-      const rollback = jest.fn();
-      (db.transaction as jest.Mock).mockResolvedValue({ commit, rollback });
-
       const mockUpdate = jest.fn().mockRejectedValue(new Error("DB error"));
       (CryptocurrencyOrderRepository as jest.Mock).mockImplementation(() => ({
         update: mockUpdate,
@@ -148,7 +145,7 @@ describe("orderServiceのテスト", () => {
       });
 
       expect(result).toBe("failure");
-      expect(rollback).toHaveBeenCalled();
+      expect(mockRollback).toHaveBeenCalled();
     });
   });
 });

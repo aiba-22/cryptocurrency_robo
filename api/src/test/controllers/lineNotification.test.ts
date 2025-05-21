@@ -1,8 +1,8 @@
 import { sendLineTestAlert } from "../../controllers/notificationController";
 import { lineNotificationSchema } from "../../schema/lineSchema";
-import { testAlert } from "../../useCase/testAlert";
+import { sendTestNotification } from "../../useCase/sendLineNotification";
 
-jest.mock("../../useCase/testAlert");
+jest.mock("../../useCase/sendLineNotification");
 
 const mockResponse = () => {
   const res = {} as any;
@@ -26,7 +26,7 @@ describe("lineNotificationControllerのテスト", () => {
 
       jest.spyOn(lineNotificationSchema, "parse").mockReturnValue({ message });
 
-      (testAlert as jest.Mock).mockReturnValue("success");
+      (sendTestNotification as jest.Mock).mockReturnValue("success");
 
       await sendLineTestAlert(req as any, res);
 

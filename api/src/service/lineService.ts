@@ -4,6 +4,10 @@ import db from "../db/db";
 import { USER_ID } from "./constants";
 
 export default class LineService {
+  private db;
+  constructor(dbInstance = db) {
+    this.db = dbInstance;
+  }
   async find() {
     const repository = new LineRepository();
     const line = await repository.findById(USER_ID);
@@ -11,21 +15,25 @@ export default class LineService {
     return {
       id: line.id,
       channelAccessToken: line.channel_access_token,
-      userId: line.user_id,
+      lineUserId: line.line_user_id,
     };
   }
 
   async create({
     channelAccessToken,
-    userId,
+    lineUserId,
   }: {
     channelAccessToken: string;
-    userId: string;
+    lineUserId: string;
   }) {
-    const transaction = await db.transaction();
+    const transaction = await this.db.transaction();
     const lineRepository = new LineRepository(transaction);
     try {
-      await lineRepository.create({ channelAccessToken, userId });
+      await lineRepository.create({
+        userId: USER_ID,
+        channelAccessToken,
+        lineUserId,
+      });
       await transaction.commit();
       return "success";
     } catch (error) {
@@ -37,16 +45,16 @@ export default class LineService {
   async update({
     id,
     channelAccessToken,
-    userId,
+    lineUserId,
   }: {
     id: number;
     channelAccessToken: string;
-    userId: string;
+    lineUserId: string;
   }) {
-    const transaction = await db.transaction();
+    const transaction = await this.db.transaction();
     const lineRepository = new LineRepository(transaction);
     try {
-      await lineRepository.update({ id, channelAccessToken, userId });
+      await lineRepository.update({ id, channelAccessToken, lineUserId });
       await transaction.commit();
       return "success";
     } catch (error) {

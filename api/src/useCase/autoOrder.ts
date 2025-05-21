@@ -18,7 +18,7 @@ export const autoOrder = async () => {
   if (!gmo?.apiKey || !gmo?.secretKey) return;
   const { apiKey, secretKey } = gmo;
 
-  const gmoApiService = new GmoApiService();
+  const gmoApiService = new GmoApiService({ apiKey, secretKey });
   const tradingRateList = await gmoApiService.fetchTradingRateList();
   if (!tradingRateList) return;
 
@@ -38,10 +38,10 @@ export const autoOrder = async () => {
 
   const lineService = new LineService();
   const line = await lineService.find();
-  if (!line?.channelAccessToken || !line?.userId) return;
-  const { userId, channelAccessToken } = line;
+  if (!line?.channelAccessToken || !line?.lineUserId) return;
+  const { lineUserId, channelAccessToken } = line;
 
-  const lineApiService = new LineApiService();
+  const lineApiService = new LineApiService({ lineUserId, channelAccessToken });
 
   if (isTargetBuyPrice && buyOrder) {
     const result = await gmoApiService.order({
@@ -49,15 +49,9 @@ export const autoOrder = async () => {
       side: ORDER_SIDE.BUY,
       price: buyOrder.targetPrice,
       size: buyOrder.volume,
-      apiKey,
-      secretKey,
     });
     const resultMessage = result === "success" ? "成功" : "失敗";
-    await lineApiService.sendMessage({
-      message: `売り注文に${resultMessage}しました。`,
-      userId,
-      channelAccessToken,
-    });
+    await lineApiService.sendMessage(`売り注文に${resultMessage}しました。`);
   }
 
   if (isTargetSellPrice && sellOrder) {
@@ -66,15 +60,9 @@ export const autoOrder = async () => {
       side: ORDER_SIDE.SELL,
       price: sellOrder?.targetPrice,
       size: sellOrder?.volume,
-      apiKey,
-      secretKey,
     });
     const resultMessage = result === "success" ? "成功" : "失敗";
-    await lineApiService.sendMessage({
-      message: `買い注文に${resultMessage}しました。`,
-      userId,
-      channelAccessToken,
-    });
+    await lineApiService.sendMessage(`買い注文に${resultMessage}しました。`);
   }
 };
 

@@ -2,6 +2,11 @@ import { GmoRepository } from "../db/repositories/gmoRepository";
 import db from "../db/db";
 import { USER_ID } from "./constants";
 export default class GmoService {
+  private db;
+  constructor(dbInstance = db) {
+    this.db = dbInstance;
+  }
+
   async find() {
     const gmoRepository = new GmoRepository();
     const gmo = await gmoRepository.findById(USER_ID);
@@ -15,10 +20,11 @@ export default class GmoService {
   }
 
   async create({ apiKey, secretKey }: { apiKey: string; secretKey: string }) {
-    const transaction = await db.transaction();
+    const transaction = await this.db.transaction();
     const gmoRepository = new GmoRepository(transaction);
     try {
       await gmoRepository.create({
+        userId: USER_ID,
         apiKey,
         secretKey,
       });
@@ -39,7 +45,7 @@ export default class GmoService {
     apiKey: string;
     secretKey: string;
   }) {
-    const transaction = await db.transaction();
+    const transaction = await this.db.transaction();
     const gmoRepository = new GmoRepository(transaction);
     try {
       await gmoRepository.update({ id, apiKey, secretKey });

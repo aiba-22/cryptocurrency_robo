@@ -12,15 +12,18 @@ export class LineRepository {
   }
 
   async create({
-    channelAccessToken,
     userId,
+    channelAccessToken,
+    lineUserId,
   }: {
     channelAccessToken: string;
-    userId: string;
+    userId: number;
+    lineUserId: string;
   }) {
     await this.db("line").insert({
       channel_access_token: channelAccessToken,
       user_id: userId,
+      line_user_id: lineUserId,
       created_at: new Date(),
     });
   }
@@ -28,15 +31,15 @@ export class LineRepository {
   async update({
     id,
     channelAccessToken,
-    userId,
+    lineUserId,
   }: {
     id: number;
     channelAccessToken: string;
-    userId: string;
+    lineUserId: string;
   }) {
     await this.db("line").where({ id }).update({
       channel_access_token: channelAccessToken,
-      user_id: userId,
+      line_user_id: lineUserId,
       updated_at: new Date(),
     });
   }

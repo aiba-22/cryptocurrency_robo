@@ -1,7 +1,6 @@
 import PriceAlertService from "../../service/priceAlertService";
 import db from "../../db/db";
 import { PriceAlertRepository } from "../../db/repositories/priceAlertRepository";
-import { ID } from "../../service/constants";
 
 jest.mock("../../db/db", () => ({
   transaction: jest.fn(),
@@ -20,7 +19,7 @@ describe("PriceAlertService", () => {
   describe("find", () => {
     it("条件アラートが存在する場合、整形されたオブジェクトを返す", async () => {
       const mockFindById = jest.fn().mockResolvedValue({
-        id: ID,
+        id: 1,
         conditions: {
           price: 10000,
           isUpperLimit: true,
@@ -35,7 +34,7 @@ describe("PriceAlertService", () => {
       const result = await priceAlertService.find();
 
       expect(result).toEqual({
-        id: ID,
+        id: 1,
         conditions: {
           price: 10000,
           isUpperLimit: true,

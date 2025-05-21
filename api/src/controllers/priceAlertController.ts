@@ -5,7 +5,7 @@ import {
   updatePriceAlertSchema,
 } from "../schema/priceAlertSchema";
 
-export const get = async (req: Request, res: Response) => {
+export const get = async (_req: Request, res: Response) => {
   const priceAlertService = new PriceAlertService();
   const result = await priceAlertService.find();
   res.json(result);
