@@ -84,7 +84,7 @@
 
 ### 1. リポジトリをクローン
 
-git clone https://github.com/aiba-22/crypto_robo.git
+git clone https://github.com/aiba-22/cryptocurrency_robo.git
 
 ### 2. Docker コンテナのビルドと起動
 
