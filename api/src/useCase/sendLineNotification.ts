@@ -5,15 +5,11 @@ export const sendTestNotification = async (message: string) => {
   const lineService = new LineService();
   const line = await lineService.find();
 
-  if (!line) return;
+  if (!line) return "systemError";
 
   const { lineUserId, channelAccessToken } = line;
 
   const lineApiService = new LineApiService({ lineUserId, channelAccessToken });
-  try {
-    await lineApiService.sendMessage(message);
-    return "success";
-  } catch (error) {
-    return "failure";
-  }
+  const result = await lineApiService.sendMessage(message);
+  return result;
 };

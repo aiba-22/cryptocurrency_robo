@@ -17,10 +17,6 @@ export default class LineApiService {
   }
 
   async sendMessage(message: string): Promise<string> {
-    if (!this.lineUserId || this.lineUserId === "unknown_user") {
-      return "systemError";
-    }
-
     try {
       await axios.post(
         "https://api.line.me/v2/bot/message/push",
@@ -37,13 +33,11 @@ export default class LineApiService {
       );
       return "success";
     } catch (error: any) {
-      if (error.response) {
-        switch (error.response.status) {
-          case 429:
-            return "tooManyRequests";
-          case 400:
-            return "badRequest";
-        }
+      if (error?.response?.status === 429) {
+        return "tooManyRequests";
+      }
+      if (error?.response?.status === 400) {
+        return "badRequest";
       }
       return "systemError";
     }
