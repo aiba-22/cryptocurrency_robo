@@ -95,7 +95,6 @@ export const AutomaticTrading: React.FC = () => {
             volumeField="buy.volume"
             labelPrefix="買い"
             errors={errors}
-            isEnabled={isBuyEnabled}
           />
 
           <Box mb={2} mt={4}>
@@ -114,7 +113,6 @@ export const AutomaticTrading: React.FC = () => {
             volumeField="sell.volume"
             labelPrefix="売り"
             errors={errors}
-            isEnabled={isSellEnabled}
           />
 
           <Box mt={4} display="flex" justifyContent="flex-end">

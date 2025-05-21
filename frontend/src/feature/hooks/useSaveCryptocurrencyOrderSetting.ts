@@ -11,7 +11,7 @@ export type Form = {
   targetPrice: number;
   volume: number;
   type: number;
-  isEnabled: boolean;
+  isEnabled: number;
 };
 
 export const useSaveCryptocurrencyOrderSetting = () => {
