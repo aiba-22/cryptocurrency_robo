@@ -38,7 +38,7 @@ export default class LineService {
       return "success";
     } catch (error) {
       await transaction.rollback();
-      return "failure";
+      return "systemError";
     }
   }
 
@@ -59,7 +59,7 @@ export default class LineService {
       return "success";
     } catch (error) {
       await transaction.rollback();
-      return "failure";
+      return "systemError";
     }
   }
 }

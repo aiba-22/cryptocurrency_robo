@@ -10,18 +10,29 @@ type SaveLineParams = {
 };
 
 export const useSaveLineSetting = () => {
-  const { mutate, status } = useMutation(async (params: SaveLineParams) => {
-    const { id, channelAccessToken, lineUserId } = params;
+  const [lineSettingSaveStatus, setAlertSettingSaveStatus] = useState<string>();
+  const { mutate, status } = useMutation(
+    async (params: SaveLineParams) => {
+      const { id, channelAccessToken, lineUserId } = params;
 
-    if (id) {
-      await updateLine({ id, channelAccessToken, lineUserId });
-    } else {
-      await createLine({ channelAccessToken, lineUserId });
+      if (id) {
+        return await updateLine({ id, channelAccessToken, lineUserId });
+      } else {
+        return await createLine({ channelAccessToken, lineUserId });
+      }
+    },
+    {
+      onSuccess: (data) => {
+        setAlertSettingSaveStatus(data);
+      },
+      onError: () => {
+        setAlertSettingSaveStatus("systemError");
+      },
     }
-  });
+  );
 
   return {
     saveLineSettings: mutate,
-    lineSettingSaveStatus: status,
+    lineSettingSaveStatus,
   };
 };

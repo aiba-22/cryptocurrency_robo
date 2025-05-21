@@ -78,14 +78,14 @@ describe("LineService", () => {
       expect(result).toBe("success");
     });
 
-    it("作成失敗時、'failure'を返す", async () => {
+    it("作成失敗時、'systemError'を返す", async () => {
       const mockCreate = jest.fn().mockRejectedValue(new Error());
       (LineRepository as jest.Mock).mockImplementation(() => ({
         create: mockCreate,
       }));
 
       const result = await lineService.create(params);
-      expect(result).toBe("failure");
+      expect(result).toBe("systemError");
     });
   });
 
@@ -106,14 +106,14 @@ describe("LineService", () => {
       expect(result).toBe("success");
     });
 
-    it("更新失敗時、'failure'を返す", async () => {
+    it("更新失敗時、'systemError'を返す", async () => {
       const mockCreate = jest.fn().mockRejectedValue(new Error());
       (LineRepository as jest.Mock).mockImplementation(() => ({
         update: mockCreate,
       }));
 
       const result = await lineService.update(params);
-      expect(result).toBe("failure");
+      expect(result).toBe("systemError");
     });
   });
 });

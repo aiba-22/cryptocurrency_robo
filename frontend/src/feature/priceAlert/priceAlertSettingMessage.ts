@@ -1,6 +1,5 @@
 export const PRICE_ALERT_SETTING_SAVE_MESSAGES = {
   success: "保存に成功しました。",
-  error: "保存に失敗しました。",
   systemError: "システムエラー",
 } as const;
 

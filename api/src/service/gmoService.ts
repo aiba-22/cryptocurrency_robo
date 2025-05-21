@@ -32,7 +32,7 @@ export default class GmoService {
       return "success";
     } catch (error) {
       await transaction.rollback();
-      return "failure";
+      return "systemError";
     }
   }
 
@@ -53,7 +53,7 @@ export default class GmoService {
       return "success";
     } catch (error) {
       await transaction.rollback();
-      return "failure";
+      return "systemError";
     }
   }
 }

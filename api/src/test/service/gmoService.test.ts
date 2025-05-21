@@ -81,7 +81,7 @@ describe("GmoService", () => {
       expect(mockCommit).toHaveBeenCalled();
     });
 
-    it("作成失敗時、'failure' を返す", async () => {
+    it("作成失敗時、'systemError' を返す", async () => {
       const mockCreate = jest.fn().mockRejectedValue(new Error());
       (GmoRepository as jest.Mock).mockImplementation(() => ({
         create: mockCreate,
@@ -92,7 +92,7 @@ describe("GmoService", () => {
         secretKey: "secret",
       });
 
-      expect(result).toBe("failure");
+      expect(result).toBe("systemError");
       expect(mockRollback).toHaveBeenCalled();
     });
   });
@@ -114,7 +114,7 @@ describe("GmoService", () => {
       expect(mockCommit).toHaveBeenCalled();
     });
 
-    it("更新失敗時、'failure' を返す", async () => {
+    it("更新失敗時、'systemError' を返す", async () => {
       const mockUpdate = jest.fn().mockRejectedValue(new Error());
       (GmoRepository as jest.Mock).mockImplementation(() => ({
         update: mockUpdate,
@@ -126,7 +126,7 @@ describe("GmoService", () => {
         secretKey: "secret",
       });
 
-      expect(result).toBe("failure");
+      expect(result).toBe("systemError");
       expect(mockRollback).toHaveBeenCalled();
     });
   });

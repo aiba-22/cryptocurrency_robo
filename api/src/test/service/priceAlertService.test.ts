@@ -78,7 +78,7 @@ describe("PriceAlertService", () => {
       expect(commit).toHaveBeenCalled();
     });
 
-    it("作成時にエラーが発生した場合、'failure' を返す", async () => {
+    it("作成時にエラーが発生した場合、'systemError' を返す", async () => {
       const commit = jest.fn();
       const rollback = jest.fn();
       (db.transaction as jest.Mock).mockResolvedValue({ commit, rollback });
@@ -95,7 +95,7 @@ describe("PriceAlertService", () => {
         symbol: "eth",
       });
 
-      expect(result).toBe("failure");
+      expect(result).toBe("systemError");
       expect(rollback).toHaveBeenCalled();
     });
   });
@@ -125,7 +125,7 @@ describe("PriceAlertService", () => {
       expect(commit).toHaveBeenCalled();
     });
 
-    it("更新時にエラーが発生した場合、'failure' を返す", async () => {
+    it("更新時にエラーが発生した場合、'systemError' を返す", async () => {
       const commit = jest.fn();
       const rollback = jest.fn();
       (db.transaction as jest.Mock).mockResolvedValue({ commit, rollback });
@@ -145,7 +145,7 @@ describe("PriceAlertService", () => {
         },
       });
 
-      expect(result).toBe("failure");
+      expect(result).toBe("systemError");
       expect(rollback).toHaveBeenCalled();
     });
   });

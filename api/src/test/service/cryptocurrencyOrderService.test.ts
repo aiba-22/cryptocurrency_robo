@@ -90,7 +90,7 @@ describe("cryptocurrencyOrderService", () => {
       expect(mockCommit).toHaveBeenCalled();
     });
 
-    it("注文作成時にエラーが発生した場合、'failure'を返す", async () => {
+    it("注文作成時にエラーが発生した場合、'systemError'を返す", async () => {
       const mockCreate = jest.fn().mockRejectedValue(new Error());
       (CryptocurrencyOrderRepository as jest.Mock).mockImplementation(() => ({
         create: mockCreate,
@@ -104,7 +104,7 @@ describe("cryptocurrencyOrderService", () => {
         isEnabled: 0,
       });
 
-      expect(result).toBe("failure");
+      expect(result).toBe("systemError");
       expect(mockRollback).toHaveBeenCalled();
     });
   });
@@ -129,7 +129,7 @@ describe("cryptocurrencyOrderService", () => {
       expect(mockCommit).toHaveBeenCalled();
     });
 
-    it("注文更新時にエラーが発生した場合、'failure'を返す", async () => {
+    it("注文更新時にエラーが発生した場合、'systemError'を返す", async () => {
       const mockUpdate = jest.fn().mockRejectedValue(new Error("DB error"));
       (CryptocurrencyOrderRepository as jest.Mock).mockImplementation(() => ({
         update: mockUpdate,
@@ -144,7 +144,7 @@ describe("cryptocurrencyOrderService", () => {
         isEnabled: 1,
       });
 
-      expect(result).toBe("failure");
+      expect(result).toBe("systemError");
       expect(mockRollback).toHaveBeenCalled();
     });
   });

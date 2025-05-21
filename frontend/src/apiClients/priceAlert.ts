@@ -25,11 +25,12 @@ export const createPriceAlert = async (request: {
   isUpperLimit: boolean;
   symbol: string;
   price: number;
-}): Promise<void> => {
+}): Promise<string> => {
   const { isUpperLimit, symbol, price } = request;
-  await axios.post("http://localhost:3001/api/priceAlert", {
+  const result = await axios.post("http://localhost:3001/api/priceAlert", {
     conditions: { isUpperLimit, symbol, price },
   });
+  return result.data;
 };
 
 export const updatePriceAlert = async (request: {
@@ -37,10 +38,11 @@ export const updatePriceAlert = async (request: {
   isUpperLimit: boolean;
   symbol: string;
   price: number;
-}): Promise<void> => {
+}): Promise<string> => {
   const { id, isUpperLimit, symbol, price } = request;
-  await axios.put("http://localhost:3001/api/priceAlert", {
+  const result = await axios.put("http://localhost:3001/api/priceAlert", {
     id,
     conditions: { isUpperLimit, symbol, price },
   });
+  return result.data;
 };

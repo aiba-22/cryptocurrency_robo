@@ -53,7 +53,10 @@ export const LineSetting = () => {
   }, [lineSetting, reset]);
 
   useEffect(() => {
-    if (isLineSettingSaveStatus(lineSettingSaveStatus)) {
+    if (
+      lineSettingSaveStatus &&
+      isLineSettingSaveStatus(lineSettingSaveStatus)
+    ) {
       setSnackBarMessage(LINE_SETTING_SAVE_MESSAGES[lineSettingSaveStatus]);
       return;
     }

@@ -41,7 +41,10 @@ export const AutomaticTrading: React.FC = () => {
   const symbol = watch("symbol");
 
   useEffect(() => {
-    if (isOrderSettingSaveStatus(orderSettingSaveStatus)) {
+    if (
+      orderSettingSaveStatus &&
+      isOrderSettingSaveStatus(orderSettingSaveStatus)
+    ) {
       setSnackBarMessage(AUTOMATIC_TRADING_MESSAGES[orderSettingSaveStatus]);
     } else if (isOrderListError) {
       setSnackBarMessage(SYSTEM_ERROR);
@@ -85,15 +88,16 @@ export const AutomaticTrading: React.FC = () => {
               )}
             />
           </Box>
-          {isBuyEnabled === IS_ENABLED.TRUE && (
-            <OrderForm
-              control={control}
-              targetPriceField="buy.targetPrice"
-              volumeField="buy.volume"
-              labelPrefix="買い"
-              errors={errors}
-            />
-          )}
+
+          <OrderForm
+            control={control}
+            targetPriceField="buy.targetPrice"
+            volumeField="buy.volume"
+            labelPrefix="買い"
+            errors={errors}
+            isEnabled={isBuyEnabled}
+          />
+
           <Box mb={2} mt={4}>
             <Controller
               name="sell.isEnabled"
@@ -103,15 +107,16 @@ export const AutomaticTrading: React.FC = () => {
               )}
             />
           </Box>
-          {isSellEnabled === IS_ENABLED.TRUE && (
-            <OrderForm
-              control={control}
-              targetPriceField="sell.targetPrice"
-              volumeField="sell.volume"
-              labelPrefix="売り"
-              errors={errors}
-            />
-          )}
+
+          <OrderForm
+            control={control}
+            targetPriceField="sell.targetPrice"
+            volumeField="sell.volume"
+            labelPrefix="売り"
+            errors={errors}
+            isEnabled={isSellEnabled}
+          />
+
           <Box mt={4} display="flex" justifyContent="flex-end">
             <Button type="submit" variant="contained" color="primary">
               保存

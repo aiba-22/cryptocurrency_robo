@@ -9,7 +9,6 @@ export type LineNotificationStatus = keyof typeof LINE_NOTIFICATION_MESSAGES;
 
 export const LINE_SETTING_SAVE_MESSAGES = {
   success: "保存に成功しました。",
-  error: "保存に失敗しました。",
   systemError: "システムエラー",
 } as const;
 

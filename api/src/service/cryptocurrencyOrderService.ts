@@ -54,7 +54,7 @@ export default class CryptocurrencyOrderService {
       return "success";
     } catch (error) {
       await transaction.rollback();
-      return "failure";
+      return "systemError";
     }
   }
 
@@ -88,7 +88,7 @@ export default class CryptocurrencyOrderService {
       return "success";
     } catch (error) {
       await transaction.rollback();
-      return "failure";
+      return "systemError";
     }
   }
 }

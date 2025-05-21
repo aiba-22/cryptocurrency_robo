@@ -20,11 +20,11 @@ import { useSavePriceAlertSetting } from "../feature/hooks/useSavePriceAlertSett
 import { Snackbar } from "./snackBar";
 import Rate from "./rate";
 import { Loading } from "./loading";
+import { SYSTEM_ERROR } from "../feature/lineSetting/lineNotificationMessages";
 import {
-  isNotificationStatus,
-  SYSTEM_ERROR,
-} from "../feature/lineSetting/lineNotificationMessages";
-import { PRICE_ALERT_SETTING_SAVE_MESSAGES } from "../feature/priceAlert/priceAlertSettingMessage";
+  isPriceAlertSettingSaveStatus,
+  PRICE_ALERT_SETTING_SAVE_MESSAGES,
+} from "../feature/priceAlert/priceAlertSettingMessage";
 
 type PriceAlertSettingForm = {
   id?: number;
@@ -44,8 +44,8 @@ export const PriceAlertSetting = () => {
     defaultValues: {
       id: undefined,
       symbol: CRYPTOCURRENCY.BTC,
-      isUpperLimit: undefined,
-      price: 0,
+      isUpperLimit: true,
+      price: undefined,
     },
   });
   const [snackBarMessage, setSnackBarMessage] = useState("");
@@ -73,7 +73,10 @@ export const PriceAlertSetting = () => {
   }, [alertSetting, reset]);
 
   useEffect(() => {
-    if (isNotificationStatus(alertSettingSaveStatus)) {
+    if (
+      alertSettingSaveStatus &&
+      isPriceAlertSettingSaveStatus(alertSettingSaveStatus)
+    ) {
       setSnackBarMessage(
         PRICE_ALERT_SETTING_SAVE_MESSAGES[alertSettingSaveStatus]
       );

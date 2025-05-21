@@ -15,16 +15,18 @@ export const findLine = async (): Promise<
 export const createLine = async (request: {
   channelAccessToken: string;
   lineUserId: string;
-}): Promise<void> => {
-  await axios.post("http://localhost:3001/api/line", request);
+}): Promise<string> => {
+  const result = await axios.post("http://localhost:3001/api/line", request);
+  return result.data;
 };
 
 export const updateLine = async (request: {
   id: number;
   channelAccessToken: string;
   lineUserId: string;
-}): Promise<void> => {
-  await axios.put("http://localhost:3001/api/line", request);
+}): Promise<string> => {
+  const result = await axios.put("http://localhost:3001/api/line", request);
+  return result.data;
 };
 
 export const sendLineNotification = async (message: string) => {
