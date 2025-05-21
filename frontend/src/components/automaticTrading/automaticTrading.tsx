@@ -54,7 +54,7 @@ export const AutomaticTrading: React.FC = () => {
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
-        注文設定
+        自動取引設定
       </Typography>
       {isOrderListLoading ? (
         <Loading />

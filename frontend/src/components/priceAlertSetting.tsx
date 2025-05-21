@@ -90,7 +90,7 @@ export const PriceAlertSetting = () => {
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
-        価格アラート
+        価格アラート設定
       </Typography>
       {isAlertSettingFindLoading ? (
         <Loading />
