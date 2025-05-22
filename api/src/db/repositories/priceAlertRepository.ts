@@ -11,13 +11,20 @@ export class PriceAlertRepository {
     return await this.db("price_alert").where({ user_id: userId }).first();
   }
 
-  async create(conditions: {
-    price: number;
-    isUpperLimit: boolean;
-    symbol: string;
+  async create({
+    userId,
+    conditions,
+  }: {
+    userId: number;
+    conditions: {
+      price: number;
+      isUpperLimit: boolean;
+      symbol: string;
+    };
   }) {
     await this.db("price_alert").insert({
       conditions,
+      user_id: userId,
     });
   }
 

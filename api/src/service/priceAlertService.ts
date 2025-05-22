@@ -28,7 +28,7 @@ export default class PriceAlertService {
     const transaction = await this.db.transaction();
     const priceAlertRepository = new PriceAlertRepository(transaction);
     try {
-      await priceAlertRepository.create(conditions);
+      await priceAlertRepository.create({ conditions, userId: USER_ID });
       await transaction.commit();
       return "success";
     } catch (error) {
