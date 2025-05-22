@@ -1,10 +1,10 @@
 import "./App.css";
 import { Routes, Route, Link as RouterLink } from "react-router-dom";
 import { PriceAlertSetting } from "./components/priceAlertSetting";
-import { AutomaticTradingSetting } from "./components/automaticTrading/automaticTradingSetting";
 
 import { AppBar, Toolbar, Button, Container, Box } from "@mui/material";
-import { ServiceSettings } from "./components/setting/serviceSettings";
+import { AutomaticTradingSetting } from "./components/automaticTrading/automaticTradingSetting";
+import { ServiceSettingsContainer } from "./components/serviceSetting/ServiceSettingsContainer";
 
 export default function App() {
   return (
@@ -35,7 +35,7 @@ export default function App() {
               path="/automaticTrading"
               element={<AutomaticTradingSetting />}
             />
-            <Route path="/setting" element={<ServiceSettings />} />
+            <Route path="/setting" element={<ServiceSettingsContainer />} />
           </Routes>
         </Box>
       </Container>
