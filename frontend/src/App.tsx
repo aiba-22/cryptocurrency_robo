@@ -4,7 +4,7 @@ import { PriceAlertSetting } from "./components/priceAlertSetting";
 import { AutomaticTradingSetting } from "./components/automaticTrading/automaticTradingSetting";
 
 import { AppBar, Toolbar, Button, Container, Box } from "@mui/material";
-import { Setting } from "./components/setting/setting";
+import { ServiceSettings } from "./components/setting/serviceSettings";
 
 export default function App() {
   return (
@@ -35,7 +35,7 @@ export default function App() {
               path="/automaticTrading"
               element={<AutomaticTradingSetting />}
             />
-            <Route path="/setting" element={<Setting />} />
+            <Route path="/setting" element={<ServiceSettings />} />
           </Routes>
         </Box>
       </Container>
