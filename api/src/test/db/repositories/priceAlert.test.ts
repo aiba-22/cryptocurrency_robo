@@ -39,9 +39,12 @@ describe("priceAlertRepository", () => {
   });
   describe("createメソッド", () => {
     const createParams = {
-      price: 10000,
-      isUpperLimit: true,
-      symbol: "BTC",
+      userId: 1,
+      conditions: {
+        price: 10000,
+        isUpperLimit: true,
+        symbol: "BTC",
+      },
     };
 
     it("DBのinsertを正しい引数で呼び出す", async () => {
@@ -54,6 +57,7 @@ describe("priceAlertRepository", () => {
       await repository.create(createParams);
       expect(dbMock).toHaveBeenCalledWith("price_alert");
       expect(insertMock).toHaveBeenCalledWith({
+        user_id: 1,
         conditions: {
           isUpperLimit: true,
           price: 10000,
