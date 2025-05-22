@@ -1,25 +1,10 @@
 import { Grid, TextField } from "@mui/material";
 import { Controller, Control, FieldErrors } from "react-hook-form";
-
-export type Form = {
-  symbol: string;
-  buy: {
-    id?: number;
-    targetPrice: number;
-    volume: number;
-    isEnabled: number;
-  };
-  sell: {
-    id?: number;
-    targetPrice: number;
-    volume: number;
-    isEnabled: number;
-  };
-};
+import { OrderFormValues } from "../../feature/automaticTrading/hooks/useOrderForm";
 
 type OrderFormProps = {
-  control: Control<Form>;
-  errors: FieldErrors<Form>;
+  control: Control<OrderFormValues>;
+  errors: FieldErrors<OrderFormValues>;
   targetPriceField: "buy.targetPrice" | "sell.targetPrice";
   volumeField: "buy.volume" | "sell.volume";
   labelPrefix: string;

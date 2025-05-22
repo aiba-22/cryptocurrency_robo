@@ -4,7 +4,10 @@ import { CRYPTOCURRENCY } from "../../constants";
 import { IS_ENABLED, ORDER_TYPE } from "../constants";
 import { useSaveCryptocurrencyOrderSetting } from "../../hooks/useSaveCryptocurrencyOrderSetting";
 import { useListCryptocurrencyOrder } from "../../hooks/useListCryptocurrencyOrder";
-import { convertToFormData } from "../convertToFormData";
+import {
+  mapFormToOrderRequests,
+  mapOrderListToFormValues,
+} from "../orderFormMapper.ts";
 
 export type OrderConditions = {
   id?: number;
@@ -13,7 +16,7 @@ export type OrderConditions = {
   isEnabled: number;
 };
 
-export type Form = {
+export type OrderFormValues = {
   symbol: string;
   buy: OrderConditions;
   sell: OrderConditions;
@@ -26,7 +29,7 @@ export const useOrderForm = () => {
     watch,
     reset,
     formState: { errors },
-  } = useForm<Form>({
+  } = useForm<OrderFormValues>({
     defaultValues: {
       symbol: CRYPTOCURRENCY.BTC,
       buy: {
@@ -48,35 +51,21 @@ export const useOrderForm = () => {
   const { cryptocurrencyOrderList, isOrderListError, isOrderListLoading } =
     useListCryptocurrencyOrder();
 
-  const onSubmit = (data: Form) => {
-    const orderTypes: Record<"buy" | "sell", number> = {
-      buy: ORDER_TYPE.BUY,
-      sell: ORDER_TYPE.SELL,
-    };
+  const onSubmit = (data: OrderFormValues) => {
+    const [buyOrder, sellOrder] = mapFormToOrderRequests(data);
 
-    const orderList: ("buy" | "sell")[] = ["buy", "sell"];
+    if (sellOrder) {
+      saveOrderSetting(sellOrder);
+    }
 
-    orderList.forEach((key) => {
-      const order = data[key];
-
-      if (order) {
-        const type = orderTypes[key];
-
-        saveOrderSetting({
-          id: order.id,
-          symbol: data.symbol,
-          type,
-          volume: Number(order.volume),
-          targetPrice: Number(order.targetPrice),
-          isEnabled: order.isEnabled,
-        });
-      }
-    });
+    if (buyOrder) {
+      saveOrderSetting(buyOrder);
+    }
   };
 
   useEffect(() => {
     if (cryptocurrencyOrderList) {
-      reset(convertToFormData(cryptocurrencyOrderList));
+      reset(mapOrderListToFormValues(cryptocurrencyOrderList));
     }
   }, [cryptocurrencyOrderList]);
 

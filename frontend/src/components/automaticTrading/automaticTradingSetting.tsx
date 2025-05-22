@@ -24,8 +24,8 @@ import {
 import { IS_ENABLED } from "../../feature/automaticTrading/constants";
 import { useOrderForm } from "../../feature/automaticTrading/hooks/useOrderForm";
 
-export const AutomaticTradingSetting: React.FC = () => {
-  const [snackBarMessage, setSnackBarMessage] = useState<string>("");
+export const AutomaticTradingSetting = () => {
+  const [snackBarMessage, setSnackBarMessage] = useState("");
 
   const {
     control,
@@ -47,7 +47,9 @@ export const AutomaticTradingSetting: React.FC = () => {
       isOrderSettingSaveStatus(orderSettingSaveStatus)
     ) {
       setSnackBarMessage(AUTOMATIC_TRADING_MESSAGES[orderSettingSaveStatus]);
-    } else if (isOrderListError) {
+      return;
+    }
+    if (isOrderListError) {
       setSnackBarMessage(SYSTEM_ERROR);
     }
   }, [orderSettingSaveStatus, isOrderListError]);

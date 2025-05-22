@@ -1,4 +1,3 @@
-import { userInfo } from "os";
 import db from "../db";
 
 export class GmoRepository {
