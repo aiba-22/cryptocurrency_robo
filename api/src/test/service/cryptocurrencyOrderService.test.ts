@@ -60,7 +60,7 @@ describe("cryptocurrencyOrderService", () => {
       ]);
     });
 
-    it("注文リストがない場合、undefinedを返す", async () => {
+    it("注文リストがない場合、空配列を返す", async () => {
       const mockList = jest.fn().mockResolvedValue([]);
       (CryptocurrencyOrderRepository as jest.Mock).mockImplementation(() => ({
         list: mockList,
@@ -68,7 +68,7 @@ describe("cryptocurrencyOrderService", () => {
 
       const result = await orderService.list();
 
-      expect(result).toBeUndefined();
+      expect(result).toEqual([]);
     });
   });
 

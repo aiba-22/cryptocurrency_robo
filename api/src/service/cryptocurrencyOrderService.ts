@@ -12,7 +12,7 @@ export default class CryptocurrencyOrderService {
     const orderRepository = new CryptocurrencyOrderRepository();
     const orderList = await orderRepository.list(USER_ID);
 
-    if (orderList.length === 0) return;
+    if (orderList.length === 0) return [];
 
     const response = orderList.map((order) => {
       return {

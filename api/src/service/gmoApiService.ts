@@ -30,16 +30,20 @@ export default class GmoApiService {
       const result = await axios.get(BASE_PUBLIC + path);
       if (!result?.data?.data.length) return undefined;
       return result.data.data[0].last;
-    } catch (error) {}
+    } catch (error) {
+      return "systemError";
+    }
   }
 
-  async fetchTradingRateList(): Promise<TickerData[] | undefined> {
+  async fetchTradingRateList(): Promise<TickerData[] | "systemError"> {
     const path = `/v1/ticker?symbol=`;
     try {
       const result = await axios.get(BASE_PUBLIC + path);
-      if (!result?.data?.data.length) return undefined;
+      if (!result?.data?.data.length) return [];
       return result.data.data;
-    } catch (error) {}
+    } catch (error) {
+      return "systemError";
+    }
   }
 
   private generateHeaders(method: "GET" | "POST", path: string, body = "") {
@@ -69,7 +73,9 @@ export default class GmoApiService {
     try {
       const response = await axios.get(BASE_PRIVATE + path, { headers });
       return response.data;
-    } catch (error) {}
+    } catch (error) {
+      return "systemError";
+    }
   }
 
   async order({
@@ -82,9 +88,9 @@ export default class GmoApiService {
     side: string;
     price: number;
     size: number;
-  }): Promise<"success" | "failure"> {
+  }): Promise<"success" | "failure" | "systemError" | "missingKey"> {
     if (!this.apiKey || !this.secretKey) {
-      throw new Error("APIキーとシークレットキーが設定されていません");
+      return "missingKey";
     }
     const path = "/v1/order";
     const body = JSON.stringify({
@@ -100,7 +106,7 @@ export default class GmoApiService {
       const result = await axios.post(BASE_PRIVATE + path, body, { headers });
       return result?.status === 1 ? "success" : "failure";
     } catch (error) {
-      return "failure";
+      return "systemError";
     }
   }
 }

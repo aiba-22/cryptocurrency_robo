@@ -32,7 +32,7 @@ describe("GmoApiService", () => {
       expect(result).toBe("1000");
     });
 
-    it("データが空配列ならundefined", async () => {
+    it("データがなければundefinedを返す", async () => {
       (axios.get as jest.Mock).mockResolvedValue({
         data: { data: [] },
       });
@@ -67,12 +67,12 @@ describe("GmoApiService", () => {
       expect(result).toEqual(mockData);
     });
 
-    it("空データならundefined", async () => {
+    it("データがなければ空配列を返す", async () => {
       (axios.get as jest.Mock).mockResolvedValue({ data: { data: [] } });
 
       const result = await gmoApiService.fetchTradingRateList();
 
-      expect(result).toBeUndefined();
+      expect(result).toEqual([]);
     });
   });
 
