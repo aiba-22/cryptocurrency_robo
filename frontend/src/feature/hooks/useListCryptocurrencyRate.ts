@@ -1,41 +1,26 @@
 import { useQuery } from "react-query";
-import {
-  CryptocurrencyRateList,
-  listCryptocurrencyRate,
-} from "../../apiClients/gmo";
-
-export type CryptocurrencyRateMap = {
-  last: number;
-  bid: number;
-  ask: number;
-  high: number;
-  low: number;
-  volume: number;
-  timestamp: Date;
-};
+import { listCryptocurrencyRate } from "../../apiClients/gmo";
 
 export const useListCryptocurrencyRate = () => {
-  const { data, isError, isLoading } = useQuery({
+  const {
+    data: cryptocurrencyRateMap,
+    isError,
+    isLoading,
+  } = useQuery({
     queryKey: ["useCryptocurrencyRate"],
     queryFn: listCryptocurrencyRate,
-    select: (data) => {
-      const cryptocurrencyRateMap = data.reduce(
-        (
-          map: Map<string, CryptocurrencyRateMap>,
-          cryptocurrencyRate: CryptocurrencyRateList
-        ) => {
-          const { symbol, ...rate } = cryptocurrencyRate;
-          map.set(symbol, rate);
-          return map;
-        },
-        new Map()
-      );
+    select: (cryptocurrencyRateList) => {
+      const cryptocurrencyRateMap = new Map();
+      cryptocurrencyRateList.forEach((cryptocurrencyRate) => {
+        const { symbol, ...rate } = cryptocurrencyRate;
+        cryptocurrencyRateMap.set(symbol, rate);
+      });
       return cryptocurrencyRateMap;
     },
   });
 
   return {
-    cryptocurrencyRateMap: data,
+    cryptocurrencyRateMap,
     isRateListError: isError,
     isRateListLoading: isLoading,
   };

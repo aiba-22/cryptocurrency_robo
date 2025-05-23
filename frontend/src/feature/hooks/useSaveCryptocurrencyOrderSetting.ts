@@ -6,8 +6,8 @@ import {
 import { useState } from "react";
 
 export type Form = {
-  symbol: string;
   id?: number;
+  symbol: string;
   targetPrice: number;
   volume: number;
   type: number;
@@ -19,10 +19,14 @@ export const useSaveCryptocurrencyOrderSetting = () => {
     useState<string>();
   const { mutate } = useMutation(
     async (order: Form) => {
-      if (order.id) {
-        return await updateCryptocurrencyOrder(order);
+      const { id, ...orderDetails } = order;
+      if (id) {
+        return await updateCryptocurrencyOrder({
+          id,
+          ...orderDetails,
+        });
       } else {
-        return await createCryptocurrencyOrder(order);
+        return await createCryptocurrencyOrder({ ...orderDetails });
       }
     },
     {

@@ -3,8 +3,8 @@ import { Container, Typography, TextField, Button, Box } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { useSaveGmoSetting } from "../../feature/hooks/useSaveGmoSetting";
 import { useFindGmoSetting } from "../../feature/hooks/useFindGmoSetting";
-import { Snackbar } from "../snackBar";
-import { Loading } from "../loading";
+import { Snackbar } from "../SnackBar";
+import { Loading } from "../Loading";
 import {
   GMO_SETTING_MESSAGES,
   isGmoSettingStatus,

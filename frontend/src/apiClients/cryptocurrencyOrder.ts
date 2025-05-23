@@ -1,29 +1,28 @@
 import axios from "axios";
-export type Request = {
-  id?: number;
-  symbol: string;
-  targetPrice: number;
-  volume: number;
-  type: number;
-  isEnabled: number;
-};
 
-type Response = {
-  id: number;
-  symbol: string;
-  targetPrice: number;
-  volume: number;
-  type: number;
-  isEnabled: number;
-};
-export const listCryptocurrencyOrder = async (): Promise<Response[]> => {
+export const listCryptocurrencyOrder = async (): Promise<
+  {
+    id: number;
+    symbol: string;
+    targetPrice: number;
+    volume: number;
+    type: number;
+    isEnabled: number;
+  }[]
+> => {
   const response = await axios.get(
     `http://localhost:3001/api/cryptocurrencyOrder/list`
   );
   return response.data;
 };
 
-export const createCryptocurrencyOrder = async (request: Request) => {
+export const createCryptocurrencyOrder = async (request: {
+  symbol: string;
+  targetPrice: number;
+  volume: number;
+  type: number;
+  isEnabled: number;
+}) => {
   const response = await axios.post(
     "http://localhost:3001/api/cryptocurrencyOrder",
     request
@@ -31,7 +30,14 @@ export const createCryptocurrencyOrder = async (request: Request) => {
   return response.data;
 };
 
-export const updateCryptocurrencyOrder = async (request: Request) => {
+export const updateCryptocurrencyOrder = async (request: {
+  id: number;
+  symbol: string;
+  targetPrice: number;
+  volume: number;
+  type: number;
+  isEnabled: number;
+}) => {
   const response = await axios.put(
     "http://localhost:3001/api/cryptocurrencyOrder",
     request

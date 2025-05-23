@@ -5,7 +5,7 @@ import {
 } from "../../apiClients/priceAlert";
 import { useState } from "react";
 
-type SaveTargetPriceParams = {
+type AlertSetting = {
   id?: number;
   isUpperLimit: boolean;
   symbol: string;
@@ -17,8 +17,8 @@ export const useSavePriceAlertSetting = () => {
     useState<string>();
 
   const { mutate } = useMutation(
-    async (params: SaveTargetPriceParams) => {
-      const { id, isUpperLimit, symbol, price } = params;
+    async (alertSetting: AlertSetting) => {
+      const { id, isUpperLimit, symbol, price } = alertSetting;
 
       if (id) {
         return await updatePriceAlert({ id, isUpperLimit, symbol, price });

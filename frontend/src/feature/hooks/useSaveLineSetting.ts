@@ -3,7 +3,7 @@ import {} from "../../apiClients/priceAlert";
 import { createLine, updateLine } from "../../apiClients/line";
 import { useState } from "react";
 
-type SaveLineParams = {
+type LineSetting = {
   id?: number;
   channelAccessToken: string;
   lineUserId: string;
@@ -11,9 +11,9 @@ type SaveLineParams = {
 
 export const useSaveLineSetting = () => {
   const [lineSettingSaveStatus, setAlertSettingSaveStatus] = useState<string>();
-  const { mutate, status } = useMutation(
-    async (params: SaveLineParams) => {
-      const { id, channelAccessToken, lineUserId } = params;
+  const { mutate } = useMutation(
+    async (lineSetting: LineSetting) => {
+      const { id, channelAccessToken, lineUserId } = lineSetting;
 
       if (id) {
         return await updateLine({ id, channelAccessToken, lineUserId });

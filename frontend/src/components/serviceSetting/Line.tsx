@@ -1,11 +1,11 @@
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { Snackbar } from "../snackBar";
+import { Snackbar } from "../SnackBar";
 import { useFindLineSetting } from "../../feature/hooks/useFindLineSetting";
 import { useLineNotification } from "../../feature/hooks/useNotificationLine";
 import { useSaveLineSetting } from "../../feature/hooks/useSaveLineSetting";
-import { Loading } from "../loading";
+import { Loading } from "../Loading";
 import {
   isLineSettingSaveStatus,
   isNotificationStatus,

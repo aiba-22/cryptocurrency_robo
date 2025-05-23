@@ -10,15 +10,8 @@ export const findPriceAlert = async (): Promise<
   | undefined
 > => {
   const response = await axios.get("http://localhost:3001/api/priceAlert");
-  if (!response.data) {
-    return;
-  }
-  const {
-    id,
-    conditions: { isUpperLimit, symbol, price },
-  } = response.data;
 
-  return { id, isUpperLimit, symbol, price };
+  return response.data;
 };
 
 export const createPriceAlert = async (request: {

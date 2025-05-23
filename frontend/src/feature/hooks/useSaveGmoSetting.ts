@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { useMutation } from "react-query";
-import { updateGmo, createGmo, Request } from "../../apiClients/gmo";
+import { updateGmo, createGmo } from "../../apiClients/gmo";
+
+type GmoSetting = { id?: number; apiKey: string; secretKey: string };
 
 export const useSaveGmoSetting = () => {
   const [gmoSettingSaveStatus, setGmoSettingSaveStatus] = useState<string>();
   const { mutate } = useMutation(
-    async (gmoSetting: Request) => {
-      if (gmoSetting.id) {
-        return await updateGmo(gmoSetting);
+    async (gmoSetting: GmoSetting) => {
+      const { id, apiKey, secretKey } = gmoSetting;
+      if (id) {
+        return await updateGmo({ id, apiKey, secretKey });
       } else {
-        return await createGmo(gmoSetting);
+        return await createGmo({ apiKey, secretKey });
       }
     },
     {

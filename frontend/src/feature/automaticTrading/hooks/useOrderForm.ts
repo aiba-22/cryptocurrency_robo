@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { CRYPTOCURRENCY } from "../../constants";
-import { IS_ENABLED, ORDER_TYPE } from "../constants";
+import { IS_ENABLED } from "../constants";
 import { useSaveCryptocurrencyOrderSetting } from "../../hooks/useSaveCryptocurrencyOrderSetting";
 import { useListCryptocurrencyOrder } from "../../hooks/useListCryptocurrencyOrder";
 import {
@@ -67,7 +67,7 @@ export const useOrderForm = () => {
     if (cryptocurrencyOrderList) {
       reset(mapOrderListToFormValues(cryptocurrencyOrderList));
     }
-  }, [cryptocurrencyOrderList]);
+  }, [cryptocurrencyOrderList, reset]);
 
   return {
     control,

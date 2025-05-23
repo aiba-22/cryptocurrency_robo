@@ -9,9 +9,9 @@ import {
   Select,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Snackbar } from "../snackBar";
-import Rate from "../rate";
-import { Loading } from "../loading";
+import { Snackbar } from "../SnackBar";
+import Rate from "../Rate";
+import { Loading } from "../Loading";
 import { CRYPTOCURRENCY_LIST } from "../../feature/constants";
 import { Controller } from "react-hook-form";
 import {

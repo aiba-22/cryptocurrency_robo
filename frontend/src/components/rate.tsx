@@ -1,8 +1,8 @@
 import { Container, Typography, Paper, Grid } from "@mui/material";
 import { useListCryptocurrencyRate } from "../feature/hooks/useListCryptocurrencyRate";
-import { Snackbar } from "./snackBar";
+import { Snackbar } from "./SnackBar";
 import { useEffect, useState } from "react";
-import { Loading } from "./loading";
+import { Loading } from "./Loading";
 import { SYSTEM_ERROR } from "../feature/rate/rateMessages";
 
 function Rate({ symbol }: { symbol: string }) {

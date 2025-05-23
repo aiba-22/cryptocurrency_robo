@@ -10,6 +10,7 @@ import {
   Alert,
   Box,
   Button,
+  Snackbar,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
@@ -17,14 +18,13 @@ import { useForm, Controller } from "react-hook-form";
 import { useFindPriceAlertSetting } from "../feature/hooks/useFindPriceAlertSetting";
 import { CRYPTOCURRENCY, CRYPTOCURRENCY_LIST } from "../feature/constants";
 import { useSavePriceAlertSetting } from "../feature/hooks/useSavePriceAlertSetting";
-import { Snackbar } from "./snackBar";
-import Rate from "./rate";
-import { Loading } from "./loading";
 import { SYSTEM_ERROR } from "../feature/lineSetting/lineNotificationMessages";
 import {
   isPriceAlertSettingSaveStatus,
   PRICE_ALERT_SETTING_SAVE_MESSAGES,
 } from "../feature/priceAlert/priceAlertSettingMessage";
+import { Loading } from "./Loading";
+import Rate from "./Rate";
 
 type PriceAlertSettingForm = {
   id?: number;
