@@ -20,7 +20,7 @@ export const autoOrder = async () => {
 
   const gmoApiService = new GmoApiService({ apiKey, secretKey });
   const tradingRateList = await gmoApiService.fetchTradingRateList();
-  if (!tradingRateList) return;
+  if (tradingRateList.length === 0 || tradingRateList === "systemError") return;
 
   const isTargetBuyPrice = checkPrice({
     tradingRateList,
