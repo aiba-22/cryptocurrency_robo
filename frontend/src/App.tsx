@@ -1,9 +1,9 @@
 import "./App.css";
 import { Routes, Route, Link as RouterLink } from "react-router-dom";
-import { PriceAlertSetting } from "./components/priceAlertSetting";
+import { PriceAlertSetting } from "./components/PriceAlertSetting";
 
 import { AppBar, Toolbar, Button, Container, Box } from "@mui/material";
-import { AutomaticTradingSetting } from "./components/automaticTrading/automaticTradingSetting";
+import { AutomaticTradingSetting } from "./components/automaticTrading/AutomaticTradingSetting";
 import { ServiceSettingsContainer } from "./components/serviceSetting/ServiceSettingsContainer";
 
 export default function App() {

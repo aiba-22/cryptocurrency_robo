@@ -1,14 +1,15 @@
 import { Grid, TextField } from "@mui/material";
 import { Controller, Control, FieldErrors } from "react-hook-form";
-import { OrderFormValues } from "../../feature/automaticTrading/hooks/useOrderForm";
+import { CryptocurrencyOrderForm } from "../../feature/automaticTrading/hooks/useOrderForm";
 
 type OrderFormProps = {
-  control: Control<OrderFormValues>;
-  errors: FieldErrors<OrderFormValues>;
+  control: Control<CryptocurrencyOrderForm>;
+  errors: FieldErrors<CryptocurrencyOrderForm>;
   targetPriceField: "buy.targetPrice" | "sell.targetPrice";
   volumeField: "buy.volume" | "sell.volume";
   labelPrefix: string;
 };
+
 export const OrderForm: React.FC<OrderFormProps> = ({
   control,
   errors,

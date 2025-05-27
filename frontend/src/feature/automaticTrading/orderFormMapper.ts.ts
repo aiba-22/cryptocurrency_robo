@@ -1,9 +1,9 @@
 // orderFormMapper.ts
 
 import { ORDER_TYPE } from "./constants";
-import { OrderFormValues } from "./hooks/useOrderForm";
+import { CryptocurrencyOrderForm } from "./hooks/useOrderForm";
 
-export const mapFormToOrderRequests = (form: OrderFormValues) => {
+export const mapFormToOrderRequests = (form: CryptocurrencyOrderForm) => {
   const symbol = form.symbol;
 
   const buyOrder = {

@@ -10,7 +10,7 @@ import {
   isGmoSettingStatus,
 } from "../../feature/gmoSetting/gmoSettingMessages";
 
-type Form = {
+type GmoSettingForm = {
   id: number;
   apiKey: string;
   secretKey: string;
@@ -24,7 +24,7 @@ export const GmoSetting = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<Form>({
+  } = useForm<GmoSettingForm>({
     defaultValues: {
       apiKey: "",
       secretKey: "",
@@ -35,8 +35,8 @@ export const GmoSetting = () => {
     useFindGmoSetting();
   const { saveGmoSetting, gmoSettingSaveStatus } = useSaveGmoSetting();
 
-  const onSubmit = (formData: Form) => {
-    saveGmoSetting(formData);
+  const onSubmit = (form: GmoSettingForm) => {
+    saveGmoSetting(form);
   };
 
   useEffect(() => {

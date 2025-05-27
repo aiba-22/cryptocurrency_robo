@@ -14,7 +14,7 @@ import {
   SYSTEM_ERROR,
 } from "../../feature/lineSetting/lineNotificationMessages";
 
-interface LineFormData {
+interface LineForm {
   id?: number;
   channelAccessToken: string;
   lineUserId: string;
@@ -28,7 +28,7 @@ export const LineSetting = () => {
     control,
     reset,
     formState: { errors },
-  } = useForm<LineFormData>({
+  } = useForm<LineForm>({
     defaultValues: {
       channelAccessToken: "",
       lineUserId: "",
@@ -40,7 +40,7 @@ export const LineSetting = () => {
   const { sendNotification, notificationSendStatus } = useLineNotification();
   const { saveLineSettings, lineSettingSaveStatus } = useSaveLineSetting();
 
-  const onSubmit = (form: LineFormData) => {
+  const onSubmit = (form: LineForm) => {
     saveLineSettings(form);
   };
 

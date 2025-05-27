@@ -9,17 +9,17 @@ import {
   mapOrderListToFormValues,
 } from "../orderFormMapper.ts";
 
-export type OrderConditions = {
+export type Conditions = {
   id?: number;
   targetPrice: number;
   volume: number;
   isEnabled: number;
 };
 
-export type OrderFormValues = {
+export type CryptocurrencyOrderForm = {
   symbol: string;
-  buy: OrderConditions;
-  sell: OrderConditions;
+  buy: Conditions;
+  sell: Conditions;
 };
 
 export const useOrderForm = () => {
@@ -29,7 +29,7 @@ export const useOrderForm = () => {
     watch,
     reset,
     formState: { errors },
-  } = useForm<OrderFormValues>({
+  } = useForm<CryptocurrencyOrderForm>({
     defaultValues: {
       symbol: CRYPTOCURRENCY.BTC,
       buy: {
@@ -51,8 +51,8 @@ export const useOrderForm = () => {
   const { cryptocurrencyOrderList, isOrderListError, isOrderListLoading } =
     useListCryptocurrencyOrder();
 
-  const onSubmit = (data: OrderFormValues) => {
-    const [buyOrder, sellOrder] = mapFormToOrderRequests(data);
+  const onSubmit = (formData: CryptocurrencyOrderForm) => {
+    const [buyOrder, sellOrder] = mapFormToOrderRequests(formData);
 
     if (sellOrder) {
       saveOrderSetting(sellOrder);

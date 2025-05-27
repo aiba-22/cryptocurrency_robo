@@ -32,7 +32,6 @@ export const AutomaticTradingSetting = () => {
     submitForm,
     watch,
     errors,
-
     orderSettingSaveStatus,
     isOrderListError,
     isOrderListLoading,
