@@ -80,12 +80,12 @@ describe("autoOrder", () => {
     mockList.mockResolvedValue([
       { type: ORDER_TYPE.BUY, symbol: "BTC", targetPrice: 5000, volume: 0.01 },
     ]);
-
-    mockFetchTradingRateList.mockResolvedValue(null);
     mockGmoFind.mockResolvedValue({
       apiKey: "testApiKey",
       secretKey: "testSecretKey",
     });
+    mockFetchTradingRateList.mockResolvedValue("systemError");
+
     await autoOrder();
 
     expect(mockSendMessage).not.toHaveBeenCalled();
