@@ -1,7 +1,7 @@
 import { Container, Typography, Paper, Grid } from "@mui/material";
 import { useListCryptocurrencyRate } from "../feature/hooks/useListCryptocurrencyRate";
 import { Snackbar } from "./SnackBar";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Loading } from "./Loading";
 import { SYSTEM_ERROR } from "../feature/rate/rateMessages";
 
@@ -9,22 +9,23 @@ function Rate({ symbol }: { symbol: string }) {
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const { cryptocurrencyRateMap, isRateListError, isRateListLoading } =
     useListCryptocurrencyRate();
-  const rate = cryptocurrencyRateMap?.get(symbol);
 
   useEffect(() => {
     if (isRateListError) setSnackBarMessage(SYSTEM_ERROR);
   }, [isRateListError]);
 
-  const rateEntries = rate
-    ? [
-        { label: "最終価格", value: rate.last },
-        { label: "買い価格", value: rate.bid },
-        { label: "売り価格", value: rate.ask },
-        { label: "高値", value: rate.high },
-        { label: "安値", value: rate.low },
-        { label: "取引量", value: rate.volume },
-      ]
-    : [];
+  const cryptocurrencyRate = useMemo(() => {
+    const rate = cryptocurrencyRateMap?.get(symbol);
+    if (!rate) return [];
+    return [
+      { label: "最終価格", value: rate.last },
+      { label: "買い価格", value: rate.bid },
+      { label: "売り価格", value: rate.ask },
+      { label: "高値", value: rate.high },
+      { label: "安値", value: rate.low },
+      { label: "取引量", value: rate.volume },
+    ];
+  }, [cryptocurrencyRateMap, symbol]);
 
   return (
     <Container maxWidth="sm">
@@ -34,10 +35,10 @@ function Rate({ symbol }: { symbol: string }) {
 
       {isRateListLoading ? (
         <Loading />
-      ) : rate ? (
+      ) : cryptocurrencyRate.length > 0 ? (
         <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
           <Grid container spacing={1}>
-            {rateEntries.map(({ label, value }) => (
+            {cryptocurrencyRate.map(({ label, value }) => (
               <Grid container key={label}>
                 <Grid item xs={6}>
                   <Typography color="textSecondary">{label}</Typography>
