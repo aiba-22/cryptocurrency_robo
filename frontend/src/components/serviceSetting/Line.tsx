@@ -14,11 +14,11 @@ import {
   SYSTEM_ERROR,
 } from "../../feature/lineSetting/lineNotificationMessages";
 
-interface LineForm {
+type LineForm = {
   id?: number;
   channelAccessToken: string;
   lineUserId: string;
-}
+};
 
 export const LineSetting = () => {
   const [snackBarMessage, setSnackBarMessage] = useState("");
