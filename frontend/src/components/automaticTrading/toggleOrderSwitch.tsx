@@ -12,16 +12,15 @@ const ToggleOrderSwitch: React.FC<ToggleOrderSwitchProps> = ({
   field,
   label,
 }) => {
+  const handleSwitchButtonClick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    field.onChange(e.target.checked ? IS_ENABLED.TRUE : IS_ENABLED.FALSE);
+  };
   return (
     <FormControlLabel
       control={
         <Switch
           checked={field.value === IS_ENABLED.TRUE}
-          onChange={(e) =>
-            field.onChange(
-              e.target.checked ? IS_ENABLED.TRUE : IS_ENABLED.FALSE
-            )
-          }
+          onChange={handleSwitchButtonClick}
           color="primary"
         />
       }

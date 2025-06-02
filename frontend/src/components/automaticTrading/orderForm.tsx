@@ -1,10 +1,11 @@
 import { Grid, TextField } from "@mui/material";
-import { Controller, Control, FieldErrors } from "react-hook-form";
+import { Controller, Control } from "react-hook-form";
 import { CryptocurrencyOrderForm } from "../../feature/automaticTrading/hooks/useOrderForm";
 
 type OrderFormProps = {
   control: Control<CryptocurrencyOrderForm>;
-  errors: FieldErrors<CryptocurrencyOrderForm>;
+  priceErrorMessage?: string;
+  volumeErrorMessage?: string;
   targetPriceField: "buy.targetPrice" | "sell.targetPrice";
   volumeField: "buy.volume" | "sell.volume";
   labelPrefix: string;
@@ -12,24 +13,11 @@ type OrderFormProps = {
 
 export const OrderForm: React.FC<OrderFormProps> = ({
   control,
-  errors,
+  priceErrorMessage,
+  volumeErrorMessage,
   targetPriceField,
   volumeField,
 }) => {
-  const priceError =
-    targetPriceField === "buy.targetPrice"
-      ? errors.buy?.targetPrice
-      : targetPriceField === "sell.targetPrice"
-      ? errors.sell?.targetPrice
-      : undefined;
-
-  const volumeError =
-    volumeField === "buy.volume"
-      ? errors.buy?.volume
-      : volumeField === "sell.volume"
-      ? errors.sell?.volume
-      : undefined;
-
   return (
     <>
       <Grid container spacing={2}>
@@ -44,8 +32,8 @@ export const OrderForm: React.FC<OrderFormProps> = ({
                 label="価格"
                 type="number"
                 fullWidth
-                error={!!priceError}
-                helperText={priceError?.message}
+                error={!!priceErrorMessage}
+                helperText={priceErrorMessage}
               />
             )}
           />
@@ -63,8 +51,8 @@ export const OrderForm: React.FC<OrderFormProps> = ({
                 label="数量"
                 type="number"
                 fullWidth
-                error={!!volumeError}
-                helperText={volumeError?.message}
+                error={!!volumeErrorMessage}
+                helperText={volumeErrorMessage}
               />
             )}
           />

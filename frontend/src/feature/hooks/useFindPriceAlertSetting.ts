@@ -5,6 +5,13 @@ export const useFindPriceAlertSetting = () => {
   const { data, isError, isLoading } = useQuery({
     queryKey: ["findPriceAlertSetting"],
     queryFn: findPriceAlert,
+    select: (priceAlertSetting) => {
+      if (!priceAlertSetting) {
+        return;
+      }
+      const { id, conditions } = priceAlertSetting;
+      return { id, ...conditions };
+    },
   });
 
   return {

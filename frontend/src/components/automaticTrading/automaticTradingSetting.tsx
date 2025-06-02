@@ -96,7 +96,8 @@ export const AutomaticTradingSetting = () => {
               targetPriceField="buy.targetPrice"
               volumeField="buy.volume"
               labelPrefix="買い"
-              errors={errors}
+              priceErrorMessage={errors?.buy?.targetPrice?.message}
+              volumeErrorMessage={errors?.buy?.volume?.message}
             />
           )}
 
@@ -115,7 +116,8 @@ export const AutomaticTradingSetting = () => {
               targetPriceField="sell.targetPrice"
               volumeField="sell.volume"
               labelPrefix="売り"
-              errors={errors}
+              priceErrorMessage={errors?.sell?.targetPrice?.message}
+              volumeErrorMessage={errors?.sell?.volume?.message}
             />
           )}
 

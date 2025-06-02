@@ -44,7 +44,7 @@ export const LineSetting = () => {
     saveLineSettings(form);
   };
 
-  const notificationLine = () => {
+  const handleSendButtonClick = () => {
     sendNotification("通知テスト");
   };
 
@@ -123,7 +123,7 @@ export const LineSetting = () => {
             <Button
               variant="outlined"
               color="secondary"
-              onClick={handleSubmit(() => notificationLine())}
+              onClick={handleSendButtonClick}
             >
               通知テスト
             </Button>

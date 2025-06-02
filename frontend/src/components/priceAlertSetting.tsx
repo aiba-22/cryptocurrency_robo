@@ -12,7 +12,6 @@ import {
   Button,
   Snackbar,
 } from "@mui/material";
-import { SelectChangeEvent } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 
 import { useFindPriceAlertSetting } from "../feature/hooks/useFindPriceAlertSetting";
@@ -57,13 +56,6 @@ export const PriceAlertSetting = () => {
 
   const symbol = watch("symbol");
 
-  const handleSymbolChange = (
-    e: SelectChangeEvent,
-    onChange: (value: string) => void
-  ) => {
-    onChange(e.target.value);
-  };
-
   const onSubmit = (form: PriceAlertSettingForm) => {
     saveAlertSetting(form);
   };
@@ -101,21 +93,17 @@ export const PriceAlertSetting = () => {
             <Controller
               name="symbol"
               control={control}
-              rules={{ required: "入力必須項目です" }}
               render={({ field }) => (
-                <Select
-                  {...field}
-                  labelId="virtual-currency-type-label"
-                  onChange={(e: SelectChangeEvent) =>
-                    handleSymbolChange(e, field.onChange)
-                  }
-                >
-                  {CRYPTOCURRENCY_LIST.map((cryptocurrency) => (
-                    <MenuItem key={cryptocurrency} value={cryptocurrency}>
-                      {cryptocurrency.toUpperCase()}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <FormControl fullWidth>
+                  <InputLabel id="symbol-label">対象通貨</InputLabel>
+                  <Select {...field} labelId="symbol-label" label="通貨">
+                    {CRYPTOCURRENCY_LIST.map((cryptocurrency) => (
+                      <MenuItem key={cryptocurrency} value={cryptocurrency}>
+                        {cryptocurrency.toUpperCase()}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               )}
             />
             {errors.symbol && (
@@ -151,14 +139,12 @@ export const PriceAlertSetting = () => {
             <Controller
               name="isUpperLimit"
               control={control}
-              rules={{ required: "入力必須項目です" }}
               render={({ field }) => (
                 <Select
-                  {...field}
                   labelId="is-upper-limit-label"
+                  value={field.value ? "true" : "false"}
                   label="通知条件"
                   onChange={(e) => field.onChange(e.target.value === "true")}
-                  value={String(field.value)}
                 >
                   <MenuItem value="true">価格が上回ったら</MenuItem>
                   <MenuItem value="false">価格が下回ったら</MenuItem>

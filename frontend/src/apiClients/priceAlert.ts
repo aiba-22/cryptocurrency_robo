@@ -3,9 +3,7 @@ import axios from "axios";
 export const findPriceAlert = async (): Promise<
   | {
       id: number;
-      isUpperLimit: boolean;
-      symbol: string;
-      price: number;
+      conditions: { isUpperLimit: boolean; symbol: string; price: number };
     }
   | undefined
 > => {
