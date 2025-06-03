@@ -1,5 +1,5 @@
 export const AUTOMATIC_TRADING_MESSAGES = {
-  success: "保存に成功しました。",
+  successSave: "保存に成功しました。",
   systemError: "システムエラー",
 } as const;
 

@@ -1,17 +1,8 @@
 import { useQuery } from "react-query";
 import { listCryptocurrencyOrder } from "../../apiClients/cryptocurrencyOrder";
 
-export type Request = {
-  id?: number;
-  symbol: string;
-  targetPrice: number;
-  volume: number;
-  type: number;
-  isEnabled: number;
-};
-
 export const useListCryptocurrencyOrder = () => {
-  const { data, isError, isLoading } = useQuery<Request[]>({
+  const { data, isError, isLoading } = useQuery({
     queryKey: ["useListCryptocurrencyOrder"],
     queryFn: listCryptocurrencyOrder,
   });

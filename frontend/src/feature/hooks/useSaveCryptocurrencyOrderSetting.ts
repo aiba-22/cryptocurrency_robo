@@ -15,8 +15,7 @@ export type Form = {
 };
 
 export const useSaveCryptocurrencyOrderSetting = () => {
-  const [orderSettingSaveStatus, setOrderSettingSaveStatus] =
-    useState<string>();
+  const [orderSaveStatus, setOrderSaveStatus] = useState<string>();
   const { mutate } = useMutation(
     async (order: Form) => {
       const { id, ...orderDetails } = order;
@@ -31,16 +30,16 @@ export const useSaveCryptocurrencyOrderSetting = () => {
     },
     {
       onSuccess: (data) => {
-        setOrderSettingSaveStatus(data);
+        setOrderSaveStatus(data);
       },
       onError: () => {
-        setOrderSettingSaveStatus("systemError");
+        setOrderSaveStatus("systemError");
       },
     }
   );
 
   return {
     saveOrderSetting: mutate,
-    orderSettingSaveStatus,
+    orderSaveStatus,
   };
 };

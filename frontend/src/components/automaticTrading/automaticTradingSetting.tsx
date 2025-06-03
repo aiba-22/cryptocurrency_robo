@@ -31,27 +31,25 @@ export const AutomaticTradingSetting = () => {
     control,
     submitForm,
     watch,
-    errors,
-    orderSettingSaveStatus,
+    formErrors,
+    orderSaveStatus,
     isOrderListError,
     isOrderListLoading,
   } = useOrderForm();
+
   const isBuyEnabled = watch("buy.isEnabled");
   const isSellEnabled = watch("sell.isEnabled");
   const symbol = watch("symbol");
 
   useEffect(() => {
-    if (
-      orderSettingSaveStatus &&
-      isAutomaticTradingStatus(orderSettingSaveStatus)
-    ) {
-      setSnackBarMessage(AUTOMATIC_TRADING_MESSAGES[orderSettingSaveStatus]);
+    if (orderSaveStatus && isAutomaticTradingStatus(orderSaveStatus)) {
+      setSnackBarMessage(AUTOMATIC_TRADING_MESSAGES[orderSaveStatus]);
       return;
     }
     if (isOrderListError) {
       setSnackBarMessage(SYSTEM_ERROR);
     }
-  }, [orderSettingSaveStatus, isOrderListError]);
+  }, [orderSaveStatus, isOrderListError]);
 
   return (
     <Container maxWidth="sm">
@@ -96,8 +94,8 @@ export const AutomaticTradingSetting = () => {
               targetPriceField="buy.targetPrice"
               volumeField="buy.volume"
               labelPrefix="買い"
-              priceErrorMessage={errors?.buy?.targetPrice?.message}
-              volumeErrorMessage={errors?.buy?.volume?.message}
+              priceErrorMessage={formErrors?.buy?.targetPrice?.message}
+              volumeErrorMessage={formErrors?.buy?.volume?.message}
             />
           )}
 
@@ -116,8 +114,8 @@ export const AutomaticTradingSetting = () => {
               targetPriceField="sell.targetPrice"
               volumeField="sell.volume"
               labelPrefix="売り"
-              priceErrorMessage={errors?.sell?.targetPrice?.message}
-              volumeErrorMessage={errors?.sell?.volume?.message}
+              priceErrorMessage={formErrors?.sell?.targetPrice?.message}
+              volumeErrorMessage={formErrors?.sell?.volume?.message}
             />
           )}
 

@@ -1,13 +1,13 @@
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
 import { CRYPTOCURRENCY } from "../../constants";
 import { IS_ENABLED } from "../constants";
 import { useSaveCryptocurrencyOrderSetting } from "../../hooks/useSaveCryptocurrencyOrderSetting";
-import { useListCryptocurrencyOrder } from "../../hooks/useListCryptocurrencyOrder";
 import {
   mapFormToOrderRequests,
   mapOrderListToFormValues,
 } from "../orderFormMapper.ts";
+import { useQuery } from "react-query";
+import { listCryptocurrencyOrder } from "../../../apiClients/cryptocurrencyOrder";
 
 export type Conditions = {
   id?: number;
@@ -45,15 +45,11 @@ export const useOrderForm = () => {
     },
   });
 
-  const { saveOrderSetting, orderSettingSaveStatus } =
+  const { saveOrderSetting, orderSaveStatus } =
     useSaveCryptocurrencyOrderSetting();
-
-  const { cryptocurrencyOrderList, isOrderListError, isOrderListLoading } =
-    useListCryptocurrencyOrder();
 
   const onSubmit = (formData: CryptocurrencyOrderForm) => {
     const [buyOrder, sellOrder] = mapFormToOrderRequests(formData);
-
     if (sellOrder) {
       saveOrderSetting(sellOrder);
     }
@@ -63,19 +59,23 @@ export const useOrderForm = () => {
     }
   };
 
-  useEffect(() => {
-    if (cryptocurrencyOrderList) {
-      reset(mapOrderListToFormValues(cryptocurrencyOrderList));
-    }
-  }, [cryptocurrencyOrderList, reset]);
+  const { isError, isLoading } = useQuery({
+    queryKey: ["useListCryptocurrencyOrder"],
+    queryFn: listCryptocurrencyOrder,
+    onSuccess: (cryptocurrencyOrderList) => {
+      if (cryptocurrencyOrderList) {
+        reset(mapOrderListToFormValues(cryptocurrencyOrderList));
+      }
+    },
+  });
 
   return {
     control,
     submitForm: handleSubmit(onSubmit),
     watch,
-    errors,
-    orderSettingSaveStatus,
-    isOrderListError,
-    isOrderListLoading,
+    formErrors: errors,
+    orderSaveStatus,
+    isOrderListError: isError,
+    isOrderListLoading: isLoading,
   };
 };

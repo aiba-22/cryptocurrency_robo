@@ -33,6 +33,7 @@ export const GmoSetting = () => {
 
   const { gmoSetting, isGmoSettingFindError, isGmoSettingFindLoading } =
     useFindGmoSetting();
+
   const { saveGmoSetting, gmoSettingSaveStatus } = useSaveGmoSetting();
 
   const onSubmit = (form: GmoSettingForm) => {
