@@ -16,7 +16,7 @@ import { CRYPTOCURRENCY_LIST } from "../../feature/constants";
 import { Controller } from "react-hook-form";
 import {
   AUTOMATIC_TRADING_MESSAGES,
-  isOrderSettingSaveStatus,
+  isAutomaticTradingStatus,
   SYSTEM_ERROR,
 } from "../../feature/automaticTrading/automaticTradingMessages";
 import { IS_ENABLED } from "../../feature/automaticTrading/constants";
@@ -43,7 +43,7 @@ export const AutomaticTradingSetting = () => {
   useEffect(() => {
     if (
       orderSettingSaveStatus &&
-      isOrderSettingSaveStatus(orderSettingSaveStatus)
+      isAutomaticTradingStatus(orderSettingSaveStatus)
     ) {
       setSnackBarMessage(AUTOMATIC_TRADING_MESSAGES[orderSettingSaveStatus]);
       return;

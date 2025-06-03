@@ -6,7 +6,7 @@ export const AUTOMATIC_TRADING_MESSAGES = {
 export type AutomaticTradingStatus = keyof typeof AUTOMATIC_TRADING_MESSAGES;
 export const SYSTEM_ERROR = "システムエラー";
 
-export const isOrderSettingSaveStatus = (
+export const isAutomaticTradingStatus = (
   status: string
 ): status is AutomaticTradingStatus => {
   return status in AUTOMATIC_TRADING_MESSAGES;
