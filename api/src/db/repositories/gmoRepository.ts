@@ -1,14 +1,16 @@
-import db from "../db";
+import type { Prisma, PrismaClient } from "@prisma/client";
 
 export class GmoRepository {
-  private db;
+  private prisma: PrismaClient | Prisma.TransactionClient;
 
-  constructor(dbInstance = db) {
-    this.db = dbInstance;
+  constructor(prismaClient: PrismaClient | Prisma.TransactionClient) {
+    this.prisma = prismaClient;
   }
 
   async findByUserId(userId: number) {
-    return await this.db("gmo").where({ user_id: userId }).first();
+    return await this.prisma.gmo.findFirst({
+      where: { userId },
+    });
   }
 
   async create({
@@ -20,11 +22,13 @@ export class GmoRepository {
     apiKey: string;
     secretKey: string;
   }) {
-    await this.db("gmo").insert({
-      user_id: userId,
-      api_key: apiKey,
-      secret_key: secretKey,
-      created_at: new Date(),
+    return await this.prisma.gmo.create({
+      data: {
+        userId,
+        apiKey,
+        secretKey,
+        createdAt: new Date(),
+      },
     });
   }
 
@@ -37,10 +41,13 @@ export class GmoRepository {
     apiKey: string;
     secretKey: string;
   }) {
-    await this.db("gmo").where({ id }).update({
-      api_key: apiKey,
-      secret_key: secretKey,
-      updated_at: new Date(),
+    return await this.prisma.gmo.update({
+      where: { id },
+      data: {
+        apiKey,
+        secretKey,
+        updatedAt: new Date(),
+      },
     });
   }
 }

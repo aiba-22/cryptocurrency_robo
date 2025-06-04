@@ -1,73 +1,50 @@
-import db from "../db/db";
+import prisma from "../db/prismaClient";
 import { CryptocurrencyOrderRepository } from "../db/repositories/cryptocurrencyOrderRepository";
 import { USER_ID } from "./constants";
 
 export default class CryptocurrencyOrderService {
-  private db;
-  constructor(dbInstance = db) {
-    this.db = dbInstance;
-  }
-
   async list() {
-    const orderRepository = new CryptocurrencyOrderRepository();
+    const orderRepository = new CryptocurrencyOrderRepository(prisma);
     const orderList = await orderRepository.list(USER_ID);
-
     if (orderList.length === 0) return [];
 
-    const response = orderList.map((order) => {
+    return orderList.map((order) => {
+      const { id, symbol, targetPrice, volume, type, isEnabled } = order;
       return {
-        id: order.id,
-        symbol: order.symbol,
-        targetPrice: order.target_price,
-        volume: order.volume,
-        type: order.type,
-        isEnabled: order.is_enabled,
+        id,
+        symbol,
+        targetPrice,
+        volume,
+        type,
+        isEnabled,
       };
     });
-    return response;
   }
 
-  async create({
-    symbol,
-    targetPrice,
-    volume,
-    type,
-    isEnabled,
-  }: {
+  async create(data: {
     symbol: string;
     targetPrice: number;
     volume: number;
     type: number;
     isEnabled: number;
   }) {
-    const transaction = await this.db.transaction();
-    const orderRepository = new CryptocurrencyOrderRepository(transaction);
     try {
-      await orderRepository.create({
-        userId: USER_ID,
-        symbol,
-        targetPrice,
-        volume,
-        type,
-        isEnabled,
+      const createdOrder = await prisma.$transaction(async (tx) => {
+        const orderRepository = new CryptocurrencyOrderRepository(tx);
+        return await orderRepository.create({
+          userId: USER_ID,
+          ...data,
+        });
       });
-      await transaction.commit();
-      return "success";
+
+      return { status: "success", order: createdOrder };
     } catch (error) {
       console.error("Error creating order:", error);
-      await transaction.rollback();
-      return "systemError";
+      return { status: "systemError" };
     }
   }
 
-  async update({
-    id,
-    symbol,
-    targetPrice,
-    volume,
-    type,
-    isEnabled,
-  }: {
+  async update(data: {
     id: number;
     symbol: string;
     targetPrice: number;
@@ -75,22 +52,16 @@ export default class CryptocurrencyOrderService {
     type: number;
     isEnabled: number;
   }) {
-    const transaction = await this.db.transaction();
-    const orderRepository = new CryptocurrencyOrderRepository(transaction);
     try {
-      await orderRepository.update({
-        id,
-        symbol,
-        targetPrice,
-        volume,
-        type,
-        isEnabled,
+      const updatedOrder = await prisma.$transaction(async (tx) => {
+        const orderRepository = new CryptocurrencyOrderRepository(tx);
+        return await orderRepository.update(data);
       });
-      await transaction.commit();
-      return "success";
+
+      return { status: "success", order: updatedOrder };
     } catch (error) {
-      await transaction.rollback();
-      return "systemError";
+      console.error("Error updating order:", error);
+      return { status: "systemError" };
     }
   }
 }

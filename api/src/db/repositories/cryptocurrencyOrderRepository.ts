@@ -1,23 +1,22 @@
-// repositories/orderRepository.ts
-import db from "../db";
+import type { Prisma, PrismaClient } from "@prisma/client";
 
 export class CryptocurrencyOrderRepository {
-  private db;
+  private prisma: PrismaClient | Prisma.TransactionClient;
 
-  constructor(dbInstance = db) {
-    this.db = dbInstance;
+  constructor(prismaClient: PrismaClient | Prisma.TransactionClient) {
+    this.prisma = prismaClient;
   }
 
   async list(userId: number) {
-    return await this.db("cryptocurrency_order").where({
-      user_id: userId,
+    return await this.prisma.cryptocurrencyOrder.findMany({
+      where: { userId },
     });
   }
 
   async findByIdAndUserId({ id, userId }: { id: number; userId: number }) {
-    return await this.db("cryptocurrency_order")
-      .where({ id, user_id: userId })
-      .first();
+    return await this.prisma.cryptocurrencyOrder.findFirst({
+      where: { id, userId },
+    });
   }
 
   async create({
@@ -35,13 +34,15 @@ export class CryptocurrencyOrderRepository {
     type: number;
     isEnabled: number;
   }) {
-    await this.db("cryptocurrency_order").insert({
-      user_id: userId,
-      symbol,
-      target_price: targetPrice,
-      volume: volume,
-      type: type,
-      is_enabled: isEnabled,
+    return await this.prisma.cryptocurrencyOrder.create({
+      data: {
+        userId,
+        symbol,
+        targetPrice,
+        volume,
+        type,
+        isEnabled,
+      },
     });
   }
 
@@ -58,15 +59,18 @@ export class CryptocurrencyOrderRepository {
     targetPrice: number;
     volume: number;
     type: number;
-    isEnabled: number;
+    isEnabled: number; // booleanならbooleanに変更推奨
   }) {
-    await this.db("cryptocurrency_order").where({ id }).update({
-      symbol,
-      target_price: targetPrice,
-      volume: volume,
-      type: type,
-      is_enabled: isEnabled,
-      updated_at: new Date(),
+    return await this.prisma.cryptocurrencyOrder.update({
+      where: { id },
+      data: {
+        symbol,
+        targetPrice,
+        volume,
+        type,
+        isEnabled,
+        updatedAt: new Date(),
+      },
     });
   }
 }

@@ -1,21 +1,25 @@
-import axios from "axios";
+import { PrismaClient } from "@prisma/client";
 import { LineRepository } from "../db/repositories/lineRepository";
-import db from "../db/db";
 import { USER_ID } from "./constants";
 
+const prisma = new PrismaClient();
+
 export default class LineService {
-  private db;
-  constructor(dbInstance = db) {
-    this.db = dbInstance;
+  private prisma: PrismaClient;
+
+  constructor(prismaClient = prisma) {
+    this.prisma = prismaClient;
   }
+
   async find() {
-    const repository = new LineRepository();
+    const repository = new LineRepository(this.prisma);
     const line = await repository.findByUserId(USER_ID);
     if (!line) return;
+    const { id, channelAccessToken, lineUserId } = line;
     return {
-      id: line.id,
-      channelAccessToken: line.channel_access_token,
-      lineUserId: line.line_user_id,
+      id,
+      channelAccessToken,
+      lineUserId,
     };
   }
 
@@ -26,18 +30,18 @@ export default class LineService {
     channelAccessToken: string;
     lineUserId: string;
   }) {
-    const transaction = await this.db.transaction();
-    const lineRepository = new LineRepository(transaction);
     try {
-      await lineRepository.create({
-        userId: USER_ID,
-        channelAccessToken,
-        lineUserId,
+      const created = await this.prisma.$transaction(async (tx) => {
+        const lineRepository = new LineRepository(tx);
+        await lineRepository.create({
+          userId: USER_ID,
+          channelAccessToken,
+          lineUserId,
+        });
       });
-      await transaction.commit();
       return "success";
     } catch (error) {
-      await transaction.rollback();
+      console.error("Error creating Line:", error);
       return "systemError";
     }
   }
@@ -51,14 +55,14 @@ export default class LineService {
     channelAccessToken: string;
     lineUserId: string;
   }) {
-    const transaction = await this.db.transaction();
-    const lineRepository = new LineRepository(transaction);
     try {
-      await lineRepository.update({ id, channelAccessToken, lineUserId });
-      await transaction.commit();
+      const updated = await this.prisma.$transaction(async (tx) => {
+        const lineRepository = new LineRepository(tx);
+        await lineRepository.update({ id, channelAccessToken, lineUserId });
+      });
       return "success";
     } catch (error) {
-      await transaction.rollback();
+      console.error("Error updating Line:", error);
       return "systemError";
     }
   }

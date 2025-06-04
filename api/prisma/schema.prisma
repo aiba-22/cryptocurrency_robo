@@ -1,0 +1,48 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+
+model CryptocurrencyOrder {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  symbol      String   @db.VarChar(20)
+  targetPrice Int
+  volume      Int
+  type        Int      @db.TinyInt
+  isEnabled   Int      @db.TinyInt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PriceAlert {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  conditions Json
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Line {
+  id                 Int      @id @default(autoincrement())
+  userId             Int
+  channelAccessToken String
+  lineUserId         String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Gmo {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  apiKey    String   @db.VarChar(255)
+  secretKey String   @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

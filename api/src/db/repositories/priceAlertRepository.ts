@@ -1,14 +1,16 @@
-import db from "../db";
+import type { Prisma, PrismaClient } from "@prisma/client";
 
 export class PriceAlertRepository {
-  private db;
+  private prisma: PrismaClient | Prisma.TransactionClient;
 
-  constructor(dbInstance = db) {
-    this.db = dbInstance;
+  constructor(prismaClient: PrismaClient | Prisma.TransactionClient) {
+    this.prisma = prismaClient;
   }
 
   async findByUserId(userId: number) {
-    return await this.db("price_alert").where({ user_id: userId }).first();
+    return await this.prisma.priceAlert.findFirst({
+      where: { userId },
+    });
   }
 
   async create({
@@ -22,9 +24,12 @@ export class PriceAlertRepository {
       symbol: string;
     };
   }) {
-    await this.db("price_alert").insert({
-      conditions,
-      user_id: userId,
+    await this.prisma.priceAlert.create({
+      data: {
+        userId,
+        conditions, // JSON型として保存される前提
+        createdAt: new Date(),
+      },
     });
   }
 
@@ -39,11 +44,12 @@ export class PriceAlertRepository {
       symbol: string;
     };
   }) {
-    await this.db("price_alert")
-      .where({ id })
-      .update({
-        conditions: JSON.stringify(conditions),
-        updated_at: new Date(),
-      });
+    await this.prisma.priceAlert.update({
+      where: { id },
+      data: {
+        conditions,
+        updatedAt: new Date(),
+      },
+    });
   }
 }

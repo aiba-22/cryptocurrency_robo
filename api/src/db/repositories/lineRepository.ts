@@ -1,14 +1,16 @@
-import db from "../db";
+import type { Prisma, PrismaClient } from "@prisma/client";
 
 export class LineRepository {
-  private db;
+  private prisma: PrismaClient | Prisma.TransactionClient;
 
-  constructor(dbInstance = db) {
-    this.db = dbInstance;
+  constructor(prismaClient: PrismaClient | Prisma.TransactionClient) {
+    this.prisma = prismaClient;
   }
 
   async findByUserId(userId: number) {
-    return await this.db("line").where({ user_id: userId }).first();
+    return await this.prisma.line.findFirst({
+      where: { userId },
+    });
   }
 
   async create({
@@ -20,11 +22,13 @@ export class LineRepository {
     userId: number;
     lineUserId: string;
   }) {
-    await this.db("line").insert({
-      channel_access_token: channelAccessToken,
-      user_id: userId,
-      line_user_id: lineUserId,
-      created_at: new Date(),
+    await this.prisma.line.create({
+      data: {
+        userId,
+        channelAccessToken,
+        lineUserId,
+        createdAt: new Date(),
+      },
     });
   }
 
@@ -37,10 +41,13 @@ export class LineRepository {
     channelAccessToken: string;
     lineUserId: string;
   }) {
-    await this.db("line").where({ id }).update({
-      channel_access_token: channelAccessToken,
-      line_user_id: lineUserId,
-      updated_at: new Date(),
+    await this.prisma.line.update({
+      where: { id },
+      data: {
+        channelAccessToken,
+        lineUserId,
+        updatedAt: new Date(),
+      },
     });
   }
 }

@@ -1,22 +1,25 @@
-import db from "../db/db";
+import { PrismaClient } from "@prisma/client";
 import { PriceAlertRepository } from "../db/repositories/priceAlertRepository";
 import { USER_ID } from "./constants";
 
+const prisma = new PrismaClient();
+
 export default class PriceAlertService {
-  private db;
-  constructor(dbInstance = db) {
-    this.db = dbInstance;
+  private prisma: PrismaClient;
+
+  constructor(prismaClient = prisma) {
+    this.prisma = prismaClient;
   }
 
   async find() {
-    const priceAlertRepository = new PriceAlertRepository();
-
+    const priceAlertRepository = new PriceAlertRepository(this.prisma);
     const priceAlert = await priceAlertRepository.findByUserId(USER_ID);
     if (!priceAlert) return;
+    const { id, conditions } = priceAlert;
 
     return {
-      id: priceAlert.id,
-      conditions: priceAlert.conditions,
+      id,
+      conditions,
     };
   }
 
@@ -25,14 +28,14 @@ export default class PriceAlertService {
     isUpperLimit: boolean;
     symbol: string;
   }) {
-    const transaction = await this.db.transaction();
-    const priceAlertRepository = new PriceAlertRepository(transaction);
     try {
-      await priceAlertRepository.create({ conditions, userId: USER_ID });
-      await transaction.commit();
+      await this.prisma.$transaction(async (tx) => {
+        const priceAlertRepository = new PriceAlertRepository(tx);
+        await priceAlertRepository.create({ conditions, userId: USER_ID });
+      });
       return "success";
     } catch (error) {
-      await transaction.rollback();
+      console.error("Error creating PriceAlert:", error);
       return "systemError";
     }
   }
@@ -48,14 +51,14 @@ export default class PriceAlertService {
       symbol: string;
     };
   }) {
-    const transaction = await this.db.transaction();
-    const priceAlertRepository = new PriceAlertRepository(transaction);
     try {
-      await priceAlertRepository.update({ id, conditions });
-      await transaction.commit();
+      await this.prisma.$transaction(async (tx) => {
+        const priceAlertRepository = new PriceAlertRepository(tx);
+        await priceAlertRepository.update({ id, conditions });
+      });
       return "success";
     } catch (error) {
-      await transaction.rollback();
+      console.error("Error updating PriceAlert:", error);
       return "systemError";
     }
   }

@@ -1,37 +1,39 @@
+import { PrismaClient } from "@prisma/client";
 import { GmoRepository } from "../db/repositories/gmoRepository";
-import db from "../db/db";
 import { USER_ID } from "./constants";
+
 export default class GmoService {
-  private db;
-  constructor(dbInstance = db) {
-    this.db = dbInstance;
+  private prisma: PrismaClient;
+
+  constructor(prismaClient = new PrismaClient()) {
+    this.prisma = prismaClient;
   }
 
   async find() {
-    const gmoRepository = new GmoRepository();
+    const gmoRepository = new GmoRepository(this.prisma);
     const gmo = await gmoRepository.findByUserId(USER_ID);
     if (!gmo) return;
-
+    const { id, apiKey, secretKey } = gmo;
     return {
-      id: gmo.id,
-      apiKey: gmo.api_key,
-      secretKey: gmo.secret_key,
+      id,
+      apiKey,
+      secretKey,
     };
   }
 
   async create({ apiKey, secretKey }: { apiKey: string; secretKey: string }) {
-    const transaction = await this.db.transaction();
-    const gmoRepository = new GmoRepository(transaction);
     try {
-      await gmoRepository.create({
-        userId: USER_ID,
-        apiKey,
-        secretKey,
+      await this.prisma.$transaction(async (tx) => {
+        const gmoRepository = new GmoRepository(tx);
+        await gmoRepository.create({
+          userId: USER_ID,
+          apiKey,
+          secretKey,
+        });
       });
-      await transaction.commit();
       return "success";
     } catch (error) {
-      await transaction.rollback();
+      console.error("GMO create error:", error);
       return "systemError";
     }
   }
@@ -45,14 +47,14 @@ export default class GmoService {
     apiKey: string;
     secretKey: string;
   }) {
-    const transaction = await this.db.transaction();
-    const gmoRepository = new GmoRepository(transaction);
     try {
-      await gmoRepository.update({ id, apiKey, secretKey });
-      await transaction.commit();
+      await this.prisma.$transaction(async (tx) => {
+        const gmoRepository = new GmoRepository(tx);
+        await gmoRepository.update({ id, apiKey, secretKey });
+      });
       return "success";
     } catch (error) {
-      await transaction.rollback();
+      console.error("GMO update error:", error);
       return "systemError";
     }
   }
