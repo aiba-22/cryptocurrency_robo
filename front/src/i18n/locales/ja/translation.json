@@ -1,46 +1,103 @@
 {
-  "automaticTradingSetting": {
+  "automaticTrading": {
+    "title": "自動取引設定",
+    "form": {
+      "symbolLabel": "対象通貨",
+      "buySwitchLabel": "買い注文を設定",
+      "sellSwitchLabel": "売り注文を設定",
+      "saveButton": "保存"
+    },
+    "validation": {
+      "selectCurrency": "通貨を選択してください"
+    },
     "list": {
       "systemError": "システムエラー"
     },
     "save": {
       "systemError": "システムエラー",
       "success": "保存に成功しました。"
-    }
+    },
+    "orderForm": {
+      "priceLabel": "価格",
+      "volumeLabel": "数量",
+      "validation": {
+        "required": "入力必須項目です"
+      }
+    },
+    "systemError": "システムエラー"
   },
+
   "gmo": {
+    "title": "GMO設定",
+    "form": {
+      "apiKeyLabel": "APIキー",
+      "secretKeyLabel": "シークレットキー",
+      "saveButton": "保存"
+    },
+    "validation": {
+      "required": "必須項目です"
+    },
     "findSetting": {
       "systemError": "システムエラー"
     },
     "save": {
       "systemError": "システムエラー",
       "success": "保存に成功しました。"
-    }
+    },
+    "systemError": "システムエラー"
   },
+
   "line": {
+    "title": "LINE設定",
+    "form": {
+      "tokenLabel": "LINEトークン",
+      "userIdLabel": "LINEユーザーID",
+      "saveButton": "保存",
+      "testButton": "通知テスト",
+      "testMessage": "通知テスト",
+      "success": "保存に成功しました"
+    },
+    "validation": {
+      "required": "入力必須項目です"
+    },
     "findSetting": {
-      "systemError": "システムエラー"
+      "systemError": "システムエラーが発生しました"
     },
     "save": {
-      "systemError": "システムエラー",
-      "success": "保存に成功しました。"
+      "success": "保存に成功しました",
+      "error": "保存に失敗しました"
     },
     "notification": {
-      "success": "テスト送信に成功しました。",
-      "tooManyRequests": "メッセージの送信可能件数（月200件）を超過しました。",
-      "badRequest": "トークン情報が誤っています。",
-      "systemError": "システムエラー"
-    }
+      "success": "通知を送信しました",
+      "error": "通知に失敗しました"
+    },
+    "systemError": "システムエラー"
   },
-  "priceAlertSetting": {
-    "findSetting": {
-      "systemError": "システムエラー"
+
+  "priceAlert": {
+    "title": "価格アラート設定",
+    "form": {
+      "symbolLabel": "対象通貨",
+      "priceLabel": "目標価格",
+      "pricePlaceholder": "例: 5000000",
+      "conditionLabel": "通知条件",
+      "conditionUpper": "価格が上回ったら",
+      "conditionLower": "価格が下回ったら",
+      "saveButton": "保存"
+    },
+    "validation": {
+      "required": "入力必須項目です"
     },
     "save": {
-      "systemError": "システムエラー",
-      "success": "保存に成功しました。"
-    }
+      "success": "保存に成功しました",
+      "error": "保存に失敗しました"
+    },
+    "findSetting": {
+      "systemError": "システムエラーが発生しました"
+    },
+    "systemError": "システムエラー"
   },
+
   "rate": {
     "list": {
       "systemError": "システムエラー"

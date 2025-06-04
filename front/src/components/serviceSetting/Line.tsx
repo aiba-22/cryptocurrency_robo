@@ -35,11 +35,13 @@ export const LineSetting = () => {
 
   const { lineSetting, isLineSettingFindError, isLineSettingFindLoading } =
     useFindLineSetting();
+
   const {
     sendNotification,
     notificationSendStatus,
     setNotificationSendStatus,
   } = useLineNotification();
+
   const { saveLineSettings, lineSettingSaveStatus, setAlertSettingSaveStatus } =
     useSaveLineSetting();
 
@@ -48,7 +50,7 @@ export const LineSetting = () => {
   };
 
   const handleSendButtonClick = () => {
-    sendNotification("通知テスト");
+    sendNotification(t("form.testMessage"));
   };
 
   useEffect(() => {
@@ -63,14 +65,22 @@ export const LineSetting = () => {
 
   useEffect(() => {
     if (lineSettingSaveStatus) {
-      setSnackBarMessage(t(`save.${lineSettingSaveStatus}`));
+      setSnackBarMessage(
+        t(`save.${lineSettingSaveStatus}`, {
+          defaultValue: t("systemError"),
+        })
+      );
       setAlertSettingSaveStatus(undefined);
     }
   }, [lineSettingSaveStatus, setAlertSettingSaveStatus, t]);
 
   useEffect(() => {
     if (notificationSendStatus) {
-      setSnackBarMessage(t(`notification.${notificationSendStatus}`));
+      setSnackBarMessage(
+        t(`notification.${notificationSendStatus}`, {
+          defaultValue: t("systemError"),
+        })
+      );
       setNotificationSendStatus(undefined);
     }
   }, [notificationSendStatus, setNotificationSendStatus, t]);
@@ -78,7 +88,7 @@ export const LineSetting = () => {
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
-        LINE設定
+        {t("title")}
       </Typography>
 
       {isLineSettingFindLoading ? (
@@ -88,13 +98,13 @@ export const LineSetting = () => {
           <Controller
             name="channelAccessToken"
             control={control}
-            rules={{ required: "入力必須項目です" }}
+            rules={{ required: t("validation.required") }}
             render={({ field }) => (
               <TextField
                 {...field}
                 fullWidth
                 margin="normal"
-                label="LINEトークン"
+                label={t("form.tokenLabel")}
                 type="password"
                 error={!!errors.channelAccessToken}
                 helperText={errors.channelAccessToken?.message}
@@ -105,13 +115,13 @@ export const LineSetting = () => {
           <Controller
             name="lineUserId"
             control={control}
-            rules={{ required: "入力必須項目です" }}
+            rules={{ required: t("validation.required") }}
             render={({ field }) => (
               <TextField
                 {...field}
                 fullWidth
                 margin="normal"
-                label="LINEユーザーID"
+                label={t("form.userIdLabel")}
                 type="password"
                 error={!!errors.lineUserId}
                 helperText={errors.lineUserId?.message}
@@ -121,14 +131,14 @@ export const LineSetting = () => {
 
           <Box display="flex" justifyContent="space-between" mt={2}>
             <Button variant="contained" color="primary" type="submit">
-              保存
+              {t("form.saveButton")}
             </Button>
             <Button
               variant="outlined"
               color="secondary"
               onClick={handleSendButtonClick}
             >
-              通知テスト
+              {t("form.testButton")}
             </Button>
           </Box>
         </form>

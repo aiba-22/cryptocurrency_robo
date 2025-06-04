@@ -21,9 +21,9 @@ import { OrderForm } from "./OrderForm";
 import ToggleOrderSwitch from "./ToggleOrderSwitch";
 import { useTranslation } from "react-i18next";
 
-export const AutomaticTradingSetting = () => {
+export const AutomaticTrading = () => {
   const { t } = useTranslation("translation", {
-    keyPrefix: "automaticTradingSetting",
+    keyPrefix: "automaticTrading",
   });
 
   const [snackBarMessage, setSnackBarMessage] = useState("");
@@ -44,7 +44,11 @@ export const AutomaticTradingSetting = () => {
 
   useEffect(() => {
     if (orderSaveStatus) {
-      setSnackBarMessage(t(`save.${orderSaveStatus}`));
+      setSnackBarMessage(
+        t(`save.${orderSaveStatus}`, {
+          defaultValue: t("systemError"),
+        })
+      );
     }
   }, [orderSaveStatus, t]);
 
@@ -57,7 +61,7 @@ export const AutomaticTradingSetting = () => {
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
-        自動取引設定
+        {t("title")}
       </Typography>
       {isOrderListLoading ? (
         <Loading />
@@ -67,10 +71,12 @@ export const AutomaticTradingSetting = () => {
             <Controller
               name="symbol"
               control={control}
-              rules={{ required: "通貨を選択してください" }}
+              rules={{ required: t("validation.selectCurrency") }}
               render={({ field }) => (
                 <FormControl fullWidth>
-                  <InputLabel id="symbol-label">対象通貨</InputLabel>
+                  <InputLabel id="symbol-label">
+                    {t("form.symbolLabel")}
+                  </InputLabel>
                   <Select {...field} labelId="symbol-label" label="通貨">
                     {CRYPTOCURRENCY_LIST.map((cryptocurrency) => (
                       <MenuItem key={cryptocurrency} value={cryptocurrency}>
@@ -87,7 +93,10 @@ export const AutomaticTradingSetting = () => {
               name="buy.isEnabled"
               control={control}
               render={({ field }) => (
-                <ToggleOrderSwitch field={field} label="買い注文を設定" />
+                <ToggleOrderSwitch
+                  field={field}
+                  label={t("form.buySwitchLabel")}
+                />
               )}
             />
           </Box>
@@ -96,7 +105,6 @@ export const AutomaticTradingSetting = () => {
               control={control}
               targetPriceField="buy.targetPrice"
               volumeField="buy.volume"
-              labelPrefix="買い"
               priceErrorMessage={formErrors?.buy?.targetPrice?.message}
               volumeErrorMessage={formErrors?.buy?.volume?.message}
             />
@@ -107,7 +115,10 @@ export const AutomaticTradingSetting = () => {
               name="sell.isEnabled"
               control={control}
               render={({ field }) => (
-                <ToggleOrderSwitch field={field} label="売り注文を設定" />
+                <ToggleOrderSwitch
+                  field={field}
+                  label={t("form.sellSwitchLabel")}
+                />
               )}
             />
           </Box>
@@ -116,7 +127,6 @@ export const AutomaticTradingSetting = () => {
               control={control}
               targetPriceField="sell.targetPrice"
               volumeField="sell.volume"
-              labelPrefix="売り"
               priceErrorMessage={formErrors?.sell?.targetPrice?.message}
               volumeErrorMessage={formErrors?.sell?.volume?.message}
             />
@@ -124,7 +134,7 @@ export const AutomaticTradingSetting = () => {
 
           <Box mt={4} display="flex" justifyContent="flex-end">
             <Button type="submit" variant="contained" color="primary">
-              保存
+              {t("form.saveButton")}
             </Button>
           </Box>
         </form>

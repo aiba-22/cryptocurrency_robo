@@ -1,9 +1,9 @@
 // import "./App.css";
 import { Routes, Route, Link as RouterLink } from "react-router-dom";
-import { PriceAlertSetting } from "./components/PriceAlertSetting";
+import { PriceAlert } from "./components/PriceAlert";
 
 import { AppBar, Toolbar, Button, Container, Box } from "@mui/material";
-import { AutomaticTradingSetting } from "./components/automaticTrading/AutomaticTradingSetting";
+import { AutomaticTrading } from "./components/automaticTrading/AutomaticTrading";
 import { ServiceSettingsContainer } from "./components/serviceSetting/ServiceSettingsContainer";
 
 export default function App() {
@@ -11,11 +11,7 @@ export default function App() {
     <div className="App">
       <AppBar position="static">
         <Toolbar>
-          <Button
-            color="inherit"
-            component={RouterLink}
-            to="/priceAlertSetting"
-          >
+          <Button color="inherit" component={RouterLink} to="/priceAlert">
             価格アラート
           </Button>
           <Button color="inherit" component={RouterLink} to="/automaticTrading">
@@ -30,11 +26,8 @@ export default function App() {
       <Container>
         <Box my={4}>
           <Routes>
-            <Route path="/priceAlertSetting" element={<PriceAlertSetting />} />
-            <Route
-              path="/automaticTrading"
-              element={<AutomaticTradingSetting />}
-            />
+            <Route path="/priceAlert" element={<PriceAlert />} />
+            <Route path="/automaticTrading" element={<AutomaticTrading />} />
             <Route path="/setting" element={<ServiceSettingsContainer />} />
           </Routes>
         </Box>

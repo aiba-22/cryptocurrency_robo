@@ -28,9 +28,9 @@ type PriceAlertSettingForm = {
   price: number;
 };
 
-export const PriceAlertSetting = () => {
+export const PriceAlert = () => {
   const { t } = useTranslation("translation", {
-    keyPrefix: "line",
+    keyPrefix: "priceAlert",
   });
 
   const {
@@ -66,20 +66,28 @@ export const PriceAlertSetting = () => {
 
   useEffect(() => {
     if (alertSettingSaveStatus) {
-      setSnackBarMessage(t(`save.${alertSettingSaveStatus}`));
+      setSnackBarMessage(
+        t(`save.${alertSettingSaveStatus}`, {
+          defaultValue: t("systemError"),
+        })
+      );
     }
   }, [alertSettingSaveStatus, t]);
 
   useEffect(() => {
     if (isAlertSettingFindError) {
-      setSnackBarMessage(`findSetting.${isAlertSettingFindError}`);
+      setSnackBarMessage(
+        t(`findSetting.${isAlertSettingFindError}`, {
+          defaultValue: t("systemError"),
+        })
+      );
     }
-  }, [alertSettingSaveStatus, isAlertSettingFindError, setSnackBarMessage]);
+  }, [isAlertSettingFindError, t]);
 
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" gutterBottom>
-        価格アラート設定
+        {t("title")}
       </Typography>
       {isAlertSettingFindLoading ? (
         <Loading />
@@ -91,8 +99,14 @@ export const PriceAlertSetting = () => {
               control={control}
               render={({ field }) => (
                 <FormControl fullWidth>
-                  <InputLabel id="symbol-label">対象通貨</InputLabel>
-                  <Select {...field} labelId="symbol-label" label="通貨">
+                  <InputLabel id="symbol-label">
+                    {t("form.symbolLabel")}
+                  </InputLabel>
+                  <Select
+                    {...field}
+                    labelId="symbol-label"
+                    label={t("form.symbolLabel")}
+                  >
                     {CRYPTOCURRENCY_LIST.map((cryptocurrency) => (
                       <MenuItem key={cryptocurrency} value={cryptocurrency}>
                         {cryptocurrency.toUpperCase()}
@@ -110,7 +124,7 @@ export const PriceAlertSetting = () => {
           <Controller
             name="price"
             control={control}
-            rules={{ required: "入力必須項目です" }}
+            rules={{ required: t("validation.required") }}
             render={({ field }) => (
               <TextField
                 {...field}
@@ -121,17 +135,19 @@ export const PriceAlertSetting = () => {
                 }}
                 fullWidth
                 margin="normal"
-                label="目標価格"
+                label={t("form.priceLabel")}
                 type="number"
                 error={!!errors.price}
                 helperText={errors.price?.message}
-                placeholder="例: 5000000"
+                placeholder={t("form.pricePlaceholder")}
               />
             )}
           />
 
           <FormControl fullWidth margin="normal">
-            <InputLabel id="is-upper-limit-label">通知条件</InputLabel>
+            <InputLabel id="is-upper-limit-label">
+              {t("form.conditionLabel")}
+            </InputLabel>
             <Controller
               name="isUpperLimit"
               control={control}
@@ -139,18 +155,18 @@ export const PriceAlertSetting = () => {
                 <Select
                   labelId="is-upper-limit-label"
                   value={field.value ? "true" : "false"}
-                  label="通知条件"
+                  label={t("form.conditionLabel")}
                   onChange={(e) => field.onChange(e.target.value === "true")}
                 >
-                  <MenuItem value="true">価格が上回ったら</MenuItem>
-                  <MenuItem value="false">価格が下回ったら</MenuItem>
+                  <MenuItem value="true">{t("form.conditionUpper")}</MenuItem>
+                  <MenuItem value="false">{t("form.conditionLower")}</MenuItem>
                 </Select>
               )}
             />
           </FormControl>
           <Box display="flex" justifyContent="flex-end" mt={2}>
             <Button variant="contained" color="primary" type="submit">
-              保存
+              {t("form.saveButton")}
             </Button>
           </Box>
         </form>
