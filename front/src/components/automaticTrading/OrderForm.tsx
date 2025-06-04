@@ -28,7 +28,13 @@ export const OrderForm: React.FC<OrderFormProps> = ({
         <Controller
           name={targetPriceField}
           control={control}
-          rules={{ required: t("validation.required") }}
+          rules={{
+            required: t("validation.required"),
+            min: {
+              value: 1,
+              message: t("validation.minValue"),
+            },
+          }}
           render={({ field }) => (
             <TextField
               {...field}
@@ -46,7 +52,13 @@ export const OrderForm: React.FC<OrderFormProps> = ({
         <Controller
           name={volumeField}
           control={control}
-          rules={{ required: t("validation.required") }}
+          rules={{
+            required: t("validation.required"),
+            min: {
+              value: 1,
+              message: t("validation.minValue"),
+            },
+          }}
           render={({ field }) => (
             <TextField
               {...field}
