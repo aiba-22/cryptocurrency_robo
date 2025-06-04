@@ -138,7 +138,13 @@ export const AutomaticTrading = () => {
               )}
             />
           </Box>
-          {isBuyEnabled === IS_ENABLED.TRUE && (
+          <Box
+            mb={2}
+            sx={{
+              opacity: isBuyEnabled === IS_ENABLED.TRUE ? 1 : 0.5,
+              pointerEvents: isBuyEnabled === IS_ENABLED.TRUE ? "auto" : "none",
+            }}
+          >
             <OrderForm
               control={control}
               targetPriceField="buy.targetPrice"
@@ -146,7 +152,7 @@ export const AutomaticTrading = () => {
               priceErrorMessage={errors?.buy?.targetPrice?.message}
               volumeErrorMessage={errors?.buy?.volume?.message}
             />
-          )}
+          </Box>
 
           <Box mb={2} mt={4}>
             <Controller
@@ -160,7 +166,14 @@ export const AutomaticTrading = () => {
               )}
             />
           </Box>
-          {isSellEnabled === IS_ENABLED.TRUE && (
+          <Box
+            mb={2}
+            sx={{
+              opacity: isSellEnabled === IS_ENABLED.TRUE ? 1 : 0.5,
+              pointerEvents:
+                isSellEnabled === IS_ENABLED.TRUE ? "auto" : "none",
+            }}
+          >
             <OrderForm
               control={control}
               targetPriceField="sell.targetPrice"
@@ -168,7 +181,7 @@ export const AutomaticTrading = () => {
               priceErrorMessage={errors?.sell?.targetPrice?.message}
               volumeErrorMessage={errors?.sell?.volume?.message}
             />
-          )}
+          </Box>
 
           <Box mt={4} display="flex" justifyContent="flex-end">
             <Button type="submit" variant="contained" color="primary">
