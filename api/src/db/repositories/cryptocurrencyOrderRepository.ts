@@ -13,64 +13,26 @@ export class CryptocurrencyOrderRepository {
     });
   }
 
-  async findByIdAndUserId({ id, userId }: { id: number; userId: number }) {
+  async findByIdAndUserId(params: { id: number; userId: number }) {
     return await this.prisma.cryptocurrencyOrder.findFirst({
-      where: { id, userId },
+      where: { id: params.id, userId: params.userId },
     });
   }
 
-  async create({
-    userId,
-    symbol,
-    targetPrice,
-    volume,
-    type,
-    isEnabled,
-  }: {
-    userId: number;
-    symbol: string;
-    targetPrice: number;
-    volume: number;
-    type: number;
-    isEnabled: number;
-  }) {
-    return await this.prisma.cryptocurrencyOrder.create({
-      data: {
-        userId,
-        symbol,
-        targetPrice,
-        volume,
-        type,
-        isEnabled,
-      },
+  async create(data: Prisma.CryptocurrencyOrderCreateInput) {
+    await this.prisma.cryptocurrencyOrder.create({
+      data,
     });
   }
 
-  async update({
-    id,
-    symbol,
-    targetPrice,
-    volume,
-    type,
-    isEnabled,
-  }: {
+  async update(params: {
     id: number;
-    symbol: string;
-    targetPrice: number;
-    volume: number;
-    type: number;
-    isEnabled: number; // booleanならbooleanに変更推奨
+    data: Prisma.CryptocurrencyOrderUpdateInput;
   }) {
-    return await this.prisma.cryptocurrencyOrder.update({
+    const { id, data } = params;
+    await this.prisma.cryptocurrencyOrder.updateMany({
       where: { id },
-      data: {
-        symbol,
-        targetPrice,
-        volume,
-        type,
-        isEnabled,
-        updatedAt: new Date(),
-      },
+      data,
     });
   }
 }

@@ -58,7 +58,10 @@ export default class LineService {
     try {
       const updated = await this.prisma.$transaction(async (tx) => {
         const lineRepository = new LineRepository(tx);
-        await lineRepository.update({ id, channelAccessToken, lineUserId });
+        await lineRepository.update({
+          id,
+          data: { channelAccessToken, lineUserId },
+        });
       });
       return "success";
     } catch (error) {

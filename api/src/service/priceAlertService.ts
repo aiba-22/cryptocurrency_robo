@@ -54,7 +54,7 @@ export default class PriceAlertService {
     try {
       await this.prisma.$transaction(async (tx) => {
         const priceAlertRepository = new PriceAlertRepository(tx);
-        await priceAlertRepository.update({ id, conditions });
+        await priceAlertRepository.update({ id, data: { conditions } });
       });
       return "success";
     } catch (error) {

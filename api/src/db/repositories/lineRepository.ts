@@ -13,41 +13,17 @@ export class LineRepository {
     });
   }
 
-  async create({
-    userId,
-    channelAccessToken,
-    lineUserId,
-  }: {
-    channelAccessToken: string;
-    userId: number;
-    lineUserId: string;
-  }) {
+  async create(data: Prisma.LineCreateInput) {
     await this.prisma.line.create({
-      data: {
-        userId,
-        channelAccessToken,
-        lineUserId,
-        createdAt: new Date(),
-      },
+      data,
     });
   }
 
-  async update({
-    id,
-    channelAccessToken,
-    lineUserId,
-  }: {
-    id: number;
-    channelAccessToken: string;
-    lineUserId: string;
-  }) {
-    await this.prisma.line.update({
+  async update(params: { id: number; data: Prisma.LineUpdateInput }) {
+    const { id, data } = params;
+    await this.prisma.line.updateMany({
       where: { id },
-      data: {
-        channelAccessToken,
-        lineUserId,
-        updatedAt: new Date(),
-      },
+      data,
     });
   }
 }

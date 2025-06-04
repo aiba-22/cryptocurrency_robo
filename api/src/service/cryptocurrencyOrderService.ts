@@ -55,7 +55,10 @@ export default class CryptocurrencyOrderService {
     try {
       const updatedOrder = await prisma.$transaction(async (tx) => {
         const orderRepository = new CryptocurrencyOrderRepository(tx);
-        return await orderRepository.update(data);
+        return await orderRepository.update({
+          id: data.id,
+          data,
+        });
       });
 
       return { status: "success", order: updatedOrder };

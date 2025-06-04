@@ -50,7 +50,7 @@ export default class GmoService {
     try {
       await this.prisma.$transaction(async (tx) => {
         const gmoRepository = new GmoRepository(tx);
-        await gmoRepository.update({ id, apiKey, secretKey });
+        await gmoRepository.update({ id, data: { apiKey, secretKey } });
       });
       return "success";
     } catch (error) {

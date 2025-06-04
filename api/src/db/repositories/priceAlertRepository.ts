@@ -13,43 +13,17 @@ export class PriceAlertRepository {
     });
   }
 
-  async create({
-    userId,
-    conditions,
-  }: {
-    userId: number;
-    conditions: {
-      price: number;
-      isUpperLimit: boolean;
-      symbol: string;
-    };
-  }) {
+  async create(data: Prisma.PriceAlertCreateInput) {
     await this.prisma.priceAlert.create({
-      data: {
-        userId,
-        conditions, // JSON型として保存される前提
-        createdAt: new Date(),
-      },
+      data,
     });
   }
 
-  async update({
-    id,
-    conditions,
-  }: {
-    id: number;
-    conditions: {
-      price: number;
-      isUpperLimit: boolean;
-      symbol: string;
-    };
-  }) {
-    await this.prisma.priceAlert.update({
+  async update(params: { id: number; data: Prisma.PriceAlertUpdateInput }) {
+    const { id, data } = params;
+    await this.prisma.priceAlert.updateMany({
       where: { id },
-      data: {
-        conditions,
-        updatedAt: new Date(),
-      },
+      data,
     });
   }
 }

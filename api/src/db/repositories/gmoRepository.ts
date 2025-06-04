@@ -13,41 +13,17 @@ export class GmoRepository {
     });
   }
 
-  async create({
-    userId,
-    apiKey,
-    secretKey,
-  }: {
-    userId: number;
-    apiKey: string;
-    secretKey: string;
-  }) {
-    return await this.prisma.gmo.create({
-      data: {
-        userId,
-        apiKey,
-        secretKey,
-        createdAt: new Date(),
-      },
+  async create(data: Prisma.GmoCreateInput) {
+    await this.prisma.gmo.create({
+      data,
     });
   }
 
-  async update({
-    id,
-    apiKey,
-    secretKey,
-  }: {
-    id: number;
-    apiKey: string;
-    secretKey: string;
-  }) {
-    return await this.prisma.gmo.update({
+  async update(params: { id: number; data: Prisma.GmoUpdateInput }) {
+    const { id, data } = params;
+    await this.prisma.gmo.updateMany({
       where: { id },
-      data: {
-        apiKey,
-        secretKey,
-        updatedAt: new Date(),
-      },
+      data,
     });
   }
 }
