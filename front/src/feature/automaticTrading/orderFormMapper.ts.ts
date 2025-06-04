@@ -1,5 +1,5 @@
 import { ORDER_TYPE } from "./constants";
-import type { CryptocurrencyOrderForm } from "./hooks/useOrderForm";
+import type { CryptocurrencyOrderForm } from "./hooks/useCryptocurrencyOrderForm";
 
 export const mapFormToOrderRequests = (form: CryptocurrencyOrderForm) => {
   const symbol = form.symbol;

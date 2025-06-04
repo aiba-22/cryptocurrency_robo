@@ -13,13 +13,13 @@ import {
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 
-import { useFindPriceAlertSetting } from "../feature/hooks/useFindPriceAlertSetting";
 import { CRYPTOCURRENCY, CRYPTOCURRENCY_LIST } from "../feature/constants";
-import { useSavePriceAlertSetting } from "../feature/hooks/useSavePriceAlertSetting";
 import { Loading } from "./Loading";
 import { Rate } from "./Rate";
 import { Snackbar } from "./SnackBar";
 import { useTranslation } from "react-i18next";
+import { useFindPriceAlertSetting } from "../feature/priceAlert/hooks/useFindPriceAlertSetting";
+import { useSavePriceAlertSetting } from "../feature/priceAlert/hooks/useSavePriceAlertSetting";
 
 type PriceAlertSettingForm = {
   id?: number;

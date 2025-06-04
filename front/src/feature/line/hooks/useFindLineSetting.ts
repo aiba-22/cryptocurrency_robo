@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { findLine } from "../../apiClients/line";
+import { findLine } from "../../../apiClients/line";
 
 export const useFindLineSetting = () => {
   const { data, isError, isLoading } = useQuery({

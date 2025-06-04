@@ -1,11 +1,13 @@
+import { useState } from "react";
+import { mapFormToOrderRequests } from "../orderFormMapper.ts";
 import { useMutation } from "@tanstack/react-query";
 import {
   createCryptocurrencyOrder,
   updateCryptocurrencyOrder,
-} from "../../apiClients/cryptocurrencyOrder";
-import { useState } from "react";
+} from "../../../apiClients/cryptocurrencyOrder";
+import type { CryptocurrencyOrderForm } from "../../../components/automaticTrading/AutomaticTrading.tsx";
 
-export type Form = {
+type Form = {
   id?: number;
   symbol: string;
   targetPrice: number;
@@ -14,10 +16,10 @@ export type Form = {
   isEnabled: number;
 };
 
-export const useSaveCryptocurrencyOrderSetting = () => {
+export const useSaveForm = () => {
   const [orderSaveStatus, setOrderSaveStatus] = useState<string>();
 
-  const mutation = useMutation({
+  const { mutate } = useMutation({
     mutationFn: async (order: Form) => {
       const { id, ...orderDetails } = order;
       if (id) {
@@ -37,8 +39,18 @@ export const useSaveCryptocurrencyOrderSetting = () => {
     },
   });
 
+  const saveOrderForm = (formData: CryptocurrencyOrderForm) => {
+    const [buyOrder, sellOrder] = mapFormToOrderRequests(formData);
+    if (sellOrder) {
+      mutate(sellOrder);
+    }
+
+    if (buyOrder) {
+      mutate(buyOrder);
+    }
+  };
   return {
-    saveOrderSetting: mutation.mutate,
+    saveOrderForm,
     orderSaveStatus,
   };
 };

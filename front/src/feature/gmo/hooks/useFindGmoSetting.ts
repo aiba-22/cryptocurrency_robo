@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { findGmo } from "../../apiClients/gmo";
+import { findGmo } from "../../../apiClients/gmo";
 
 export const useFindGmoSetting = () => {
   const { data, isError, isLoading } = useQuery({

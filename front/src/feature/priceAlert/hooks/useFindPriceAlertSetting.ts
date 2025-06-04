@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { findPriceAlert } from "../../apiClients/priceAlert";
+import { findPriceAlert } from "../../../apiClients/priceAlert";
 
 export const useFindPriceAlertSetting = () => {
   const { data, isError, isLoading } = useQuery({

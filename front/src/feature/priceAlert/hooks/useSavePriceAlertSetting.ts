@@ -1,9 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 import {
   createPriceAlert,
   updatePriceAlert,
-} from "../../apiClients/priceAlert";
-import { useState } from "react";
+} from "../../../apiClients/priceAlert";
 
 type AlertSetting = {
   id?: number;

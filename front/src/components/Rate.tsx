@@ -1,9 +1,9 @@
 import { Container, Typography, Paper, Grid } from "@mui/material";
-import { useListCryptocurrencyRate } from "../feature/hooks/useListCryptocurrencyRate";
 import { Snackbar } from "./SnackBar";
 import { useEffect, useMemo, useState } from "react";
 import { Loading } from "./Loading";
 import { useTranslation } from "react-i18next";
+import { useListCryptocurrencyRate } from "../feature/rate/hooks/useListCryptocurrencyRate";
 
 export const Rate = ({ symbol }: { symbol: string }) => {
   const { t } = useTranslation("translation", {

@@ -12,14 +12,29 @@ import { useEffect, useState } from "react";
 import { Snackbar } from "../SnackBar";
 import { Rate } from "../Rate";
 import { Loading } from "../Loading";
-import { CRYPTOCURRENCY_LIST } from "../../feature/constants";
-import { Controller } from "react-hook-form";
+import { CRYPTOCURRENCY, CRYPTOCURRENCY_LIST } from "../../feature/constants";
+import { Controller, useForm } from "react-hook-form";
 
 import { IS_ENABLED } from "../../feature/automaticTrading/constants";
-import { useOrderForm } from "../../feature/automaticTrading/hooks/useOrderForm";
 import { OrderForm } from "./OrderForm";
 import ToggleOrderSwitch from "./ToggleOrderSwitch";
 import { useTranslation } from "react-i18next";
+import { useSaveForm } from "../../feature/automaticTrading/hooks/useSaveForm";
+import { useListCryptocurrencyOrder } from "../../feature/rate/hooks/useListCryptocurrencyOrder";
+import { mapOrderListToFormValues } from "../../feature/automaticTrading/orderFormMapper.ts";
+
+type Conditions = {
+  id?: number;
+  targetPrice: number;
+  volume: number;
+  isEnabled: number;
+};
+
+export type CryptocurrencyOrderForm = {
+  symbol: string;
+  buy: Conditions;
+  sell: Conditions;
+};
 
 export const AutomaticTrading = () => {
   const { t } = useTranslation("translation", {
@@ -30,17 +45,40 @@ export const AutomaticTrading = () => {
 
   const {
     control,
-    submitForm,
+    handleSubmit,
     watch,
-    formErrors,
-    orderSaveStatus,
-    isOrderListError,
-    isOrderListLoading,
-  } = useOrderForm();
+    reset,
+    formState: { errors },
+  } = useForm<CryptocurrencyOrderForm>({
+    defaultValues: {
+      symbol: CRYPTOCURRENCY.BTC,
+      buy: {
+        targetPrice: undefined,
+        volume: undefined,
+        isEnabled: IS_ENABLED.FALSE,
+      },
+      sell: {
+        targetPrice: undefined,
+        volume: undefined,
+        isEnabled: IS_ENABLED.FALSE,
+      },
+    },
+  });
+
+  const { cryptocurrencyOrderList, isOrderListError, isOrderListLoading } =
+    useListCryptocurrencyOrder();
+
+  useEffect(() => {
+    if (cryptocurrencyOrderList) {
+      reset(mapOrderListToFormValues(cryptocurrencyOrderList));
+    }
+  }, [cryptocurrencyOrderList, reset]);
 
   const isBuyEnabled = watch("buy.isEnabled");
   const isSellEnabled = watch("sell.isEnabled");
   const symbol = watch("symbol");
+
+  const { saveOrderForm, orderSaveStatus } = useSaveForm();
 
   useEffect(() => {
     if (orderSaveStatus) {
@@ -54,7 +92,7 @@ export const AutomaticTrading = () => {
 
   useEffect(() => {
     if (isOrderListError) {
-      setSnackBarMessage(t("orderList.systemError"));
+      setSnackBarMessage(t("list.systemError"));
     }
   }, [isOrderListError, t]);
 
@@ -66,7 +104,7 @@ export const AutomaticTrading = () => {
       {isOrderListLoading ? (
         <Loading />
       ) : (
-        <form onSubmit={submitForm}>
+        <form onSubmit={handleSubmit(saveOrderForm)}>
           <Box mb={2}>
             <Controller
               name="symbol"
@@ -105,8 +143,8 @@ export const AutomaticTrading = () => {
               control={control}
               targetPriceField="buy.targetPrice"
               volumeField="buy.volume"
-              priceErrorMessage={formErrors?.buy?.targetPrice?.message}
-              volumeErrorMessage={formErrors?.buy?.volume?.message}
+              priceErrorMessage={errors?.buy?.targetPrice?.message}
+              volumeErrorMessage={errors?.buy?.volume?.message}
             />
           )}
 
@@ -127,8 +165,8 @@ export const AutomaticTrading = () => {
               control={control}
               targetPriceField="sell.targetPrice"
               volumeField="sell.volume"
-              priceErrorMessage={formErrors?.sell?.targetPrice?.message}
-              volumeErrorMessage={formErrors?.sell?.volume?.message}
+              priceErrorMessage={errors?.sell?.targetPrice?.message}
+              volumeErrorMessage={errors?.sell?.volume?.message}
             />
           )}
 

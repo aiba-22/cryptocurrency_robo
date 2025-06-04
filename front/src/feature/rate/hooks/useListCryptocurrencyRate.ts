@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { listCryptocurrencyRate } from "../../apiClients/gmo";
+import { listCryptocurrencyRate } from "../../../apiClients/gmo";
 
 export const useListCryptocurrencyRate = () => {
   const {

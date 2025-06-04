@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Container, Typography, TextField, Button, Box } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
-import { useSaveGmoSetting } from "../../feature/hooks/useSaveGmoSetting";
-import { useFindGmoSetting } from "../../feature/hooks/useFindGmoSetting";
 import { Snackbar } from "../SnackBar";
 import { Loading } from "../Loading";
 import { useTranslation } from "react-i18next";
+import { useFindGmoSetting } from "../../feature/gmo/hooks/useFindGmoSetting";
+import { useSaveGmoSetting } from "../../feature/gmo/hooks/useSaveGmoSetting";
 
 type GmoSettingForm = {
   id: number;
@@ -34,6 +34,7 @@ export const GmoSetting = () => {
 
   const { gmoSetting, isGmoSettingFindError, isGmoSettingFindLoading } =
     useFindGmoSetting();
+
   const { saveGmoSetting, gmoSettingSaveStatus } = useSaveGmoSetting();
 
   const onSubmit = (form: GmoSettingForm) => {

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { updateGmo, createGmo } from "../../apiClients/gmo";
 import { useMutation } from "@tanstack/react-query";
+import { createGmo, updateGmo } from "../../../apiClients/gmo";
 
 type GmoSetting = { id?: number; apiKey: string; secretKey: string };
 
