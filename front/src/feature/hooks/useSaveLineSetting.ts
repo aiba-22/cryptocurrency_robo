@@ -21,16 +21,17 @@ export const useSaveLineSetting = () => {
         return await createLine({ channelAccessToken, lineUserId });
       }
     },
-    onSuccess: (data) => {
-      setAlertSettingSaveStatus(data);
+    onSuccess: () => {
+      setAlertSettingSaveStatus("success");
     },
     onError: () => {
-      setAlertSettingSaveStatus("systemError");
+      setAlertSettingSaveStatus("save.systemError");
     },
   });
 
   return {
     saveLineSettings: mutate,
     lineSettingSaveStatus,
+    setAlertSettingSaveStatus,
   };
 };

@@ -3,16 +3,20 @@ import { useListCryptocurrencyRate } from "../feature/hooks/useListCryptocurrenc
 import { Snackbar } from "./SnackBar";
 import { useEffect, useMemo, useState } from "react";
 import { Loading } from "./Loading";
-import { SYSTEM_ERROR } from "../feature/rate/rateMessages";
+import { useTranslation } from "react-i18next";
 
-function Rate({ symbol }: { symbol: string }) {
+export const Rate = ({ symbol }: { symbol: string }) => {
+  const { t } = useTranslation("translation", {
+    keyPrefix: "rate",
+  });
+
   const [snackBarMessage, setSnackBarMessage] = useState("");
   const { cryptocurrencyRateMap, isRateListError, isRateListLoading } =
     useListCryptocurrencyRate();
 
   useEffect(() => {
-    if (isRateListError) setSnackBarMessage(SYSTEM_ERROR);
-  }, [isRateListError]);
+    if (isRateListError) setSnackBarMessage(t("list.systemError"));
+  }, [isRateListError, t]);
 
   const cryptocurrencyRate = useMemo(() => {
     const rate = cryptocurrencyRateMap?.get(symbol);
@@ -59,6 +63,4 @@ function Rate({ symbol }: { symbol: string }) {
       {snackBarMessage && <Snackbar message={snackBarMessage} />}
     </Container>
   );
-}
-
-export default Rate;
+};

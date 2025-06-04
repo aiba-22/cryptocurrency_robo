@@ -6,13 +6,7 @@ import { useFindLineSetting } from "../../feature/hooks/useFindLineSetting";
 import { useLineNotification } from "../../feature/hooks/useNotificationLine";
 import { useSaveLineSetting } from "../../feature/hooks/useSaveLineSetting";
 import { Loading } from "../Loading";
-import {
-  isLineSettingSaveStatus,
-  isNotificationStatus,
-  LINE_NOTIFICATION_MESSAGES,
-  LINE_SETTING_SAVE_MESSAGES,
-  SYSTEM_ERROR,
-} from "../../feature/lineSetting/lineNotificationMessages";
+import { useTranslation } from "react-i18next";
 
 type LineForm = {
   id?: number;
@@ -21,6 +15,10 @@ type LineForm = {
 };
 
 export const LineSetting = () => {
+  const { t } = useTranslation("translation", {
+    keyPrefix: "line",
+  });
+
   const [snackBarMessage, setSnackBarMessage] = useState("");
 
   const {
@@ -37,8 +35,13 @@ export const LineSetting = () => {
 
   const { lineSetting, isLineSettingFindError, isLineSettingFindLoading } =
     useFindLineSetting();
-  const { sendNotification, notificationSendStatus } = useLineNotification();
-  const { saveLineSettings, lineSettingSaveStatus } = useSaveLineSetting();
+  const {
+    sendNotification,
+    notificationSendStatus,
+    setNotificationSendStatus,
+  } = useLineNotification();
+  const { saveLineSettings, lineSettingSaveStatus, setAlertSettingSaveStatus } =
+    useSaveLineSetting();
 
   const onSubmit = (form: LineForm) => {
     saveLineSettings(form);
@@ -53,24 +56,24 @@ export const LineSetting = () => {
   }, [lineSetting, reset]);
 
   useEffect(() => {
-    if (
-      lineSettingSaveStatus &&
-      isLineSettingSaveStatus(lineSettingSaveStatus)
-    ) {
-      setSnackBarMessage(LINE_SETTING_SAVE_MESSAGES[lineSettingSaveStatus]);
-      return;
-    }
-    if (
-      notificationSendStatus &&
-      isNotificationStatus(notificationSendStatus)
-    ) {
-      setSnackBarMessage(LINE_NOTIFICATION_MESSAGES[notificationSendStatus]);
-      return;
-    }
     if (isLineSettingFindError) {
-      setSnackBarMessage(SYSTEM_ERROR);
+      setSnackBarMessage(t("findSetting.systemError"));
     }
-  }, [lineSettingSaveStatus, notificationSendStatus, isLineSettingFindError]);
+  }, [isLineSettingFindError, t]);
+
+  useEffect(() => {
+    if (lineSettingSaveStatus) {
+      setSnackBarMessage(t(`save.${lineSettingSaveStatus}`));
+      setAlertSettingSaveStatus(undefined);
+    }
+  }, [lineSettingSaveStatus, setAlertSettingSaveStatus, t]);
+
+  useEffect(() => {
+    if (notificationSendStatus) {
+      setSnackBarMessage(t(`notification.${notificationSendStatus}`));
+      setNotificationSendStatus(undefined);
+    }
+  }, [notificationSendStatus, setNotificationSendStatus, t]);
 
   return (
     <Container maxWidth="sm">

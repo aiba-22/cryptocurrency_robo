@@ -29,8 +29,8 @@ export const useSaveCryptocurrencyOrderSetting = () => {
         return await createCryptocurrencyOrder({ ...orderDetails });
       }
     },
-    onSuccess: (data) => {
-      setOrderSaveStatus(data);
+    onSuccess: () => {
+      setOrderSaveStatus("success");
     },
     onError: () => {
       setOrderSaveStatus("systemError");

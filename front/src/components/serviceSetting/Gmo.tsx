@@ -5,10 +5,7 @@ import { useSaveGmoSetting } from "../../feature/hooks/useSaveGmoSetting";
 import { useFindGmoSetting } from "../../feature/hooks/useFindGmoSetting";
 import { Snackbar } from "../SnackBar";
 import { Loading } from "../Loading";
-import {
-  GMO_SETTING_MESSAGES,
-  isGmoSettingStatus,
-} from "../../feature/gmoSetting/gmoSettingMessages";
+import { useTranslation } from "react-i18next";
 
 type GmoSettingForm = {
   id: number;
@@ -17,6 +14,9 @@ type GmoSettingForm = {
 };
 
 export const GmoSetting = () => {
+  const { t } = useTranslation("translation", {
+    keyPrefix: "gmo",
+  });
   const [snackBarMessage, setSnackBarMessage] = useState("");
 
   const {
@@ -46,13 +46,15 @@ export const GmoSetting = () => {
 
   useEffect(() => {
     if (isGmoSettingFindError) {
-      setSnackBarMessage(GMO_SETTING_MESSAGES.systemError);
-      return;
+      setSnackBarMessage(t("findSetting.systemError"));
     }
-    if (gmoSettingSaveStatus && isGmoSettingStatus(gmoSettingSaveStatus)) {
-      setSnackBarMessage(GMO_SETTING_MESSAGES[gmoSettingSaveStatus]);
+  }, [isGmoSettingFindError, t]);
+
+  useEffect(() => {
+    if (gmoSettingSaveStatus) {
+      setSnackBarMessage(t(`save.${gmoSettingSaveStatus}`));
     }
-  }, [gmoSettingSaveStatus, isGmoSettingFindError]);
+  }, [gmoSettingSaveStatus, t]);
 
   return (
     <Container maxWidth="sm">

@@ -16,14 +16,10 @@ import { useForm, Controller } from "react-hook-form";
 import { useFindPriceAlertSetting } from "../feature/hooks/useFindPriceAlertSetting";
 import { CRYPTOCURRENCY, CRYPTOCURRENCY_LIST } from "../feature/constants";
 import { useSavePriceAlertSetting } from "../feature/hooks/useSavePriceAlertSetting";
-import { SYSTEM_ERROR } from "../feature/lineSetting/lineNotificationMessages";
-import {
-  isPriceAlertSettingSaveStatus,
-  PRICE_ALERT_SETTING_SAVE_MESSAGES,
-} from "../feature/priceAlert/priceAlertSettingMessage";
 import { Loading } from "./Loading";
-import Rate from "./Rate";
+import { Rate } from "./Rate";
 import { Snackbar } from "./SnackBar";
+import { useTranslation } from "react-i18next";
 
 type PriceAlertSettingForm = {
   id?: number;
@@ -33,6 +29,10 @@ type PriceAlertSettingForm = {
 };
 
 export const PriceAlertSetting = () => {
+  const { t } = useTranslation("translation", {
+    keyPrefix: "line",
+  });
+
   const {
     control,
     handleSubmit,
@@ -65,18 +65,14 @@ export const PriceAlertSetting = () => {
   }, [alertSetting, reset]);
 
   useEffect(() => {
-    if (
-      alertSettingSaveStatus &&
-      isPriceAlertSettingSaveStatus(alertSettingSaveStatus)
-    ) {
-      setSnackBarMessage(
-        PRICE_ALERT_SETTING_SAVE_MESSAGES[alertSettingSaveStatus]
-      );
-      return;
+    if (alertSettingSaveStatus) {
+      setSnackBarMessage(t(`save.${alertSettingSaveStatus}`));
     }
+  }, [alertSettingSaveStatus, t]);
 
+  useEffect(() => {
     if (isAlertSettingFindError) {
-      setSnackBarMessage(SYSTEM_ERROR);
+      setSnackBarMessage(`findSetting.${isAlertSettingFindError}`);
     }
   }, [alertSettingSaveStatus, isAlertSettingFindError, setSnackBarMessage]);
 
@@ -90,7 +86,6 @@ export const PriceAlertSetting = () => {
       ) : (
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl fullWidth margin="normal">
-            <InputLabel id="virtual-currency-type-label">対象通貨</InputLabel>
             <Controller
               name="symbol"
               control={control}

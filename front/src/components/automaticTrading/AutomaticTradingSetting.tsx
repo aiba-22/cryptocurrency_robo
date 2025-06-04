@@ -10,21 +10,22 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Snackbar } from "../SnackBar";
-import Rate from "../Rate";
+import { Rate } from "../Rate";
 import { Loading } from "../Loading";
 import { CRYPTOCURRENCY_LIST } from "../../feature/constants";
 import { Controller } from "react-hook-form";
-import {
-  AUTOMATIC_TRADING_MESSAGES,
-  isAutomaticTradingStatus,
-  SYSTEM_ERROR,
-} from "../../feature/automaticTrading/automaticTradingMessages";
+
 import { IS_ENABLED } from "../../feature/automaticTrading/constants";
 import { useOrderForm } from "../../feature/automaticTrading/hooks/useOrderForm";
 import { OrderForm } from "./OrderForm";
 import ToggleOrderSwitch from "./ToggleOrderSwitch";
+import { useTranslation } from "react-i18next";
 
 export const AutomaticTradingSetting = () => {
+  const { t } = useTranslation("translation", {
+    keyPrefix: "automaticTradingSetting",
+  });
+
   const [snackBarMessage, setSnackBarMessage] = useState("");
 
   const {
@@ -42,14 +43,16 @@ export const AutomaticTradingSetting = () => {
   const symbol = watch("symbol");
 
   useEffect(() => {
-    if (orderSaveStatus && isAutomaticTradingStatus(orderSaveStatus)) {
-      setSnackBarMessage(AUTOMATIC_TRADING_MESSAGES[orderSaveStatus]);
-      return;
+    if (orderSaveStatus) {
+      setSnackBarMessage(t(`save.${orderSaveStatus}`));
     }
+  }, [orderSaveStatus, t]);
+
+  useEffect(() => {
     if (isOrderListError) {
-      setSnackBarMessage(SYSTEM_ERROR);
+      setSnackBarMessage(t("orderList.systemError"));
     }
-  }, [orderSaveStatus, isOrderListError]);
+  }, [isOrderListError, t]);
 
   return (
     <Container maxWidth="sm">

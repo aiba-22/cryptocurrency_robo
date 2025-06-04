@@ -16,8 +16,8 @@ export const useSaveGmoSetting = () => {
       }
     },
 
-    onSuccess: (data) => {
-      setGmoSettingSaveStatus(data);
+    onSuccess: () => {
+      setGmoSettingSaveStatus("success");
     },
     onError: () => {
       setGmoSettingSaveStatus("systemError");

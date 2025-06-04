@@ -1,5 +1,3 @@
-// orderFormMapper.ts
-
 import { ORDER_TYPE } from "./constants";
 import type { CryptocurrencyOrderForm } from "./hooks/useOrderForm";
 

@@ -27,8 +27,8 @@ export const useSavePriceAlertSetting = () => {
       }
     },
 
-    onSuccess: (data) => {
-      setAlertSettingSaveStatus(data);
+    onSuccess: () => {
+      setAlertSettingSaveStatus("success");
     },
     onError: () => {
       setAlertSettingSaveStatus("systemError");

@@ -1,0 +1,49 @@
+{
+  "automaticTradingSetting": {
+    "list": {
+      "systemError": "システムエラー"
+    },
+    "save": {
+      "systemError": "システムエラー",
+      "success": "保存に成功しました。"
+    }
+  },
+  "gmo": {
+    "findSetting": {
+      "systemError": "システムエラー"
+    },
+    "save": {
+      "systemError": "システムエラー",
+      "success": "保存に成功しました。"
+    }
+  },
+  "line": {
+    "findSetting": {
+      "systemError": "システムエラー"
+    },
+    "save": {
+      "systemError": "システムエラー",
+      "success": "保存に成功しました。"
+    },
+    "notification": {
+      "success": "テスト送信に成功しました。",
+      "tooManyRequests": "メッセージの送信可能件数（月200件）を超過しました。",
+      "badRequest": "トークン情報が誤っています。",
+      "systemError": "システムエラー"
+    }
+  },
+  "priceAlertSetting": {
+    "findSetting": {
+      "systemError": "システムエラー"
+    },
+    "save": {
+      "systemError": "システムエラー",
+      "success": "保存に成功しました。"
+    }
+  },
+  "rate": {
+    "list": {
+      "systemError": "システムエラー"
+    }
+  }
+}
