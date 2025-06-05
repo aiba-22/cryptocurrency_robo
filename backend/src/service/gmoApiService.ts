@@ -13,23 +13,37 @@ export default class GmoApiService {
     this.secretKey = params?.secretKey;
   }
 
-  async fetchTradingPrice(symbol: string): Promise<string | undefined> {
+  async fetchTradingPrice(
+    symbol: string
+  ): Promise<{ status: string; price?: number }> {
     const path = `/v1/ticker?symbol=${symbol}`;
     try {
       const result = await axios.get(BASE_PUBLIC + path);
-      if (!result?.data?.data.length) return undefined;
-      return result.data.data[0].last;
+      if (!result?.data?.data.length) return { status: "nonData" };
+      return { status: "success", price: Number(result.data.data[0].last) };
     } catch (error) {
-      return "systemError";
+      return { status: "systemError" };
     }
   }
 
-  async fetchTradingRateList() {
+  async fetchTradingRateList(): Promise<{
+    status: "success" | "systemError" | "nonData";
+    rateList?: {
+      ask: string;
+      bid: string;
+      high: string;
+      last: string;
+      low: string;
+      symbol: string;
+      timestamp: string;
+      volume: string;
+    }[];
+  }> {
     const path = `/v1/ticker?symbol=`;
     try {
       const result = await axios.get(BASE_PUBLIC + path);
-      if (!result?.data?.data.length) return [];
-      return result.data.data;
+      if (result?.data?.data.length === 0) return { status: "nonData" };
+      return { status: "success", rateList: result?.data?.data };
     } catch (error) {
       return { status: "systemError" };
     }
@@ -77,9 +91,13 @@ export default class GmoApiService {
     side: string;
     price: number;
     size: number;
-  }) {
+  }): Promise<{
+    status: "success" | "failure" | "missingKey" | "systemError";
+  }> {
     if (!this.apiKey || !this.secretKey) {
-      return "missingKey";
+      return {
+        status: "missingKey",
+      };
     }
     const path = "/v1/order";
     const body = JSON.stringify({
@@ -93,10 +111,12 @@ export default class GmoApiService {
     const headers = this.generateHeaders("POST", path, body);
     try {
       const result = await axios.post(BASE_PRIVATE + path, body, { headers });
-      const status = result?.status === 1 ? "success" : "failure";
+      const status = result?.data?.status === 1 ? "success" : "failure";
       return { status };
     } catch (error) {
-      return "systemError";
+      return {
+        status: "systemError",
+      };
     }
   }
 }

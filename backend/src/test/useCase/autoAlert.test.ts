@@ -45,14 +45,19 @@ describe("autoAlert", () => {
       },
     });
 
-    mockFetchTradingPrice.mockResolvedValue(1100);
+    mockFetchTradingPrice.mockResolvedValue({
+      status: "success",
+      price: 1100,
+    });
 
     mockLineServiceFind.mockResolvedValue({
-      userId: "testUserId",
+      lineUserId: "testUserId",
       channelAccessToken: "testChannelAccessToken",
     });
 
-    await expect(autoAlert()).resolves.not.toThrow();
+    await autoAlert();
+
+    expect(mockSendMessage).toHaveBeenCalled();
   });
 
   it("価格が下限を下回った場合に通知される", async () => {
@@ -65,13 +70,19 @@ describe("autoAlert", () => {
       },
     });
 
-    mockFetchTradingPrice.mockResolvedValue(900);
+    mockFetchTradingPrice.mockResolvedValue({
+      status: "success",
+      price: 900,
+    });
+
     mockLineServiceFind.mockResolvedValue({
-      userId: "testUserId",
+      lineUserId: "testUserId",
       channelAccessToken: "testChannelAccessToken",
     });
 
-    await expect(autoAlert()).resolves.not.toThrow();
+    await autoAlert();
+
+    expect(mockSendMessage).toHaveBeenCalled();
   });
 
   it("価格が上限を超えていない場合は通知されない", async () => {
@@ -84,7 +95,15 @@ describe("autoAlert", () => {
       },
     });
 
-    mockFetchTradingPrice.mockResolvedValue(950);
+    mockFetchTradingPrice.mockResolvedValue({
+      status: "success",
+      price: 950,
+    });
+
+    mockLineServiceFind.mockResolvedValue({
+      lineUserId: "testUserId",
+      channelAccessToken: "testChannelAccessToken",
+    });
 
     await autoAlert();
 
@@ -110,7 +129,10 @@ describe("autoAlert", () => {
       },
     });
 
-    mockFetchTradingPrice.mockResolvedValue(undefined);
+    mockFetchTradingPrice.mockResolvedValue({
+      status: "error",
+      price: null,
+    });
 
     await autoAlert();
 

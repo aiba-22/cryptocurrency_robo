@@ -33,8 +33,9 @@ export const updateGmo = async (request: {
   return response.data;
 };
 
-export const listCryptocurrencyRate = async (): Promise<
-  {
+export const listCryptocurrencyRate = async (): Promise<{
+  status: string;
+  rateList: {
     symbol: string;
     last: number;
     bid: number;
@@ -43,8 +44,8 @@ export const listCryptocurrencyRate = async (): Promise<
     low: number;
     volume: number;
     timestamp: Date;
-  }[]
-> => {
+  }[];
+}> => {
   const response = await axios.get(
     `http://localhost:3001/api/virtualCurrencyRateList`
   );

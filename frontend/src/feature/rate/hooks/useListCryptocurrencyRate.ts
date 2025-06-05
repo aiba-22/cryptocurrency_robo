@@ -10,8 +10,9 @@ export const useListCryptocurrencyRate = () => {
     queryKey: ["useCryptocurrencyRate"],
     queryFn: listCryptocurrencyRate,
     select: (cryptocurrencyRateList) => {
+      if (cryptocurrencyRateList.status !== "success") return;
       const cryptocurrencyRateMap = new Map();
-      cryptocurrencyRateList.forEach((cryptocurrencyRate) => {
+      cryptocurrencyRateList.rateList.forEach((cryptocurrencyRate) => {
         const { symbol, ...rate } = cryptocurrencyRate;
         cryptocurrencyRateMap.set(symbol, rate);
       });

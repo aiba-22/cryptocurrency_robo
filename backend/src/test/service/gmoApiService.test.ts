@@ -22,29 +22,29 @@ describe("GmoApiService", () => {
   });
 
   describe("fetchTradingPrice", () => {
-    it("APIから価格情報が取得できた場合、lastを返す", async () => {
+    it("APIから価格情報が取得できた場合、オブジェクトで返す", async () => {
       (axios.get as jest.Mock).mockResolvedValue({
         data: { data: [{ last: "1000" }] },
       });
 
       const result = await gmoApiService.fetchTradingPrice("BTC");
 
-      expect(result).toBe("1000");
+      expect(result).toEqual({ status: "success", price: 1000 });
     });
 
-    it("データがなければundefinedを返す", async () => {
+    it("データがなければエラーステータスで返す", async () => {
       (axios.get as jest.Mock).mockResolvedValue({
         data: { data: [] },
       });
 
       const result = await gmoApiService.fetchTradingPrice("BTC");
 
-      expect(result).toBeUndefined();
+      expect(result).toEqual({ status: "nonData" });
     });
   });
 
   describe("fetchTradingRateList", () => {
-    it("APIから全ティッカーが取得できた場合、配列を返す", async () => {
+    it("APIから全ティッカーが取得できた場合、rateList付きで返す", async () => {
       const mockData = [
         {
           symbol: "BTC",
@@ -64,15 +64,15 @@ describe("GmoApiService", () => {
 
       const result = await gmoApiService.fetchTradingRateList();
 
-      expect(result).toEqual(mockData);
+      expect(result).toEqual({ status: "success", rateList: mockData });
     });
 
-    it("データがなければ空配列を返す", async () => {
+    it("データがなければエラーステータスで返す", async () => {
       (axios.get as jest.Mock).mockResolvedValue({ data: { data: [] } });
 
       const result = await gmoApiService.fetchTradingRateList();
 
-      expect(result).toEqual([]);
+      expect(result).toEqual({ status: "nonData" });
     });
   });
 
@@ -110,7 +110,7 @@ describe("GmoApiService", () => {
       };
       (crypto.createHmac as jest.Mock).mockReturnValue(mockHmac);
 
-      (axios.post as jest.Mock).mockResolvedValue({ status: 1 });
+      (axios.post as jest.Mock).mockResolvedValue({ data: { status: 1 } });
 
       const result = await gmoApiService.order({
         symbol: "BTC",
@@ -133,7 +133,7 @@ describe("GmoApiService", () => {
         findById: mockFindById,
       }));
 
-      (axios.post as jest.Mock).mockResolvedValue({ status: 0 });
+      (axios.post as jest.Mock).mockResolvedValue({ data: { status: 0 } });
 
       const result = await gmoApiService.order({
         symbol: "BTC",
