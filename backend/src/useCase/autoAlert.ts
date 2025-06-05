@@ -2,6 +2,7 @@ import GmoApiService from "../service/gmoApiService";
 import LineService from "../service/lineService";
 import LineApiService from "../service/lineApiService";
 import PriceAlertService from "../service/priceAlertService";
+import { JsonValue } from "@prisma/client/runtime/library";
 
 export const autoAlert = async () => {
   const priceAlertService = new PriceAlertService();

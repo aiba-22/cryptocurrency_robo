@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "npm run dev && npm run migrate"]
+CMD ["sh", "-c", "npm run migrate && npm run dev"]

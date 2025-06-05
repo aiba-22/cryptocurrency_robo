@@ -11,6 +11,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
     "prisma:seed": "prisma db seed",
+    "migrate": "npm run prisma:generate && npm run prisma:migrate && npm run prisma:seed",
     "test": "jest"
   },
   "dependencies": {
