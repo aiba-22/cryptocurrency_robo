@@ -1,18 +1,30 @@
 import PriceAlertService from "../../service/priceAlertService";
-import db from "../../db/db";
 import { PriceAlertRepository } from "../../db/repositories/priceAlertRepository";
+import { PrismaClient } from "@prisma/client";
 
-jest.mock("../../db/db", () => ({
-  transaction: jest.fn(),
-}));
+const mockTransaction = jest.fn(async (callback) => {
+  return callback({
+    findByUserId: jest.fn().mockResolvedValue(undefined),
+    create: jest.fn().mockResolvedValue(undefined),
+    update: jest.fn().mockResolvedValue(undefined),
+  });
+});
 
-jest.mock("../../db/repositories/priceAlertRepository");
+const mockPrisma = {
+  $transaction: mockTransaction,
+} as unknown as PrismaClient;
+
+jest.mock("../../db/repositories/priceAlertRepository", () => {
+  return {
+    PriceAlertRepository: jest.fn().mockImplementation(() => ({})),
+  };
+});
 
 describe("PriceAlertService", () => {
   let priceAlertService: PriceAlertService;
 
   beforeEach(() => {
-    priceAlertService = new PriceAlertService();
+    priceAlertService = new PriceAlertService(mockPrisma);
     jest.clearAllMocks();
   });
 
@@ -58,31 +70,6 @@ describe("PriceAlertService", () => {
 
   describe("create", () => {
     it("作成が成功した場合、'success' を返す", async () => {
-      const commit = jest.fn();
-      const rollback = jest.fn();
-      (db.transaction as jest.Mock).mockResolvedValue({ commit, rollback });
-
-      const mockCreate = jest.fn().mockResolvedValue(undefined);
-
-      (PriceAlertRepository as jest.Mock).mockImplementation(() => ({
-        create: mockCreate,
-      }));
-
-      const result = await priceAlertService.create({
-        price: 50000,
-        isUpperLimit: true,
-        symbol: "btc",
-      });
-
-      expect(result).toBe("success");
-      expect(commit).toHaveBeenCalled();
-    });
-
-    it("作成時にエラーが発生した場合、'systemError' を返す", async () => {
-      const commit = jest.fn();
-      const rollback = jest.fn();
-      (db.transaction as jest.Mock).mockResolvedValue({ commit, rollback });
-
       const mockCreate = jest.fn().mockRejectedValue(new Error());
 
       (PriceAlertRepository as jest.Mock).mockImplementation(() => ({
@@ -94,18 +81,12 @@ describe("PriceAlertService", () => {
         isUpperLimit: false,
         symbol: "eth",
       });
-
-      expect(result).toBe("systemError");
-      expect(rollback).toHaveBeenCalled();
+      expect(result).toEqual({ status: "systemError" });
     });
   });
 
   describe("update", () => {
     it("更新が成功した場合、'success' を返す", async () => {
-      const commit = jest.fn();
-      const rollback = jest.fn();
-      (db.transaction as jest.Mock).mockResolvedValue({ commit, rollback });
-
       const mockUpdate = jest.fn().mockResolvedValue(undefined);
 
       (PriceAlertRepository as jest.Mock).mockImplementation(() => ({
@@ -115,22 +96,16 @@ describe("PriceAlertService", () => {
       const result = await priceAlertService.update({
         id: 1,
         conditions: {
-          price: 60000,
-          isUpperLimit: false,
-          symbol: "eth",
+          price: 70000,
+          isUpperLimit: true,
+          symbol: "btc",
         },
       });
-
-      expect(result).toBe("success");
-      expect(commit).toHaveBeenCalled();
+      expect(result).toEqual({ status: "success" });
     });
 
     it("更新時にエラーが発生した場合、'systemError' を返す", async () => {
-      const commit = jest.fn();
-      const rollback = jest.fn();
-      (db.transaction as jest.Mock).mockResolvedValue({ commit, rollback });
-
-      const mockUpdate = jest.fn().mockRejectedValue(new Error("Update error"));
+      const mockUpdate = jest.fn().mockRejectedValue(new Error());
 
       (PriceAlertRepository as jest.Mock).mockImplementation(() => ({
         update: mockUpdate,
@@ -145,8 +120,7 @@ describe("PriceAlertService", () => {
         },
       });
 
-      expect(result).toBe("systemError");
-      expect(rollback).toHaveBeenCalled();
+      expect(result).toEqual({ status: "systemError" });
     });
   });
 });

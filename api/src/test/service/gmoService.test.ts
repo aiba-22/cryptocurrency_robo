@@ -1,44 +1,39 @@
 import GmoService from "../../service/gmoService";
 import { GmoRepository } from "../../db/repositories/gmoRepository";
+import { PrismaClient } from "@prisma/client";
 
-jest.mock("../../db/db", () => ({
-  transaction: jest.fn(),
-}));
+const mockTransaction = jest.fn(async (callback) => {
+  return callback({
+    update: jest.fn().mockResolvedValue(undefined),
+    create: jest.fn().mockResolvedValue(undefined),
+    list: jest.fn().mockResolvedValue([]),
+  });
+});
+
+const mockPrisma = {
+  $transaction: mockTransaction,
+} as unknown as PrismaClient;
 
 jest.mock("../../db/repositories/gmoRepository", () => {
   return {
-    GmoRepository: jest.fn().mockImplementation(() => ({
-      findByUserId: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-    })),
+    GmoRepository: jest.fn().mockImplementation(() => ({})),
   };
 });
 
 describe("GmoService", () => {
   let gmoService: GmoService;
 
-  const mockCommit = jest.fn();
-  const mockRollback = jest.fn();
-  const mockTransaction = {
-    commit: mockCommit,
-    rollback: mockRollback,
-  };
-  const mockDb = {
-    transaction: jest.fn().mockResolvedValue(mockTransaction),
-  };
-
   beforeEach(() => {
     jest.clearAllMocks();
-    gmoService = new GmoService(mockDb as any);
+    gmoService = new GmoService(mockPrisma);
   });
 
   describe("find", () => {
     it("GMO情報が存在する場合、整形して返す", async () => {
       const mockFindByUserId = jest.fn().mockResolvedValue({
         id: 1,
-        api_key: "apiKey",
-        secret_key: "secretKey",
+        apiKey: "apiKey",
+        secretKey: "secretKey",
       });
       (GmoRepository as jest.Mock).mockImplementation(() => ({
         findByUserId: mockFindByUserId,
@@ -77,8 +72,7 @@ describe("GmoService", () => {
         secretKey: "secret",
       });
 
-      expect(result).toBe("success");
-      expect(mockCommit).toHaveBeenCalled();
+      expect(result).toEqual({ status: "success" });
     });
 
     it("作成失敗時、'systemError' を返す", async () => {
@@ -92,8 +86,7 @@ describe("GmoService", () => {
         secretKey: "secret",
       });
 
-      expect(result).toBe("systemError");
-      expect(mockRollback).toHaveBeenCalled();
+      expect(result).toEqual({ status: "systemError" });
     });
   });
 
@@ -110,8 +103,7 @@ describe("GmoService", () => {
         secretKey: "newSecret",
       });
 
-      expect(result).toBe("success");
-      expect(mockCommit).toHaveBeenCalled();
+      expect(result).toEqual({ status: "success" });
     });
 
     it("更新失敗時、'systemError' を返す", async () => {
@@ -126,8 +118,7 @@ describe("GmoService", () => {
         secretKey: "secret",
       });
 
-      expect(result).toBe("systemError");
-      expect(mockRollback).toHaveBeenCalled();
+      expect(result).toEqual({ status: "systemError" });
     });
   });
 });

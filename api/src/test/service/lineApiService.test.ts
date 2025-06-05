@@ -22,7 +22,8 @@ describe("LineApiService", () => {
 
       const result = await lineApiService.sendMessage(message);
 
-      expect(result).toBe("success");
+      expect(result).toEqual({ status: "success" });
+
       expect(axiosPostMock).toHaveBeenCalledWith(
         "https://api.line.me/v2/bot/message/push",
         {
@@ -40,7 +41,7 @@ describe("LineApiService", () => {
 
     it("LINE設定が存在しない場合、'systemError'を返す", async () => {
       const result = await lineApiService.sendMessage(message);
-      expect(result).toBe("systemError");
+      expect(result).toEqual({ status: "systemError" });
     });
 
     const errorCases = [
@@ -54,7 +55,7 @@ describe("LineApiService", () => {
 
         const result = await lineApiService.sendMessage(message);
 
-        expect(result).toBe(expected);
+        expect(result).toEqual({ status: expected });
       });
     });
 
@@ -63,7 +64,7 @@ describe("LineApiService", () => {
 
       const result = await lineApiService.sendMessage(message);
 
-      expect(result).toBe("systemError");
+      expect(result).toEqual({ status: "systemError" });
     });
   });
 });

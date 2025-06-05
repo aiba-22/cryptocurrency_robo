@@ -1,10 +1,16 @@
+import { PrismaClient } from "@prisma/client";
 import prisma from "../db/prismaClient";
 import { CryptocurrencyOrderRepository } from "../db/repositories/cryptocurrencyOrderRepository";
 import { USER_ID } from "./constants";
 
 export default class CryptocurrencyOrderService {
+  private prisma: PrismaClient;
+
+  constructor(prismaClient = prisma) {
+    this.prisma = prismaClient;
+  }
   async list() {
-    const orderRepository = new CryptocurrencyOrderRepository(prisma);
+    const orderRepository = new CryptocurrencyOrderRepository(this.prisma);
     const orderList = await orderRepository.list(USER_ID);
     if (orderList.length === 0) return [];
 
@@ -29,7 +35,7 @@ export default class CryptocurrencyOrderService {
     isEnabled: number;
   }) {
     try {
-      const createdOrder = await prisma.$transaction(async (tx) => {
+      await this.prisma.$transaction(async (tx) => {
         const orderRepository = new CryptocurrencyOrderRepository(tx);
         return await orderRepository.create({
           userId: USER_ID,
@@ -37,7 +43,7 @@ export default class CryptocurrencyOrderService {
         });
       });
 
-      return { status: "success", order: createdOrder };
+      return { status: "success" };
     } catch (error) {
       console.error("Error creating order:", error);
       return { status: "systemError" };
@@ -53,7 +59,7 @@ export default class CryptocurrencyOrderService {
     isEnabled: number;
   }) {
     try {
-      const updatedOrder = await prisma.$transaction(async (tx) => {
+      await this.prisma.$transaction(async (tx) => {
         const orderRepository = new CryptocurrencyOrderRepository(tx);
         return await orderRepository.update({
           id: data.id,
@@ -61,7 +67,7 @@ export default class CryptocurrencyOrderService {
         });
       });
 
-      return { status: "success", order: updatedOrder };
+      return { status: "success" };
     } catch (error) {
       console.error("Error updating order:", error);
       return { status: "systemError" };

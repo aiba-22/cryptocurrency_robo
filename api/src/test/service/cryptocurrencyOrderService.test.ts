@@ -1,33 +1,31 @@
-import CryptocurrencyOrderService from "../../service/cryptocurrencyOrderService";
+import { PrismaClient } from "@prisma/client";
 import { CryptocurrencyOrderRepository } from "../../db/repositories/cryptocurrencyOrderRepository";
+import CryptocurrencyOrderService from "../../service/cryptocurrencyOrderService";
 
 jest.mock("../../db/repositories/cryptocurrencyOrderRepository", () => {
   return {
-    CryptocurrencyOrderRepository: jest.fn().mockImplementation(() => ({
-      list: jest.fn(),
-      findByIdAndUserId: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-    })),
+    CryptocurrencyOrderRepository: jest.fn().mockImplementation(() => ({})),
   };
 });
+
+const mockTransaction = jest.fn(async (callback) => {
+  return callback({
+    update: jest.fn().mockResolvedValue(undefined),
+    create: jest.fn().mockResolvedValue(undefined),
+    list: jest.fn().mockResolvedValue([]),
+  });
+});
+
+const mockPrisma = {
+  $transaction: mockTransaction,
+} as unknown as PrismaClient;
 
 describe("cryptocurrencyOrderService", () => {
   let orderService: CryptocurrencyOrderService;
 
-  const mockCommit = jest.fn().mockResolvedValue(undefined);
-  const mockRollback = jest.fn().mockResolvedValue(undefined);
-  const mockTransaction = {
-    commit: mockCommit,
-    rollback: mockRollback,
-  };
-  const mockDb = {
-    transaction: jest.fn().mockResolvedValue(mockTransaction),
-  };
-
   beforeEach(() => {
     jest.clearAllMocks();
-    orderService = new CryptocurrencyOrderService(mockDb as any);
+    orderService = new CryptocurrencyOrderService(mockPrisma);
   });
 
   describe("list", () => {
@@ -36,10 +34,10 @@ describe("cryptocurrencyOrderService", () => {
         {
           id: 1,
           symbol: "btc",
-          target_price: 50000,
+          targetPrice: 50000,
           volume: 2,
           type: 1,
-          is_enabled: 1,
+          isEnabled: 1,
         },
       ]);
       (CryptocurrencyOrderRepository as jest.Mock).mockImplementation(() => ({
@@ -81,14 +79,13 @@ describe("cryptocurrencyOrderService", () => {
 
       const result = await orderService.create({
         symbol: "btc",
-        targetPrice: 60000,
-        volume: 1,
-        type: 0,
+        targetPrice: 50000,
+        volume: 2,
+        type: 1,
         isEnabled: 1,
       });
 
-      expect(result).toBe("success");
-      expect(mockCommit).toHaveBeenCalled();
+      expect(result).toEqual({ status: "success" });
     });
 
     it("注文作成時にエラーが発生した場合、'systemError'を返す", async () => {
@@ -97,16 +94,20 @@ describe("cryptocurrencyOrderService", () => {
         create: mockCreate,
       }));
 
+      mockTransaction.mockImplementation(async (callback) => {
+        return callback({
+          update: mockCreate,
+        });
+      });
       const result = await orderService.create({
         symbol: "eth",
-        targetPrice: 2000,
-        volume: 3,
-        type: 1,
-        isEnabled: 0,
+        targetPrice: 2500,
+        volume: 1,
+        type: 0,
+        isEnabled: 1,
       });
 
-      expect(result).toBe("systemError");
-      expect(mockRollback).toHaveBeenCalled();
+      expect(result).toEqual({ status: "systemError" });
     });
   });
 
@@ -126,8 +127,7 @@ describe("cryptocurrencyOrderService", () => {
         isEnabled: 1,
       });
 
-      expect(result).toBe("success");
-      expect(mockCommit).toHaveBeenCalled();
+      expect(result).toEqual({ status: "success" });
     });
 
     it("注文更新時にエラーが発生した場合、'systemError'を返す", async () => {
@@ -135,6 +135,12 @@ describe("cryptocurrencyOrderService", () => {
       (CryptocurrencyOrderRepository as jest.Mock).mockImplementation(() => ({
         update: mockUpdate,
       }));
+
+      mockTransaction.mockImplementation(async (callback) => {
+        return callback({
+          update: mockUpdate,
+        });
+      });
 
       const result = await orderService.update({
         id: 2,
@@ -145,8 +151,7 @@ describe("cryptocurrencyOrderService", () => {
         isEnabled: 1,
       });
 
-      expect(result).toBe("systemError");
-      expect(mockRollback).toHaveBeenCalled();
+      expect(result).toEqual({ status: "systemError" });
     });
   });
 });

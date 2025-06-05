@@ -1,3 +1,4 @@
+import prisma from "../db/prismaClient";
 import { PrismaClient } from "@prisma/client";
 import { GmoRepository } from "../db/repositories/gmoRepository";
 import { USER_ID } from "./constants";
@@ -5,7 +6,7 @@ import { USER_ID } from "./constants";
 export default class GmoService {
   private prisma: PrismaClient;
 
-  constructor(prismaClient = new PrismaClient()) {
+  constructor(prismaClient = prisma) {
     this.prisma = prismaClient;
   }
 
@@ -31,10 +32,10 @@ export default class GmoService {
           secretKey,
         });
       });
-      return "success";
+      return { status: "success" };
     } catch (error) {
       console.error("GMO create error:", error);
-      return "systemError";
+      return { status: "systemError" };
     }
   }
 
@@ -52,10 +53,10 @@ export default class GmoService {
         const gmoRepository = new GmoRepository(tx);
         await gmoRepository.update({ id, data: { apiKey, secretKey } });
       });
-      return "success";
+      return { status: "success" };
     } catch (error) {
       console.error("GMO update error:", error);
-      return "systemError";
+      return { status: "systemError" };
     }
   }
 }

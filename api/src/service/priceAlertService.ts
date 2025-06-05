@@ -33,10 +33,10 @@ export default class PriceAlertService {
         const priceAlertRepository = new PriceAlertRepository(tx);
         await priceAlertRepository.create({ conditions, userId: USER_ID });
       });
-      return "success";
+      return { status: "success" };
     } catch (error) {
       console.error("Error creating PriceAlert:", error);
-      return "systemError";
+      return { status: "systemError" };
     }
   }
 
@@ -56,10 +56,10 @@ export default class PriceAlertService {
         const priceAlertRepository = new PriceAlertRepository(tx);
         await priceAlertRepository.update({ id, data: { conditions } });
       });
-      return "success";
+      return { status: "success" };
     } catch (error) {
       console.error("Error updating PriceAlert:", error);
-      return "systemError";
+      return { status: "systemError" };
     }
   }
 }

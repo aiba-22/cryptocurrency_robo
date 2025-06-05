@@ -5,7 +5,7 @@ import crypto from "crypto";
 
 jest.mock("axios");
 jest.mock("crypto");
-jest.mock("../../db/db", () => ({
+jest.mock("../../db/prismaClient", () => ({
   transaction: jest.fn(),
 }));
 jest.mock("../../db/repositories/gmoRepository");
@@ -119,7 +119,7 @@ describe("GmoApiService", () => {
         size: 0.01,
       });
 
-      expect(result).toBe("success");
+      expect(result).toEqual({ status: "success" });
     });
 
     it("注文失敗時に'failure'を返す", async () => {
@@ -142,7 +142,7 @@ describe("GmoApiService", () => {
         size: 0.02,
       });
 
-      expect(result).toBe("failure");
+      expect(result).toEqual({ status: "failure" });
     });
   });
 });

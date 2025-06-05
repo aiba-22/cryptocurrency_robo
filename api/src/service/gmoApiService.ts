@@ -4,17 +4,6 @@ import crypto from "crypto";
 const BASE_PUBLIC = "https://api.coin.z.com/public";
 const BASE_PRIVATE = "https://api.coin.z.com/private";
 
-type TickerData = {
-  ask: string;
-  bid: string;
-  high: string;
-  last: string;
-  low: string;
-  symbol: string;
-  timestamp: string;
-  volume: string;
-};
-
 export default class GmoApiService {
   private apiKey?: string;
   private secretKey?: string;
@@ -35,14 +24,14 @@ export default class GmoApiService {
     }
   }
 
-  async fetchTradingRateList(): Promise<TickerData[] | "systemError"> {
+  async fetchTradingRateList() {
     const path = `/v1/ticker?symbol=`;
     try {
       const result = await axios.get(BASE_PUBLIC + path);
       if (!result?.data?.data.length) return [];
       return result.data.data;
     } catch (error) {
-      return "systemError";
+      return { status: "systemError" };
     }
   }
 
@@ -74,7 +63,7 @@ export default class GmoApiService {
       const response = await axios.get(BASE_PRIVATE + path, { headers });
       return response.data;
     } catch (error) {
-      return "systemError";
+      return { status: "systemError" };
     }
   }
 
@@ -88,7 +77,7 @@ export default class GmoApiService {
     side: string;
     price: number;
     size: number;
-  }): Promise<"success" | "failure" | "systemError" | "missingKey"> {
+  }) {
     if (!this.apiKey || !this.secretKey) {
       return "missingKey";
     }
@@ -104,7 +93,8 @@ export default class GmoApiService {
     const headers = this.generateHeaders("POST", path, body);
     try {
       const result = await axios.post(BASE_PRIVATE + path, body, { headers });
-      return result?.status === 1 ? "success" : "failure";
+      const status = result?.status === 1 ? "success" : "failure";
+      return { status };
     } catch (error) {
       return "systemError";
     }

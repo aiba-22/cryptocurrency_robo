@@ -39,10 +39,10 @@ export default class LineService {
           lineUserId,
         });
       });
-      return "success";
+      return { status: "success" };
     } catch (error) {
       console.error("Error creating Line:", error);
-      return "systemError";
+      return { status: "systemError" };
     }
   }
 
@@ -63,10 +63,10 @@ export default class LineService {
           data: { channelAccessToken, lineUserId },
         });
       });
-      return "success";
+      return { status: "success" };
     } catch (error) {
       console.error("Error updating Line:", error);
-      return "systemError";
+      return { status: "systemError" };
     }
   }
 }

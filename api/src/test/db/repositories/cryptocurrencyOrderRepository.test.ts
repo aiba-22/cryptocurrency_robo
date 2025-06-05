@@ -1,90 +1,100 @@
 import { CryptocurrencyOrderRepository } from "../../../db/repositories/cryptocurrencyOrderRepository";
 
 describe("CryptocurrencyOrderRepository", () => {
-  describe("listメソッド", () => {
+  describe("list", () => {
     const userId = 1;
 
-    it("DBに'cryptocurrency_order'テーブルのクエリを実行し、結果を返す", async () => {
+    it("cryptocurrencyOrder.findMany を呼び出し、結果を返す", async () => {
       const mockData = [
         {
           id: 1,
+          userId,
           symbol: "BTC",
-          target_price: 5000000,
+          targetPrice: 5000000,
           volume: 10,
           type: 0,
-          is_enabled: 1,
-          created_at: new Date("2024-01-01T00:00:00Z"),
-          updated_at: new Date("2024-01-02T00:00:00Z"),
+          isEnabled: 1,
+          createdAt: new Date("2024-01-01T00:00:00Z"),
+          updatedAt: new Date("2024-01-02T00:00:00Z"),
         },
       ];
 
-      const whereMock = jest.fn().mockResolvedValue(mockData);
-      const dbMock = jest.fn(() => ({ where: whereMock }));
+      const findManyMock = jest.fn().mockResolvedValue(mockData);
+      const prismaMock = {
+        cryptocurrencyOrder: {
+          findMany: findManyMock,
+        },
+      };
 
-      const repository = new CryptocurrencyOrderRepository(dbMock as any);
+      const repository = new CryptocurrencyOrderRepository(prismaMock as any);
       const result = await repository.list(userId);
 
-      expect(dbMock).toHaveBeenCalledWith("cryptocurrency_order");
-      expect(whereMock).toHaveBeenCalledWith({ user_id: userId });
+      expect(findManyMock).toHaveBeenCalledWith({ where: { userId } });
       expect(result).toEqual(mockData);
     });
 
-    it("DBのクエリが失敗した場合、例外をスローする", async () => {
-      const whereMock = jest.fn().mockRejectedValue(new Error());
-      const dbMock = jest.fn(() => ({ where: whereMock }));
+    it("findMany が失敗した場合、例外をスローする", async () => {
+      const findManyMock = jest.fn().mockRejectedValue(new Error("DB Error"));
+      const prismaMock = {
+        cryptocurrencyOrder: {
+          findMany: findManyMock,
+        },
+      };
 
-      const repository = new CryptocurrencyOrderRepository(dbMock as any);
-
-      await expect(repository.list(userId)).rejects.toThrow();
+      const repository = new CryptocurrencyOrderRepository(prismaMock as any);
+      await expect(repository.list(userId)).rejects.toThrow("DB Error");
     });
   });
 
   describe("findByIdAndUserId", () => {
-    it("DBに'cryptocurrency_order'テーブルのクエリを実行し、結果を返す", async () => {
-      const mockData = {
-        id: 1,
-        user_id: 1,
+    it("cryptocurrencyOrder.findFirst を呼び出し、結果を返す", async () => {
+      const mockData = { id: 1, userId: 1 };
+
+      const findFirstMock = jest.fn().mockResolvedValue(mockData);
+      const prismaMock = {
+        cryptocurrencyOrder: {
+          findFirst: findFirstMock,
+        },
       };
 
-      const firstMock = jest.fn().mockResolvedValue(mockData);
-      const whereMock = jest.fn(() => ({ first: firstMock }));
-      const dbMock = jest.fn(() => ({ where: whereMock }));
-
-      const repository = new CryptocurrencyOrderRepository(dbMock as any);
+      const repository = new CryptocurrencyOrderRepository(prismaMock as any);
       const result = await repository.findByIdAndUserId({
         id: mockData.id,
-        userId: 1,
+        userId: mockData.userId,
       });
 
-      expect(dbMock).toHaveBeenCalledWith("cryptocurrency_order");
-      expect(whereMock).toHaveBeenCalledWith({
-        id: mockData.id,
-        user_id: 1,
+      expect(findFirstMock).toHaveBeenCalledWith({
+        where: { id: mockData.id, userId: mockData.userId },
       });
-      expect(firstMock).toHaveBeenCalled();
       expect(result).toEqual(mockData);
     });
 
-    it("DBがエラーを返した場合に例外を投げる", async () => {
-      const error = new Error("DB error");
-      const firstMock = jest.fn().mockRejectedValue(error);
-      const whereMock = jest.fn(() => ({ first: firstMock }));
-      const dbMock = jest.fn(() => ({ where: whereMock }));
+    it("findFirst が失敗した場合に例外をスローする", async () => {
+      const findFirstMock = jest.fn().mockRejectedValue(new Error("DB Error"));
+      const prismaMock = {
+        cryptocurrencyOrder: {
+          findFirst: findFirstMock,
+        },
+      };
 
-      const repository = new CryptocurrencyOrderRepository(dbMock as any);
+      const repository = new CryptocurrencyOrderRepository(prismaMock as any);
 
       await expect(
         repository.findByIdAndUserId({ id: 1, userId: 1 })
-      ).rejects.toThrow("DB error");
+      ).rejects.toThrow("DB Error");
     });
   });
 
-  describe("createメソッド", () => {
-    it("DBのinsertを正しい引数で呼び出す", async () => {
-      const insertMock = jest.fn().mockResolvedValue(undefined);
-      const dbMock = jest.fn(() => ({ insert: insertMock }));
+  describe("create", () => {
+    it("cryptocurrencyOrder.create を正しい引数で呼び出す", async () => {
+      const createMock = jest.fn().mockResolvedValue(undefined);
+      const prismaMock = {
+        cryptocurrencyOrder: {
+          create: createMock,
+        },
+      };
 
-      const repository = new CryptocurrencyOrderRepository(dbMock as any);
+      const repository = new CryptocurrencyOrderRepository(prismaMock as any);
 
       const createParams = {
         userId: 1,
@@ -95,24 +105,24 @@ describe("CryptocurrencyOrderRepository", () => {
         isEnabled: 1,
       };
 
-      await repository.create(createParams);
+      await repository.create(createParams as any);
 
-      expect(dbMock).toHaveBeenCalledWith("cryptocurrency_order");
-      expect(insertMock).toHaveBeenCalledWith({
-        user_id: 1,
-        symbol: "BTC",
-        target_price: 5000000,
-        volume: 10,
-        type: 0,
-        is_enabled: 1,
+      expect(createMock).toHaveBeenCalledWith({
+        data: createParams,
       });
     });
 
-    it("DBのinsertが失敗した場合、例外をスローする", async () => {
-      const insertMock = jest.fn().mockRejectedValue(new Error());
-      const dbMock = jest.fn(() => ({ insert: insertMock }));
+    it("create が失敗した場合に例外をスローする", async () => {
+      const createMock = jest
+        .fn()
+        .mockRejectedValue(new Error("Insert failed"));
+      const prismaMock = {
+        cryptocurrencyOrder: {
+          create: createMock,
+        },
+      };
 
-      const repository = new CryptocurrencyOrderRepository(dbMock as any);
+      const repository = new CryptocurrencyOrderRepository(prismaMock as any);
 
       const createParams = {
         userId: 1,
@@ -123,58 +133,68 @@ describe("CryptocurrencyOrderRepository", () => {
         isEnabled: 1,
       };
 
-      await expect(repository.create(createParams)).rejects.toThrow();
+      await expect(repository.create(createParams as any)).rejects.toThrow(
+        "Insert failed"
+      );
     });
   });
 
-  describe("updateメソッド", () => {
-    it("DBのupdateを正しい引数で呼び出す", async () => {
-      const updateMock = jest.fn().mockResolvedValue(undefined);
-      const whereMock = jest.fn(() => ({ update: updateMock }));
-      const dbMock = jest.fn(() => ({ where: whereMock }));
+  describe("update", () => {
+    it("cryptocurrencyOrder.updateMany を正しい引数で呼び出す", async () => {
+      const updateManyMock = jest.fn().mockResolvedValue({ count: 1 });
+      const prismaMock = {
+        cryptocurrencyOrder: {
+          updateMany: updateManyMock,
+        },
+      };
 
-      const repository = new CryptocurrencyOrderRepository(dbMock as any);
+      const repository = new CryptocurrencyOrderRepository(prismaMock as any);
 
       const updateParams = {
         id: 1,
-        symbol: "BTC",
-        targetPrice: 5000000,
-        volume: 10,
-        type: 0,
-        isEnabled: 1,
+        data: {
+          symbol: "BTC",
+          targetPrice: 5000000,
+          volume: 10,
+          type: 0,
+          isEnabled: 1,
+        },
       };
 
-      await repository.update(updateParams);
+      await repository.update(updateParams as any);
 
-      expect(dbMock).toHaveBeenCalledWith("cryptocurrency_order");
-      expect(whereMock).toHaveBeenCalledWith({ id: updateParams.id });
-      expect(updateMock).toHaveBeenCalledWith({
-        symbol: updateParams.symbol,
-        target_price: updateParams.targetPrice,
-        volume: updateParams.volume,
-        type: updateParams.type,
-        is_enabled: updateParams.isEnabled,
-        updated_at: expect.any(Date),
+      expect(updateManyMock).toHaveBeenCalledWith({
+        where: { id: updateParams.id },
+        data: updateParams.data,
       });
     });
 
-    it("DBのupdateが失敗した場合、例外をスローする", async () => {
-      const updateMock = jest.fn().mockRejectedValue(new Error());
-      const whereMock = jest.fn(() => ({ update: updateMock }));
-      const dbMock = jest.fn(() => ({ where: whereMock }));
+    it("updateMany が失敗した場合、例外をスローする", async () => {
+      const updateManyMock = jest
+        .fn()
+        .mockRejectedValue(new Error("Update failed"));
+      const prismaMock = {
+        cryptocurrencyOrder: {
+          updateMany: updateManyMock,
+        },
+      };
 
-      const repository = new CryptocurrencyOrderRepository(dbMock as any);
+      const repository = new CryptocurrencyOrderRepository(prismaMock as any);
 
       const updateParams = {
         id: 1,
-        symbol: "BTC",
-        targetPrice: 5000000,
-        volume: 10,
-        type: 0,
-        isEnabled: 1,
+        data: {
+          symbol: "BTC",
+          targetPrice: 5000000,
+          volume: 10,
+          type: 0,
+          isEnabled: 1,
+        },
       };
 
-      await expect(repository.update(updateParams)).rejects.toThrow();
+      await expect(repository.update(updateParams as any)).rejects.toThrow(
+        "Update failed"
+      );
     });
   });
 });

@@ -1,44 +1,39 @@
 import LineService from "../../service/lineService";
 import { LineRepository } from "../../db/repositories/lineRepository";
-
-jest.mock("../../db/db", () => ({
-  transaction: jest.fn(),
-}));
+import { PrismaClient } from "@prisma/client";
 
 jest.mock("../../db/repositories/lineRepository", () => {
   return {
-    LineRepository: jest.fn().mockImplementation(() => ({
-      findByUserId: jest.fn(),
-      create: jest.fn(),
-      update: jest.fn(),
-    })),
+    LineRepository: jest.fn().mockImplementation(() => ({})),
   };
 });
+
+const mockTransaction = jest.fn(async (callback) => {
+  return callback({
+    findByUserId: jest.fn().mockResolvedValue(undefined),
+    create: jest.fn().mockResolvedValue(undefined),
+    update: jest.fn().mockResolvedValue(undefined),
+  });
+});
+const mockPrisma = {
+  $transaction: mockTransaction,
+} as unknown as PrismaClient;
 
 describe("LineService", () => {
   let lineService: LineService;
 
-  const mockCommit = jest.fn();
-  const mockRollback = jest.fn();
-  const mockTransaction = {
-    commit: mockCommit,
-    rollback: mockRollback,
-  };
-  const mockDb = {
-    transaction: jest.fn().mockResolvedValue(mockTransaction),
-  };
-
   beforeEach(() => {
     jest.clearAllMocks();
-    lineService = new LineService(mockDb as any);
+
+    lineService = new LineService(mockPrisma);
   });
 
   describe("find", () => {
     it("正常にレコードが見つかれば、整形されたオブジェクトを返す", async () => {
       const mockFindByUserId = jest.fn().mockResolvedValue({
         id: 1,
-        channel_access_token: "channelAccessToken",
-        line_user_id: "lineUserId",
+        channelAccessToken: "channelAccessToken",
+        lineUserId: "lineUserId",
       });
       (LineRepository as jest.Mock).mockImplementation(() => ({
         findByUserId: mockFindByUserId,
@@ -57,6 +52,7 @@ describe("LineService", () => {
       (LineRepository as jest.Mock).mockImplementation(() => ({
         findByUserId: mockFindByUserId,
       }));
+
       const result = await lineService.find();
       expect(result).toBeUndefined();
     });
@@ -68,24 +64,23 @@ describe("LineService", () => {
       lineUserId: "lineUserId",
     };
 
-    it("作成成功時、'success'を返す", async () => {
+    it("作成成功時、{ status: 'success' } を返す", async () => {
       const mockCreate = jest.fn().mockResolvedValue(undefined);
       (LineRepository as jest.Mock).mockImplementation(() => ({
         create: mockCreate,
       }));
 
       const result = await lineService.create(params);
-      expect(result).toBe("success");
+      expect(result).toEqual({ status: "success" });
     });
 
-    it("作成失敗時、'systemError'を返す", async () => {
-      const mockCreate = jest.fn().mockRejectedValue(new Error());
+    it("作成失敗時、{ status: 'systemError' } を返す", async () => {
       (LineRepository as jest.Mock).mockImplementation(() => ({
-        create: mockCreate,
+        create: jest.fn().mockRejectedValue(new Error("DB Error")),
       }));
 
       const result = await lineService.create(params);
-      expect(result).toBe("systemError");
+      expect(result).toEqual({ status: "systemError" });
     });
   });
 
@@ -96,24 +91,22 @@ describe("LineService", () => {
       lineUserId: "userId",
     };
 
-    it("更新成功時、'success'を返す", async () => {
-      const mockCreate = jest.fn().mockResolvedValue(undefined);
+    it("更新成功時、{ status: 'success' } を返す", async () => {
       (LineRepository as jest.Mock).mockImplementation(() => ({
-        update: mockCreate,
+        update: jest.fn().mockResolvedValue(undefined),
       }));
 
       const result = await lineService.update(params);
-      expect(result).toBe("success");
+      expect(result).toEqual({ status: "success" });
     });
 
-    it("更新失敗時、'systemError'を返す", async () => {
-      const mockCreate = jest.fn().mockRejectedValue(new Error());
+    it("更新失敗時、{ status: 'systemError' } を返す", async () => {
       (LineRepository as jest.Mock).mockImplementation(() => ({
-        update: mockCreate,
+        update: jest.fn().mockRejectedValue(new Error("DB Error")),
       }));
 
       const result = await lineService.update(params);
-      expect(result).toBe("systemError");
+      expect(result).toEqual({ status: "systemError" });
     });
   });
 });
