@@ -2,9 +2,16 @@ import { PrismaClient } from "@prisma/client";
 import { CryptocurrencyOrderRepository } from "../../db/repositories/cryptocurrencyOrderRepository";
 import CryptocurrencyOrderService from "../../service/cryptocurrencyOrderService";
 
+const mockRepoInstance = {
+  list: jest.fn(),
+  findByIdAndUserId: jest.fn(),
+  create: jest.fn(),
+  update: jest.fn(),
+};
+
 jest.mock("../../db/repositories/cryptocurrencyOrderRepository", () => {
   return {
-    CryptocurrencyOrderRepository: jest.fn().mockImplementation(() => ({})),
+    CryptocurrencyOrderRepository: jest.fn(() => mockRepoInstance),
   };
 });
 
@@ -22,6 +29,18 @@ const mockPrisma = {
 
 describe("cryptocurrencyOrderService", () => {
   let orderService: CryptocurrencyOrderService;
+  let consoleErrorSpy: jest.SpyInstance;
+  let consoleLogSpy: jest.SpyInstance;
+
+  beforeAll(() => {
+    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    consoleErrorSpy.mockRestore();
+    consoleLogSpy.mockRestore();
+  });
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -30,7 +49,7 @@ describe("cryptocurrencyOrderService", () => {
 
   describe("list", () => {
     it("注文リストが存在する場合、整形されたリストを返す", async () => {
-      const mockList = jest.fn().mockResolvedValue([
+      mockRepoInstance.list.mockResolvedValue([
         {
           id: 1,
           symbol: "btc",
@@ -40,9 +59,6 @@ describe("cryptocurrencyOrderService", () => {
           isEnabled: 1,
         },
       ]);
-      (CryptocurrencyOrderRepository as jest.Mock).mockImplementation(() => ({
-        list: mockList,
-      }));
 
       const result = await orderService.list();
 
@@ -59,10 +75,7 @@ describe("cryptocurrencyOrderService", () => {
     });
 
     it("注文リストがない場合、空配列を返す", async () => {
-      const mockList = jest.fn().mockResolvedValue([]);
-      (CryptocurrencyOrderRepository as jest.Mock).mockImplementation(() => ({
-        list: mockList,
-      }));
+      mockRepoInstance.list.mockResolvedValue([]);
 
       const result = await orderService.list();
 
@@ -72,10 +85,7 @@ describe("cryptocurrencyOrderService", () => {
 
   describe("create", () => {
     it("注文作成が成功した場合、'success'を返す", async () => {
-      const mockCreate = jest.fn().mockResolvedValue(undefined);
-      (CryptocurrencyOrderRepository as jest.Mock).mockImplementation(() => ({
-        create: mockCreate,
-      }));
+      mockRepoInstance.create.mockResolvedValue(undefined);
 
       const result = await orderService.create({
         symbol: "btc",
@@ -89,16 +99,8 @@ describe("cryptocurrencyOrderService", () => {
     });
 
     it("注文作成時にエラーが発生した場合、'systemError'を返す", async () => {
-      const mockCreate = jest.fn().mockRejectedValue(new Error());
-      (CryptocurrencyOrderRepository as jest.Mock).mockImplementation(() => ({
-        create: mockCreate,
-      }));
+      mockRepoInstance.create.mockRejectedValue(new Error());
 
-      mockTransaction.mockImplementation(async (callback) => {
-        return callback({
-          update: mockCreate,
-        });
-      });
       const result = await orderService.create({
         symbol: "eth",
         targetPrice: 2500,
@@ -113,10 +115,7 @@ describe("cryptocurrencyOrderService", () => {
 
   describe("update", () => {
     it("注文更新が成功した場合、'success'を返す", async () => {
-      const mockUpdate = jest.fn().mockResolvedValue(undefined);
-      (CryptocurrencyOrderRepository as jest.Mock).mockImplementation(() => ({
-        update: mockUpdate,
-      }));
+      mockRepoInstance.update.mockResolvedValue(undefined);
 
       const result = await orderService.update({
         id: 1,
@@ -131,16 +130,7 @@ describe("cryptocurrencyOrderService", () => {
     });
 
     it("注文更新時にエラーが発生した場合、'systemError'を返す", async () => {
-      const mockUpdate = jest.fn().mockRejectedValue(new Error());
-      (CryptocurrencyOrderRepository as jest.Mock).mockImplementation(() => ({
-        update: mockUpdate,
-      }));
-
-      mockTransaction.mockImplementation(async (callback) => {
-        return callback({
-          update: mockUpdate,
-        });
-      });
+      mockRepoInstance.update.mockRejectedValue(new Error());
 
       const result = await orderService.update({
         id: 2,

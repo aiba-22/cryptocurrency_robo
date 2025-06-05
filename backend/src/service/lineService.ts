@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { LineRepository } from "../db/repositories/lineRepository";
+import { LineAccountRepository } from "../db/repositories/lineAccountRepository";
 import { USER_ID } from "./constants";
 
 const prisma = new PrismaClient();
@@ -12,8 +12,8 @@ export default class LineService {
   }
 
   async find() {
-    const repository = new LineRepository(this.prisma);
-    const line = await repository.findByUserId(USER_ID);
+    const lineAccountRepository = new LineAccountRepository(this.prisma);
+    const line = await lineAccountRepository.findByUserId(USER_ID);
     if (!line) return;
     const { id, channelAccessToken, lineUserId } = line;
     return {
@@ -31,9 +31,9 @@ export default class LineService {
     lineUserId: string;
   }) {
     try {
-      const created = await this.prisma.$transaction(async (tx) => {
-        const lineRepository = new LineRepository(tx);
-        await lineRepository.create({
+      await this.prisma.$transaction(async (tx) => {
+        const lineAccountRepository = new LineAccountRepository(tx);
+        await lineAccountRepository.create({
           userId: USER_ID,
           channelAccessToken,
           lineUserId,
@@ -56,8 +56,8 @@ export default class LineService {
     lineUserId: string;
   }) {
     try {
-      const updated = await this.prisma.$transaction(async (tx) => {
-        const lineRepository = new LineRepository(tx);
+      await this.prisma.$transaction(async (tx) => {
+        const lineRepository = new LineAccountRepository(tx);
         await lineRepository.update({
           id,
           data: { channelAccessToken, lineUserId },

@@ -1,6 +1,6 @@
 import prisma from "../db/prismaClient";
 import { PrismaClient } from "@prisma/client";
-import { GmoRepository } from "../db/repositories/gmoRepository";
+import { GmoAccountRepository } from "../db/repositories/gmoAccountRepository";
 import { USER_ID } from "./constants";
 
 export default class GmoService {
@@ -11,8 +11,8 @@ export default class GmoService {
   }
 
   async find() {
-    const gmoRepository = new GmoRepository(this.prisma);
-    const gmo = await gmoRepository.findByUserId(USER_ID);
+    const gmoAccountRepository = new GmoAccountRepository(this.prisma);
+    const gmo = await gmoAccountRepository.findByUserId(USER_ID);
     if (!gmo) return;
     const { id, apiKey, secretKey } = gmo;
     return {
@@ -25,8 +25,8 @@ export default class GmoService {
   async create({ apiKey, secretKey }: { apiKey: string; secretKey: string }) {
     try {
       await this.prisma.$transaction(async (tx) => {
-        const gmoRepository = new GmoRepository(tx);
-        await gmoRepository.create({
+        const gmoAccountRepository = new GmoAccountRepository(tx);
+        await gmoAccountRepository.create({
           userId: USER_ID,
           apiKey,
           secretKey,
@@ -50,8 +50,8 @@ export default class GmoService {
   }) {
     try {
       await this.prisma.$transaction(async (tx) => {
-        const gmoRepository = new GmoRepository(tx);
-        await gmoRepository.update({ id, data: { apiKey, secretKey } });
+        const gmoAccountRepository = new GmoAccountRepository(tx);
+        await gmoAccountRepository.update({ id, data: { apiKey, secretKey } });
       });
       return { status: "success" };
     } catch (error) {

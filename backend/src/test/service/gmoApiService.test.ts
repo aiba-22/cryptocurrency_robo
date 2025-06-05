@@ -1,5 +1,5 @@
 import GmoApiService from "../../service/gmoApiService";
-import { GmoRepository } from "../../db/repositories/gmoRepository";
+import { GmoAccountRepository } from "../../db/repositories/gmoAccountRepository";
 import axios from "axios";
 import crypto from "crypto";
 
@@ -8,7 +8,7 @@ jest.mock("crypto");
 jest.mock("../../db/prismaClient", () => ({
   transaction: jest.fn(),
 }));
-jest.mock("../../db/repositories/gmoRepository");
+jest.mock("../../db/repositories/gmoAccountRepository");
 
 describe("GmoApiService", () => {
   let gmoApiService: GmoApiService;
@@ -100,7 +100,7 @@ describe("GmoApiService", () => {
         secret_key: "secret_key",
       });
 
-      (GmoRepository as jest.Mock).mockImplementation(() => ({
+      (GmoAccountRepository as jest.Mock).mockImplementation(() => ({
         findById: mockFindById,
       }));
 
@@ -129,7 +129,7 @@ describe("GmoApiService", () => {
         secret_key: "secret_key",
       });
 
-      (GmoRepository as jest.Mock).mockImplementation(() => ({
+      (GmoAccountRepository as jest.Mock).mockImplementation(() => ({
         findById: mockFindById,
       }));
 

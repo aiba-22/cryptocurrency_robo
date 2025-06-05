@@ -1,6 +1,6 @@
 import type { Prisma, PrismaClient } from "@prisma/client";
 
-export class GmoRepository {
+export class CryptocurrencyPriceAlertRepository {
   private prisma: PrismaClient | Prisma.TransactionClient;
 
   constructor(prismaClient: PrismaClient | Prisma.TransactionClient) {
@@ -8,20 +8,23 @@ export class GmoRepository {
   }
 
   async findByUserId(userId: number) {
-    return await this.prisma.gmo.findFirst({
+    return await this.prisma.cryptocurrencyPriceAlert.findFirst({
       where: { userId },
     });
   }
 
-  async create(data: Prisma.GmoCreateInput) {
-    return await this.prisma.gmo.create({
+  async create(data: Prisma.CryptocurrencyPriceAlertCreateInput) {
+    return await this.prisma.cryptocurrencyPriceAlert.create({
       data,
     });
   }
 
-  async update(params: { id: number; data: Prisma.GmoUpdateInput }) {
+  async update(params: {
+    id: number;
+    data: Prisma.CryptocurrencyPriceAlertUpdateInput;
+  }) {
     const { id, data } = params;
-    return await this.prisma.gmo.update({
+    return await this.prisma.cryptocurrencyPriceAlert.update({
       where: { id },
       data,
     });

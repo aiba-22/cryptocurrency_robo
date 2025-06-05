@@ -1,6 +1,6 @@
-import { GmoRepository } from "../../../db/repositories/gmoRepository";
+import { GmoAccountRepository } from "../../../db/repositories/gmoAccountRepository";
 
-describe("GmoRepository", () => {
+describe("GmoAccountRepository", () => {
   describe("findByUserId", () => {
     const userId = 1;
 
@@ -15,12 +15,12 @@ describe("GmoRepository", () => {
 
       const findFirstMock = jest.fn().mockResolvedValue(mockData);
       const prismaMock = {
-        gmo: {
+        gmoAccount: {
           findFirst: findFirstMock,
         },
       };
 
-      const repository = new GmoRepository(prismaMock as any);
+      const repository = new GmoAccountRepository(prismaMock as any);
       const result = await repository.findByUserId(userId);
 
       expect(findFirstMock).toHaveBeenCalledWith({ where: { userId } });
@@ -30,12 +30,12 @@ describe("GmoRepository", () => {
     it("findFirstが失敗した場合、例外をスローする", async () => {
       const findFirstMock = jest.fn().mockRejectedValue(new Error("DB error"));
       const prismaMock = {
-        gmo: {
+        gmoAccount: {
           findFirst: findFirstMock,
         },
       };
 
-      const repository = new GmoRepository(prismaMock as any);
+      const repository = new GmoAccountRepository(prismaMock as any);
       await expect(repository.findByUserId(userId)).rejects.toThrow("DB error");
     });
   });
@@ -54,12 +54,12 @@ describe("GmoRepository", () => {
       const createMock = jest.fn().mockResolvedValue(mockResult);
 
       const prismaMock = {
-        gmo: {
+        gmoAccount: {
           create: createMock,
         },
       };
 
-      const repository = new GmoRepository(prismaMock as any);
+      const repository = new GmoAccountRepository(prismaMock as any);
 
       const createParams = {
         userId: 1,
@@ -75,12 +75,12 @@ describe("GmoRepository", () => {
     it("createが失敗した場合、例外をスローする", async () => {
       const createMock = jest.fn().mockRejectedValue(new Error("Insert error"));
       const prismaMock = {
-        gmo: {
+        gmoAccount: {
           create: createMock,
         },
       };
 
-      const repository = new GmoRepository(prismaMock as any);
+      const repository = new GmoAccountRepository(prismaMock as any);
       await expect(
         repository.create({
           userId: 1,
@@ -104,12 +104,12 @@ describe("GmoRepository", () => {
 
       const updateMock = jest.fn().mockResolvedValue(mockResult);
       const prismaMock = {
-        gmo: {
+        gmoAccount: {
           update: updateMock,
         },
       };
 
-      const repository = new GmoRepository(prismaMock as any);
+      const repository = new GmoAccountRepository(prismaMock as any);
 
       const updateParams = {
         id: 1,
@@ -131,12 +131,12 @@ describe("GmoRepository", () => {
     it("updateが失敗した場合、例外をスローする", async () => {
       const updateMock = jest.fn().mockRejectedValue(new Error("Update error"));
       const prismaMock = {
-        gmo: {
+        gmoAccount: {
           update: updateMock,
         },
       };
 
-      const repository = new GmoRepository(prismaMock as any);
+      const repository = new GmoAccountRepository(prismaMock as any);
     });
   });
 });

@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { PriceAlertRepository } from "../db/repositories/priceAlertRepository";
+import { CryptocurrencyPriceAlertRepository } from "../db/repositories/cryptocurrencyPriceAlertRepository";
 import { USER_ID } from "./constants";
 
 const prisma = new PrismaClient();
@@ -12,8 +12,11 @@ export default class PriceAlertService {
   }
 
   async find() {
-    const priceAlertRepository = new PriceAlertRepository(this.prisma);
-    const priceAlert = await priceAlertRepository.findByUserId(USER_ID);
+    const cryptocurrencyPriceAlertRepository =
+      new CryptocurrencyPriceAlertRepository(this.prisma);
+    const priceAlert = await cryptocurrencyPriceAlertRepository.findByUserId(
+      USER_ID
+    );
     if (!priceAlert) return;
     const { id, conditions } = priceAlert;
 
@@ -30,8 +33,12 @@ export default class PriceAlertService {
   }) {
     try {
       await this.prisma.$transaction(async (tx) => {
-        const priceAlertRepository = new PriceAlertRepository(tx);
-        await priceAlertRepository.create({ conditions, userId: USER_ID });
+        const cryptocurrencyPriceAlertRepository =
+          new CryptocurrencyPriceAlertRepository(tx);
+        await cryptocurrencyPriceAlertRepository.create({
+          conditions,
+          userId: USER_ID,
+        });
       });
       return { status: "success" };
     } catch (error) {
@@ -53,8 +60,12 @@ export default class PriceAlertService {
   }) {
     try {
       await this.prisma.$transaction(async (tx) => {
-        const priceAlertRepository = new PriceAlertRepository(tx);
-        await priceAlertRepository.update({ id, data: { conditions } });
+        const cryptocurrencyPriceAlertRepository =
+          new CryptocurrencyPriceAlertRepository(tx);
+        await cryptocurrencyPriceAlertRepository.update({
+          id,
+          data: { conditions },
+        });
       });
       return { status: "success" };
     } catch (error) {

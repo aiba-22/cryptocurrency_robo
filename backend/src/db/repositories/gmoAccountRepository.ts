@@ -1,6 +1,6 @@
 import type { Prisma, PrismaClient } from "@prisma/client";
 
-export class LineRepository {
+export class GmoAccountRepository {
   private prisma: PrismaClient | Prisma.TransactionClient;
 
   constructor(prismaClient: PrismaClient | Prisma.TransactionClient) {
@@ -8,20 +8,20 @@ export class LineRepository {
   }
 
   async findByUserId(userId: number) {
-    return await this.prisma.line.findFirst({
+    return await this.prisma.gmoAccount.findFirst({
       where: { userId },
     });
   }
 
-  async create(data: Prisma.LineCreateInput) {
-    return await this.prisma.line.create({
+  async create(data: Prisma.GmoAccountCreateInput) {
+    return await this.prisma.gmoAccount.create({
       data,
     });
   }
 
-  async update(params: { id: number; data: Prisma.LineUpdateInput }) {
+  async update(params: { id: number; data: Prisma.GmoAccountUpdateInput }) {
     const { id, data } = params;
-    return await this.prisma.line.update({
+    return await this.prisma.gmoAccount.update({
       where: { id },
       data,
     });

@@ -7,6 +7,9 @@ CREATE TABLE `CryptocurrencyOrder` (
     `volume` INTEGER NOT NULL,
     `type` TINYINT NOT NULL,
     `isEnabled` TINYINT NOT NULL,
+    `priceAdjustmentRate` DECIMAL(3, 2) NULL,
+    `volumeAdjustmentRate` DECIMAL(3, 2) NULL,
+    `repeatCount` INTEGER NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -14,7 +17,7 @@ CREATE TABLE `CryptocurrencyOrder` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `PriceAlert` (
+CREATE TABLE `CryptocurrencyPriceAlert` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
     `conditions` JSON NOT NULL,
@@ -25,7 +28,7 @@ CREATE TABLE `PriceAlert` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Line` (
+CREATE TABLE `LineAccount` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
     `channelAccessToken` VARCHAR(191) NOT NULL,
@@ -37,7 +40,7 @@ CREATE TABLE `Line` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Gmo` (
+CREATE TABLE `GmoAccount` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
     `apiKey` VARCHAR(255) NOT NULL,

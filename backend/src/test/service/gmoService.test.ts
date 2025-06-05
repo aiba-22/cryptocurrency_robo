@@ -1,5 +1,5 @@
 import GmoService from "../../service/gmoService";
-import { GmoRepository } from "../../db/repositories/gmoRepository";
+import { GmoAccountRepository } from "../../db/repositories/gmoAccountRepository";
 import { PrismaClient } from "@prisma/client";
 
 const mockTransaction = jest.fn(async (callback) => {
@@ -14,9 +14,9 @@ const mockPrisma = {
   $transaction: mockTransaction,
 } as unknown as PrismaClient;
 
-jest.mock("../../db/repositories/gmoRepository", () => {
+jest.mock("../../db/repositories/gmoAccountRepository", () => {
   return {
-    GmoRepository: jest.fn().mockImplementation(() => ({})),
+    GmoAccountRepository: jest.fn().mockImplementation(() => ({})),
   };
 });
 
@@ -25,7 +25,12 @@ describe("GmoService", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.spyOn(console, "error").mockImplementation(() => {}); // console.error抑制
     gmoService = new GmoService(mockPrisma);
+  });
+
+  afterEach(() => {
+    (console.error as jest.Mock).mockRestore(); // 元に戻す
   });
 
   describe("find", () => {
@@ -35,7 +40,7 @@ describe("GmoService", () => {
         apiKey: "apiKey",
         secretKey: "secretKey",
       });
-      (GmoRepository as jest.Mock).mockImplementation(() => ({
+      (GmoAccountRepository as jest.Mock).mockImplementation(() => ({
         findByUserId: mockFindByUserId,
       }));
 
@@ -50,7 +55,7 @@ describe("GmoService", () => {
 
     it("GMO情報が存在しない場合、undefinedを返す", async () => {
       const mockFindByUserId = jest.fn().mockResolvedValue(undefined);
-      (GmoRepository as jest.Mock).mockImplementation(() => ({
+      (GmoAccountRepository as jest.Mock).mockImplementation(() => ({
         findByUserId: mockFindByUserId,
       }));
 
@@ -63,7 +68,7 @@ describe("GmoService", () => {
   describe("create", () => {
     it("正常に作成できた場合、'success' を返す", async () => {
       const mockCreate = jest.fn().mockResolvedValue(undefined);
-      (GmoRepository as jest.Mock).mockImplementation(() => ({
+      (GmoAccountRepository as jest.Mock).mockImplementation(() => ({
         create: mockCreate,
       }));
 
@@ -77,7 +82,7 @@ describe("GmoService", () => {
 
     it("作成失敗時、'systemError' を返す", async () => {
       const mockCreate = jest.fn().mockRejectedValue(new Error());
-      (GmoRepository as jest.Mock).mockImplementation(() => ({
+      (GmoAccountRepository as jest.Mock).mockImplementation(() => ({
         create: mockCreate,
       }));
 
@@ -93,7 +98,7 @@ describe("GmoService", () => {
   describe("update", () => {
     it("正常に更新できた場合、'success' を返す", async () => {
       const mockUpdate = jest.fn().mockResolvedValue(undefined);
-      (GmoRepository as jest.Mock).mockImplementation(() => ({
+      (GmoAccountRepository as jest.Mock).mockImplementation(() => ({
         update: mockUpdate,
       }));
 
@@ -108,7 +113,7 @@ describe("GmoService", () => {
 
     it("更新失敗時、'systemError' を返す", async () => {
       const mockUpdate = jest.fn().mockRejectedValue(new Error());
-      (GmoRepository as jest.Mock).mockImplementation(() => ({
+      (GmoAccountRepository as jest.Mock).mockImplementation(() => ({
         update: mockUpdate,
       }));
 

@@ -10,18 +10,21 @@ generator client {
 
 
 model CryptocurrencyOrder {
-  id          Int      @id @default(autoincrement())
-  userId      Int
-  symbol      String   @db.VarChar(20)
-  targetPrice Int
-  volume      Int
-  type        Int      @db.TinyInt
-  isEnabled   Int      @db.TinyInt
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                   Int      @id @default(autoincrement())
+  userId               Int
+  symbol               String   @db.VarChar(20)
+  targetPrice          Int
+  volume               Int
+  type                 Int      @db.TinyInt
+  isEnabled            Int      @db.TinyInt
+  priceAdjustmentRate  Decimal? @db.Decimal(3, 2)
+  volumeAdjustmentRate Decimal? @db.Decimal(3, 2)
+  repeatCount          Int?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 }
 
-model PriceAlert {
+model CryptocurrencyPriceAlert {
   id         Int      @id @default(autoincrement())
   userId     Int
   conditions Json
@@ -29,7 +32,7 @@ model PriceAlert {
   updatedAt  DateTime @updatedAt
 }
 
-model Line {
+model LineAccount {
   id                 Int      @id @default(autoincrement())
   userId             Int
   channelAccessToken String
@@ -38,7 +41,7 @@ model Line {
   updatedAt          DateTime @updatedAt
 }
 
-model Gmo {
+model GmoAccount {
   id        Int      @id @default(autoincrement())
   userId    Int
   apiKey    String   @db.VarChar(255)

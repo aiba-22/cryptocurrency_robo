@@ -1,10 +1,10 @@
 import LineService from "../../service/lineService";
-import { LineRepository } from "../../db/repositories/lineRepository";
+import { LineAccountRepository } from "../../db/repositories/lineAccountRepository";
 import { PrismaClient } from "@prisma/client";
 
-jest.mock("../../db/repositories/lineRepository", () => {
+jest.mock("../../db/repositories/lineAccountRepository", () => {
   return {
-    LineRepository: jest.fn().mockImplementation(() => ({})),
+    LineAccountRepository: jest.fn().mockImplementation(() => ({})),
   };
 });
 
@@ -21,10 +21,21 @@ const mockPrisma = {
 
 describe("LineService", () => {
   let lineService: LineService;
+  let consoleErrorSpy: jest.SpyInstance;
+  let consoleLogSpy: jest.SpyInstance;
+
+  beforeAll(() => {
+    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+  });
+
+  afterAll(() => {
+    consoleErrorSpy.mockRestore();
+    consoleLogSpy.mockRestore();
+  });
 
   beforeEach(() => {
     jest.clearAllMocks();
-
     lineService = new LineService(mockPrisma);
   });
 
@@ -35,7 +46,7 @@ describe("LineService", () => {
         channelAccessToken: "channelAccessToken",
         lineUserId: "lineUserId",
       });
-      (LineRepository as jest.Mock).mockImplementation(() => ({
+      (LineAccountRepository as jest.Mock).mockImplementation(() => ({
         findByUserId: mockFindByUserId,
       }));
 
@@ -49,7 +60,7 @@ describe("LineService", () => {
 
     it("レコードが見つからない場合、undefinedを返す", async () => {
       const mockFindByUserId = jest.fn().mockResolvedValue(undefined);
-      (LineRepository as jest.Mock).mockImplementation(() => ({
+      (LineAccountRepository as jest.Mock).mockImplementation(() => ({
         findByUserId: mockFindByUserId,
       }));
 
@@ -66,7 +77,7 @@ describe("LineService", () => {
 
     it("作成成功時、{ status: 'success' } を返す", async () => {
       const mockCreate = jest.fn().mockResolvedValue(undefined);
-      (LineRepository as jest.Mock).mockImplementation(() => ({
+      (LineAccountRepository as jest.Mock).mockImplementation(() => ({
         create: mockCreate,
       }));
 
@@ -75,7 +86,7 @@ describe("LineService", () => {
     });
 
     it("作成失敗時、{ status: 'systemError' } を返す", async () => {
-      (LineRepository as jest.Mock).mockImplementation(() => ({
+      (LineAccountRepository as jest.Mock).mockImplementation(() => ({
         create: jest.fn().mockRejectedValue(new Error("DB Error")),
       }));
 
@@ -92,7 +103,7 @@ describe("LineService", () => {
     };
 
     it("更新成功時、{ status: 'success' } を返す", async () => {
-      (LineRepository as jest.Mock).mockImplementation(() => ({
+      (LineAccountRepository as jest.Mock).mockImplementation(() => ({
         update: jest.fn().mockResolvedValue(undefined),
       }));
 
@@ -101,7 +112,7 @@ describe("LineService", () => {
     });
 
     it("更新失敗時、{ status: 'systemError' } を返す", async () => {
-      (LineRepository as jest.Mock).mockImplementation(() => ({
+      (LineAccountRepository as jest.Mock).mockImplementation(() => ({
         update: jest.fn().mockRejectedValue(new Error("DB Error")),
       }));
 
