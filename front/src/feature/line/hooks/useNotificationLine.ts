@@ -9,7 +9,11 @@ export const useLineNotification = () => {
   const mutation = useMutation({
     mutationFn: sendLineNotification,
     onSuccess: (data) => {
-      if (data) setNotificationSendStatus(data);
+      if (data.status) {
+        setNotificationSendStatus(data.status);
+      } else {
+        setNotificationSendStatus("systemError");
+      }
     },
     onError: () => {
       setNotificationSendStatus("systemError");

@@ -31,7 +31,9 @@ export const updateLine = async (request: {
 
 export const sendLineNotification = async (
   message: string
-): Promise<"success" | "tooManyRequests" | "badRequest" | "systemError"> => {
+): Promise<{
+  status: "success" | "tooManyRequests" | "badRequest" | "systemError";
+}> => {
   const result = await axios.post(
     "http://localhost:3001/api/notification/sendLineTest",
     { message }
