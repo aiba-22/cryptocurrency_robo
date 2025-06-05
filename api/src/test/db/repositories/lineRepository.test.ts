@@ -4,7 +4,7 @@ describe("LineRepository", () => {
   describe("findByUserId", () => {
     const userId = 1;
 
-    it("line.findFirst を呼び出し、結果を返す", async () => {
+    it("findFirstが成功した場合、対象のオブジェクトを返すこと", async () => {
       const mockData = {
         id: 1,
         userId,
@@ -27,7 +27,7 @@ describe("LineRepository", () => {
       expect(result).toEqual(mockData);
     });
 
-    it("findFirst が失敗した場合に例外をスローする", async () => {
+    it("findFirstが失敗した場合に例外をスローする", async () => {
       const findFirstMock = jest.fn().mockRejectedValue(new Error("DB Error"));
       const prismaMock = {
         line: {
@@ -47,8 +47,15 @@ describe("LineRepository", () => {
       lineUserId: "line-user",
     };
 
-    it("line.create を正しい引数で呼び出す", async () => {
-      const createMock = jest.fn().mockResolvedValue(undefined);
+    it("createが成功した場合、作成したオブジェクトを返すこと", async () => {
+      const mockCreated = {
+        id: 1,
+        ...createParams,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const createMock = jest.fn().mockResolvedValue(mockCreated);
       const prismaMock = {
         line: {
           create: createMock,
@@ -56,14 +63,13 @@ describe("LineRepository", () => {
       };
 
       const repository = new LineRepository(prismaMock as any);
-      await repository.create(createParams);
+      const result = await repository.create(createParams);
 
-      expect(createMock).toHaveBeenCalledWith({
-        data: createParams,
-      });
+      expect(createMock).toHaveBeenCalledWith({ data: createParams });
+      expect(result).toEqual(mockCreated);
     });
 
-    it("create が失敗した場合に例外をスローする", async () => {
+    it("createが失敗した場合に例外をスローする", async () => {
       const createMock = jest
         .fn()
         .mockRejectedValue(new Error("Insert failed"));
@@ -89,30 +95,40 @@ describe("LineRepository", () => {
       },
     };
 
-    it("line.updateMany を正しい引数で呼び出す", async () => {
-      const updateManyMock = jest.fn().mockResolvedValue({ count: 1 });
+    it("updateが成功した場合、更新したオブジェクトを返すこと", async () => {
+      const mockUpdated = {
+        id: 1,
+        userId: 1,
+        channelAccessToken: "updated-token",
+        lineUserId: "updated-line-user",
+        createdAt: new Date("2024-01-01T00:00:00Z"),
+        updatedAt: new Date(),
+      };
+
+      const updateMock = jest.fn().mockResolvedValue(mockUpdated);
       const prismaMock = {
         line: {
-          updateMany: updateManyMock,
+          update: updateMock,
         },
       };
 
       const repository = new LineRepository(prismaMock as any);
-      await repository.update(updateParams);
+      const result = await repository.update(updateParams);
 
-      expect(updateManyMock).toHaveBeenCalledWith({
+      expect(updateMock).toHaveBeenCalledWith({
         where: { id: updateParams.id },
         data: updateParams.data,
       });
+      expect(result).toEqual(mockUpdated);
     });
 
-    it("updateMany が失敗した場合に例外をスローする", async () => {
-      const updateManyMock = jest
+    it("updateが失敗した場合に例外をスローする", async () => {
+      const updateMock = jest
         .fn()
         .mockRejectedValue(new Error("Update failed"));
       const prismaMock = {
         line: {
-          updateMany: updateManyMock,
+          update: updateMock,
         },
       };
 

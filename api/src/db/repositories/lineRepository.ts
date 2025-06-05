@@ -14,14 +14,14 @@ export class LineRepository {
   }
 
   async create(data: Prisma.LineCreateInput) {
-    await this.prisma.line.create({
+    return await this.prisma.line.create({
       data,
     });
   }
 
   async update(params: { id: number; data: Prisma.LineUpdateInput }) {
     const { id, data } = params;
-    await this.prisma.line.updateMany({
+    return await this.prisma.line.update({
       where: { id },
       data,
     });

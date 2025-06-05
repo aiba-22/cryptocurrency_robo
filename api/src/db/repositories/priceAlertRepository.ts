@@ -14,14 +14,14 @@ export class PriceAlertRepository {
   }
 
   async create(data: Prisma.PriceAlertCreateInput) {
-    await this.prisma.priceAlert.create({
+    return await this.prisma.priceAlert.create({
       data,
     });
   }
 
   async update(params: { id: number; data: Prisma.PriceAlertUpdateInput }) {
     const { id, data } = params;
-    await this.prisma.priceAlert.updateMany({
+    return await this.prisma.priceAlert.update({
       where: { id },
       data,
     });

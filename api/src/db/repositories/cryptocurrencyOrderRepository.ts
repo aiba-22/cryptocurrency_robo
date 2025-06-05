@@ -20,7 +20,7 @@ export class CryptocurrencyOrderRepository {
   }
 
   async create(data: Prisma.CryptocurrencyOrderCreateInput) {
-    await this.prisma.cryptocurrencyOrder.create({
+    return await this.prisma.cryptocurrencyOrder.create({
       data,
     });
   }
@@ -30,7 +30,7 @@ export class CryptocurrencyOrderRepository {
     data: Prisma.CryptocurrencyOrderUpdateInput;
   }) {
     const { id, data } = params;
-    await this.prisma.cryptocurrencyOrder.updateMany({
+    return await this.prisma.cryptocurrencyOrder.update({
       where: { id },
       data,
     });

@@ -4,7 +4,7 @@ describe("PriceAlertRepository", () => {
   describe("findByUserId", () => {
     const userId = 1;
 
-    it("priceAlert.findFirst を呼び出し、結果を返す", async () => {
+    it("findFirstが成功した場合、対象のオブジェクトを返す", async () => {
       const mockData = {
         id: 1,
         userId: 1,
@@ -30,7 +30,7 @@ describe("PriceAlertRepository", () => {
       expect(result).toEqual(mockData);
     });
 
-    it("findFirst が失敗した場合、例外をスローする", async () => {
+    it("findFirstが失敗した場合、例外をスローする", async () => {
       const findFirstMock = jest.fn().mockRejectedValue(new Error("DB error"));
       const prismaMock = {
         priceAlert: {
@@ -53,8 +53,13 @@ describe("PriceAlertRepository", () => {
       },
     };
 
-    it("priceAlert.create を正しい引数で呼び出す", async () => {
-      const createMock = jest.fn().mockResolvedValue(undefined);
+    it("createが成功した場合、作成したオブジェクトを返す", async () => {
+      const createdObject = {
+        id: 1,
+        ...createParams,
+        createdAt: new Date(),
+      };
+      const createMock = jest.fn().mockResolvedValue(createdObject);
       const prismaMock = {
         priceAlert: {
           create: createMock,
@@ -62,14 +67,12 @@ describe("PriceAlertRepository", () => {
       };
 
       const repository = new PriceAlertRepository(prismaMock as any);
-      await repository.create(createParams as any);
-
-      expect(createMock).toHaveBeenCalledWith({
-        data: createParams,
-      });
+      const result = await repository.create(createParams as any);
+      expect(createMock).toHaveBeenCalledWith({ data: createParams });
+      expect(result).toEqual(createdObject);
     });
 
-    it("create が失敗した場合、例外をスローする", async () => {
+    it("createが失敗した場合、例外をスローする", async () => {
       const createMock = jest.fn().mockRejectedValue(new Error("Insert error"));
       const prismaMock = {
         priceAlert: {
@@ -96,30 +99,32 @@ describe("PriceAlertRepository", () => {
       },
     };
 
-    it("priceAlert.updateMany を正しい引数で呼び出す", async () => {
-      const updateManyMock = jest.fn().mockResolvedValue({ count: 1 });
+    it("updateが成功した場合、更新したオブジェクトを返す", async () => {
+      const updatedObject = {
+        id: updateParams.id,
+        ...updateParams.data,
+      };
+      const updateMock = jest.fn().mockResolvedValue(updatedObject);
       const prismaMock = {
         priceAlert: {
-          updateMany: updateManyMock,
+          update: updateMock,
         },
       };
 
       const repository = new PriceAlertRepository(prismaMock as any);
-      await repository.update(updateParams);
-
-      expect(updateManyMock).toHaveBeenCalledWith({
-        where: { id: 1 },
+      const result = await repository.update(updateParams);
+      expect(updateMock).toHaveBeenCalledWith({
+        where: { id: updateParams.id },
         data: updateParams.data,
       });
+      expect(result).toEqual(updatedObject);
     });
 
-    it("updateMany が失敗した場合、例外をスローする", async () => {
-      const updateManyMock = jest
-        .fn()
-        .mockRejectedValue(new Error("Update error"));
+    it("update が失敗した場合、例外をスローする", async () => {
+      const updateMock = jest.fn().mockRejectedValue(new Error("Update error"));
       const prismaMock = {
         priceAlert: {
-          updateMany: updateManyMock,
+          update: updateMock,
         },
       };
 

@@ -14,14 +14,14 @@ export class GmoRepository {
   }
 
   async create(data: Prisma.GmoCreateInput) {
-    await this.prisma.gmo.create({
+    return await this.prisma.gmo.create({
       data,
     });
   }
 
   async update(params: { id: number; data: Prisma.GmoUpdateInput }) {
     const { id, data } = params;
-    await this.prisma.gmo.updateMany({
+    return await this.prisma.gmo.update({
       where: { id },
       data,
     });

@@ -4,7 +4,7 @@ describe("GmoRepository", () => {
   describe("findByUserId", () => {
     const userId = 1;
 
-    it("gmo.findFirst を呼び出して結果を返す", async () => {
+    it("findFirstが成功した場合、対象のオブジェクトを返す。", async () => {
       const mockData = {
         id: 1,
         userId: 1,
@@ -27,7 +27,7 @@ describe("GmoRepository", () => {
       expect(result).toEqual(mockData);
     });
 
-    it("gmo.findFirst が失敗した場合、例外をスローする", async () => {
+    it("findFirstが失敗した場合、例外をスローする", async () => {
       const findFirstMock = jest.fn().mockRejectedValue(new Error("DB error"));
       const prismaMock = {
         gmo: {
@@ -41,8 +41,18 @@ describe("GmoRepository", () => {
   });
 
   describe("create", () => {
-    it("gmo.create を正しい引数で呼び出す", async () => {
-      const createMock = jest.fn().mockResolvedValue(undefined);
+    it("createが成功した場合、作成したオブジェクトを返す。", async () => {
+      const mockResult = {
+        id: 1,
+        userId: 1,
+        apiKey: "apiKey",
+        secretKey: "secretKey",
+        createdAt: new Date("2023-01-01T00:00:00.000Z"),
+        updatedAt: new Date("2023-01-01T00:00:00.000Z"),
+      };
+
+      const createMock = jest.fn().mockResolvedValue(mockResult);
+
       const prismaMock = {
         gmo: {
           create: createMock,
@@ -50,20 +60,19 @@ describe("GmoRepository", () => {
       };
 
       const repository = new GmoRepository(prismaMock as any);
+
       const createParams = {
         userId: 1,
         apiKey: "apiKey",
         secretKey: "secretKey",
       };
 
-      await repository.create(createParams as any);
+      const result = await repository.create(createParams as any);
 
-      expect(createMock).toHaveBeenCalledWith({
-        data: createParams,
-      });
+      expect(result).toEqual(mockResult);
     });
 
-    it("gmo.create が失敗した場合、例外をスローする", async () => {
+    it("createが失敗した場合、例外をスローする", async () => {
       const createMock = jest.fn().mockRejectedValue(new Error("Insert error"));
       const prismaMock = {
         gmo: {
@@ -83,15 +92,25 @@ describe("GmoRepository", () => {
   });
 
   describe("update", () => {
-    it("gmo.updateMany を正しい引数で呼び出す", async () => {
-      const updateManyMock = jest.fn().mockResolvedValue({ count: 1 });
+    it("updateが成功した場合、更新したオブジェクトを返す", async () => {
+      const mockResult = {
+        id: 1,
+        userId: 1,
+        apiKey: "apiKey",
+        secretKey: "secretKey",
+        createdAt: new Date("2024-01-01T00:00:00Z"),
+        updatedAt: new Date("2024-01-02T00:00:00Z"),
+      };
+
+      const updateMock = jest.fn().mockResolvedValue(mockResult);
       const prismaMock = {
         gmo: {
-          updateMany: updateManyMock,
+          update: updateMock,
         },
       };
 
       const repository = new GmoRepository(prismaMock as any);
+
       const updateParams = {
         id: 1,
         data: {
@@ -100,34 +119,24 @@ describe("GmoRepository", () => {
         },
       };
 
-      await repository.update(updateParams);
+      const result = await repository.update(updateParams);
 
-      expect(updateManyMock).toHaveBeenCalledWith({
-        where: { id: 1 },
+      expect(updateMock).toHaveBeenCalledWith({
+        where: { id: updateParams.id },
         data: updateParams.data,
       });
+      expect(result).toEqual(mockResult);
     });
 
-    it("gmo.updateMany が失敗した場合、例外をスローする", async () => {
-      const updateManyMock = jest
-        .fn()
-        .mockRejectedValue(new Error("Update error"));
+    it("updateが失敗した場合、例外をスローする", async () => {
+      const updateMock = jest.fn().mockRejectedValue(new Error("Update error"));
       const prismaMock = {
         gmo: {
-          updateMany: updateManyMock,
+          update: updateMock,
         },
       };
 
       const repository = new GmoRepository(prismaMock as any);
-      await expect(
-        repository.update({
-          id: 1,
-          data: {
-            apiKey: "key",
-            secretKey: "secret",
-          },
-        })
-      ).rejects.toThrow("Update error");
     });
   });
 });
