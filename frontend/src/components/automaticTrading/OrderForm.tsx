@@ -1,7 +1,7 @@
 import { Grid, TextField } from "@mui/material";
 import { Controller, type Control } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import type { CryptocurrencyOrderForm } from "./AutomaticTrading";
+import type { CryptocurrencyOrderForm } from "./RepeatTrading";
 
 type OrderFormProps = {
   control: Control<CryptocurrencyOrderForm>;
@@ -19,7 +19,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({
   volumeField,
 }) => {
   const { t } = useTranslation("translation", {
-    keyPrefix: "automaticTrading.orderForm",
+    keyPrefix: "repeatTrading.orderForm",
   });
 
   return (
