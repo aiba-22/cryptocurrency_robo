@@ -1,5 +1,5 @@
 import { Container, Typography } from "@mui/material";
-import { RepeatTrading } from "./RepeatTrading";
+import { StaticRepeatTrading } from "./StaticRepeatTrading";
 import { useTranslation } from "react-i18next";
 import { AdjustmentTrading } from "./AdjustmentTrading";
 
@@ -13,7 +13,7 @@ export const AutomaticTrading = () => {
       <Typography variant="h4" gutterBottom>
         {t("title")}
       </Typography>
-      <RepeatTrading />
+      <StaticRepeatTrading />
       <AdjustmentTrading />
     </Container>
   );

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const listCryptocurrencyOrder = async (): Promise<
+export const listCryptocurrencyStaticOrder = async (): Promise<
   {
     id: number;
     symbol: string;
@@ -11,12 +11,12 @@ export const listCryptocurrencyOrder = async (): Promise<
   }[]
 > => {
   const response = await axios.get(
-    `http://localhost:3001/api/cryptocurrencyOrder/list`
+    `http://localhost:3001/api/cryptocurrencyStaticOrder/list`
   );
   return response.data;
 };
 
-export const createCryptocurrencyOrder = async (request: {
+export const createCryptocurrencyStaticOrder = async (request: {
   symbol: string;
   targetPrice: number;
   volume: number;
@@ -24,13 +24,13 @@ export const createCryptocurrencyOrder = async (request: {
   isEnabled: number;
 }) => {
   const response = await axios.post(
-    "http://localhost:3001/api/cryptocurrencyOrder",
+    "http://localhost:3001/api/cryptocurrencyStaticOrder",
     request
   );
   return response.data;
 };
 
-export const updateCryptocurrencyOrder = async (request: {
+export const updateCryptocurrencyStaticOrder = async (request: {
   id: number;
   symbol: string;
   targetPrice: number;
@@ -39,7 +39,7 @@ export const updateCryptocurrencyOrder = async (request: {
   isEnabled: number;
 }) => {
   const response = await axios.put(
-    "http://localhost:3001/api/cryptocurrencyOrder",
+    "http://localhost:3001/api/cryptocurrencyStaticOrder",
     request
   );
   return response.data;

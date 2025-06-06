@@ -20,8 +20,8 @@ import { OrderForm } from "./OrderForm";
 import ToggleOrderSwitch from "./ToggleOrderSwitch";
 import { useTranslation } from "react-i18next";
 import { useSaveForm } from "../../feature/automaticTrading/hooks/useSaveForm";
-import { useListCryptocurrencyOrder } from "../../feature/rate/hooks/useListCryptocurrencyOrder";
 import { mapOrderListToFormValues } from "../../feature/automaticTrading/orderFormMapper.ts";
+import { useListCryptocurrencyStaticOrder } from "../../feature/automaticTrading/hooks/useListCryptocurrencyStaticOrder.ts";
 
 type Conditions = {
   id?: number;
@@ -30,13 +30,13 @@ type Conditions = {
   isEnabled: number;
 };
 
-export type CryptocurrencyOrderForm = {
+export type CryptocurrencyStaticOrderForm = {
   symbol: string;
   buy: Conditions;
   sell: Conditions;
 };
 
-export const RepeatTrading = () => {
+export const StaticRepeatTrading = () => {
   const { t } = useTranslation("translation", {
     keyPrefix: "repeatTrading",
   });
@@ -49,7 +49,7 @@ export const RepeatTrading = () => {
     watch,
     reset,
     formState: { errors },
-  } = useForm<CryptocurrencyOrderForm>({
+  } = useForm<CryptocurrencyStaticOrderForm>({
     defaultValues: {
       symbol: CRYPTOCURRENCY.BTC,
       buy: {
@@ -65,14 +65,17 @@ export const RepeatTrading = () => {
     },
   });
 
-  const { cryptocurrencyOrderList, isOrderListError, isOrderListLoading } =
-    useListCryptocurrencyOrder();
+  const {
+    cryptocurrencyStaticOrderList,
+    isOrderListError,
+    isOrderListLoading,
+  } = useListCryptocurrencyStaticOrder();
 
   useEffect(() => {
-    if (cryptocurrencyOrderList) {
-      reset(mapOrderListToFormValues(cryptocurrencyOrderList));
+    if (cryptocurrencyStaticOrderList) {
+      reset(mapOrderListToFormValues(cryptocurrencyStaticOrderList));
     }
-  }, [cryptocurrencyOrderList, reset]);
+  }, [cryptocurrencyStaticOrderList, reset]);
 
   const isBuyEnabled = watch("buy.isEnabled");
   const isSellEnabled = watch("sell.isEnabled");

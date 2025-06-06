@@ -1,6 +1,6 @@
-import { CryptocurrencyOrderRepository } from "../../../db/repositories/cryptocurrencyOrderRepository";
+import { CryptocurrencyStaticOrderRepository } from "../../../db/repositories/cryptocurrencyOrderRepository";
 
-describe("CryptocurrencyOrderRepository", () => {
+describe("CryptocurrencyStaticOrderRepository", () => {
   describe("list", () => {
     const userId = 1;
 
@@ -21,12 +21,14 @@ describe("CryptocurrencyOrderRepository", () => {
 
       const findManyMock = jest.fn().mockResolvedValue(mockData);
       const prismaMock = {
-        cryptocurrencyOrder: {
+        cryptocurrencyStaticOrder: {
           findMany: findManyMock,
         },
       };
 
-      const repository = new CryptocurrencyOrderRepository(prismaMock as any);
+      const repository = new CryptocurrencyStaticOrderRepository(
+        prismaMock as any
+      );
       const result = await repository.list(userId);
 
       expect(findManyMock).toHaveBeenCalledWith({ where: { userId } });
@@ -36,12 +38,14 @@ describe("CryptocurrencyOrderRepository", () => {
     it("findManyが失敗した場合、例外をスローする", async () => {
       const findManyMock = jest.fn().mockRejectedValue(new Error("DB Error"));
       const prismaMock = {
-        cryptocurrencyOrder: {
+        cryptocurrencyStaticOrder: {
           findMany: findManyMock,
         },
       };
 
-      const repository = new CryptocurrencyOrderRepository(prismaMock as any);
+      const repository = new CryptocurrencyStaticOrderRepository(
+        prismaMock as any
+      );
       await expect(repository.list(userId)).rejects.toThrow("DB Error");
     });
   });
@@ -52,12 +56,14 @@ describe("CryptocurrencyOrderRepository", () => {
 
       const findFirstMock = jest.fn().mockResolvedValue(mockData);
       const prismaMock = {
-        cryptocurrencyOrder: {
+        cryptocurrencyStaticOrder: {
           findFirst: findFirstMock,
         },
       };
 
-      const repository = new CryptocurrencyOrderRepository(prismaMock as any);
+      const repository = new CryptocurrencyStaticOrderRepository(
+        prismaMock as any
+      );
       const result = await repository.findByIdAndUserId({
         id: mockData.id,
         userId: mockData.userId,
@@ -72,12 +78,14 @@ describe("CryptocurrencyOrderRepository", () => {
     it("findFirstが失敗した場合に例外をスローする", async () => {
       const findFirstMock = jest.fn().mockRejectedValue(new Error("DB Error"));
       const prismaMock = {
-        cryptocurrencyOrder: {
+        cryptocurrencyStaticOrder: {
           findFirst: findFirstMock,
         },
       };
 
-      const repository = new CryptocurrencyOrderRepository(prismaMock as any);
+      const repository = new CryptocurrencyStaticOrderRepository(
+        prismaMock as any
+      );
 
       await expect(
         repository.findByIdAndUserId({ id: 1, userId: 1 })
@@ -104,12 +112,14 @@ describe("CryptocurrencyOrderRepository", () => {
 
     const createMock = jest.fn().mockResolvedValue(mockResult);
     const prismaMock = {
-      cryptocurrencyOrder: {
+      cryptocurrencyStaticOrder: {
         create: createMock,
       },
     };
 
-    const repository = new CryptocurrencyOrderRepository(prismaMock as any);
+    const repository = new CryptocurrencyStaticOrderRepository(
+      prismaMock as any
+    );
 
     const result = await repository.create(createParams as any);
 
@@ -119,12 +129,14 @@ describe("CryptocurrencyOrderRepository", () => {
   it("createが失敗した場合に例外をスローする", async () => {
     const createMock = jest.fn().mockRejectedValue(new Error("Insert failed"));
     const prismaMock = {
-      cryptocurrencyOrder: {
+      cryptocurrencyStaticOrder: {
         create: createMock,
       },
     };
 
-    const repository = new CryptocurrencyOrderRepository(prismaMock as any);
+    const repository = new CryptocurrencyStaticOrderRepository(
+      prismaMock as any
+    );
 
     const createParams = {
       userId: 1,
@@ -168,11 +180,13 @@ describe("update", () => {
 
     const updateMock = jest.fn().mockResolvedValue(mockResult);
     const prismaMock = {
-      cryptocurrencyOrder: {
+      cryptocurrencyStaticOrder: {
         update: updateMock,
       },
     };
-    const repository = new CryptocurrencyOrderRepository(prismaMock as any);
+    const repository = new CryptocurrencyStaticOrderRepository(
+      prismaMock as any
+    );
 
     const result = await repository.update(updateParams as any);
     expect(result).toEqual(mockResult);
@@ -181,12 +195,14 @@ describe("update", () => {
   it("updateが失敗した場合、例外をスローする", async () => {
     const updateMock = jest.fn().mockRejectedValue(new Error("Update failed"));
     const prismaMock = {
-      cryptocurrencyOrder: {
+      cryptocurrencyStaticOrder: {
         update: updateMock,
       },
     };
 
-    const repository = new CryptocurrencyOrderRepository(prismaMock as any);
+    const repository = new CryptocurrencyStaticOrderRepository(
+      prismaMock as any
+    );
 
     const updateParams = {
       id: 1,

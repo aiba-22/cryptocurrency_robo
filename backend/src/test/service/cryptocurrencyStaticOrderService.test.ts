@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { CryptocurrencyOrderRepository } from "../../db/repositories/cryptocurrencyOrderRepository";
-import CryptocurrencyOrderService from "../../service/cryptocurrencyOrderService";
+import CryptocurrencyStaticOrderService from "../../service/cryptocurrencyStaticOrderService";
 
 const mockRepoInstance = {
   list: jest.fn(),
@@ -9,9 +8,9 @@ const mockRepoInstance = {
   update: jest.fn(),
 };
 
-jest.mock("../../db/repositories/cryptocurrencyOrderRepository", () => {
+jest.mock("../../db/repositories/cryptocurrencyStaticOrderRepository", () => {
   return {
-    CryptocurrencyOrderRepository: jest.fn(() => mockRepoInstance),
+    CryptocurrencyStaticOrderRepository: jest.fn(() => mockRepoInstance),
   };
 });
 
@@ -27,8 +26,8 @@ const mockPrisma = {
   $transaction: mockTransaction,
 } as unknown as PrismaClient;
 
-describe("cryptocurrencyOrderService", () => {
-  let orderService: CryptocurrencyOrderService;
+describe("cryptocurrencyStaticOrderService", () => {
+  let orderService: CryptocurrencyStaticOrderService;
   let consoleErrorSpy: jest.SpyInstance;
   let consoleLogSpy: jest.SpyInstance;
 
@@ -44,7 +43,7 @@ describe("cryptocurrencyOrderService", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    orderService = new CryptocurrencyOrderService(mockPrisma);
+    orderService = new CryptocurrencyStaticOrderService(mockPrisma);
   });
 
   describe("list", () => {
@@ -92,9 +91,6 @@ describe("cryptocurrencyOrderService", () => {
         targetPrice: 50000,
         volume: 2,
         type: 1,
-        priceAdjustmentRate: 0.5,
-        volumeAdjustmentRate: 0.5,
-        repeatCount: undefined,
         isEnabled: 1,
       });
 
@@ -109,9 +105,6 @@ describe("cryptocurrencyOrderService", () => {
         targetPrice: 2500,
         volume: 1,
         type: 0,
-        priceAdjustmentRate: 0.5,
-        volumeAdjustmentRate: 0.5,
-        repeatCount: undefined,
         isEnabled: 1,
       });
 
@@ -129,9 +122,6 @@ describe("cryptocurrencyOrderService", () => {
         targetPrice: 50000,
         volume: 2,
         type: 1,
-        priceAdjustmentRate: 0.5,
-        volumeAdjustmentRate: 0.5,
-        repeatCount: undefined,
         isEnabled: 1,
       });
 
@@ -147,9 +137,6 @@ describe("cryptocurrencyOrderService", () => {
         targetPrice: 2500,
         volume: 1,
         type: 0,
-        priceAdjustmentRate: 0.5,
-        volumeAdjustmentRate: 0.5,
-        repeatCount: undefined,
         isEnabled: 1,
       });
 

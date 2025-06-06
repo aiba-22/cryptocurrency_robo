@@ -9,7 +9,7 @@ generator client {
 }
 
 
-model CryptocurrencyOrder {
+model CryptocurrencyStaticOrder {
   id                   Int      @id @default(autoincrement())
   userId               Int
   symbol               String   @db.VarChar(20)
@@ -17,12 +17,23 @@ model CryptocurrencyOrder {
   volume               Int
   type                 Int      @db.TinyInt
   isEnabled            Int      @db.TinyInt
-  priceAdjustmentRate  Decimal? @db.Decimal(3, 2)
-  volumeAdjustmentRate Decimal? @db.Decimal(3, 2)
-  repeatCount          Int?
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 }
+
+model CryptocurrencyAdjustmentOrder {
+  id                   Int      @id @default(autoincrement())
+  userId               Int
+  symbol               String   @db.VarChar(20)
+  targetPrice          Int
+  type                 Int      @db.TinyInt
+  isEnabled            Int      @db.TinyInt
+  priceAdjustmentRate  Decimal? @db.Decimal(3, 2)
+  volumeAdjustmentRate Decimal? @db.Decimal(3, 2)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
 
 model CryptocurrencyPriceAlert {
   id         Int      @id @default(autoincrement())

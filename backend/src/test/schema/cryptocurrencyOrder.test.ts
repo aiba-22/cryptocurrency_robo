@@ -1,11 +1,11 @@
 import {
-  createCryptocurrencyOrderSchema,
-  updateCryptocurrencyOrderSchema,
-} from "../../schema/cryptocurrencyOrderSchema";
+  createCryptocurrencyStaticOrderSchema,
+  updateCryptocurrencyStaticOrderSchema,
+} from "../../schema/cryptocurrencyStaticOrderSchema";
 import { ZodError } from "zod";
 
-describe("cryptocurrencyOrderSchema", () => {
-  describe("createCryptocurrencyOrderSchema", () => {
+describe("cryptocurrencyStaticOrderSchema", () => {
+  describe("createCryptocurrencyStaticOrderSchema", () => {
     describe("symbol", () => {
       const invalidValues = [undefined, null, ""];
       it.each(invalidValues)(
@@ -20,7 +20,7 @@ describe("cryptocurrencyOrderSchema", () => {
           };
 
           expect(() =>
-            createCryptocurrencyOrderSchema.parse(invalidData)
+            createCryptocurrencyStaticOrderSchema.parse(invalidData)
           ).toThrow(ZodError);
         }
       );
@@ -40,7 +40,7 @@ describe("cryptocurrencyOrderSchema", () => {
           };
 
           expect(() =>
-            createCryptocurrencyOrderSchema.parse(invalidData)
+            createCryptocurrencyStaticOrderSchema.parse(invalidData)
           ).toThrow(ZodError);
         }
       );
@@ -60,7 +60,7 @@ describe("cryptocurrencyOrderSchema", () => {
           };
 
           expect(() =>
-            createCryptocurrencyOrderSchema.parse(invalidData)
+            createCryptocurrencyStaticOrderSchema.parse(invalidData)
           ).toThrow(ZodError);
         }
       );
@@ -80,7 +80,7 @@ describe("cryptocurrencyOrderSchema", () => {
           };
 
           expect(() =>
-            createCryptocurrencyOrderSchema.parse(invalidData)
+            createCryptocurrencyStaticOrderSchema.parse(invalidData)
           ).toThrow(ZodError);
         }
       );
@@ -100,7 +100,7 @@ describe("cryptocurrencyOrderSchema", () => {
           };
 
           expect(() =>
-            createCryptocurrencyOrderSchema.parse(invalidData)
+            createCryptocurrencyStaticOrderSchema.parse(invalidData)
           ).toThrow(ZodError);
         }
       );
@@ -116,12 +116,12 @@ describe("cryptocurrencyOrderSchema", () => {
       };
 
       expect(() =>
-        createCryptocurrencyOrderSchema.parse(validData)
+        createCryptocurrencyStaticOrderSchema.parse(validData)
       ).not.toThrow();
     });
   });
 
-  describe("updateCryptocurrencyOrderSchema", () => {
+  describe("updateCryptocurrencyStaticOrderSchema", () => {
     describe("id", () => {
       const invalidValues = [undefined, null, "1", 0, -1];
       it.each(invalidValues)(
@@ -137,7 +137,7 @@ describe("cryptocurrencyOrderSchema", () => {
           };
 
           expect(() =>
-            updateCryptocurrencyOrderSchema.parse(invalidData)
+            updateCryptocurrencyStaticOrderSchema.parse(invalidData)
           ).toThrow(ZodError);
         }
       );
@@ -158,7 +158,7 @@ describe("cryptocurrencyOrderSchema", () => {
           };
 
           expect(() =>
-            updateCryptocurrencyOrderSchema.parse(invalidData)
+            updateCryptocurrencyStaticOrderSchema.parse(invalidData)
           ).toThrow(ZodError);
         }
       );
@@ -179,7 +179,7 @@ describe("cryptocurrencyOrderSchema", () => {
           };
 
           expect(() =>
-            updateCryptocurrencyOrderSchema.parse(invalidData)
+            updateCryptocurrencyStaticOrderSchema.parse(invalidData)
           ).toThrow(ZodError);
         }
       );
@@ -200,7 +200,7 @@ describe("cryptocurrencyOrderSchema", () => {
           };
 
           expect(() =>
-            updateCryptocurrencyOrderSchema.parse(invalidData)
+            updateCryptocurrencyStaticOrderSchema.parse(invalidData)
           ).toThrow(ZodError);
         }
       );
@@ -221,7 +221,7 @@ describe("cryptocurrencyOrderSchema", () => {
           };
 
           expect(() =>
-            updateCryptocurrencyOrderSchema.parse(invalidData)
+            updateCryptocurrencyStaticOrderSchema.parse(invalidData)
           ).toThrow(ZodError);
         }
       );
@@ -242,7 +242,7 @@ describe("cryptocurrencyOrderSchema", () => {
           };
 
           expect(() =>
-            updateCryptocurrencyOrderSchema.parse(invalidData)
+            updateCryptocurrencyStaticOrderSchema.parse(invalidData)
           ).toThrow(ZodError);
         }
       );
@@ -259,7 +259,7 @@ describe("cryptocurrencyOrderSchema", () => {
       };
 
       expect(() =>
-        updateCryptocurrencyOrderSchema.parse(validData)
+        updateCryptocurrencyStaticOrderSchema.parse(validData)
       ).not.toThrow();
     });
   });

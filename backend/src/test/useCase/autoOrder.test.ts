@@ -1,12 +1,12 @@
 import { autoOrder } from "../../useCase/autoOrder";
-import CryptocurrencyOrderService from "../../service/cryptocurrencyOrderService";
 import GmoApiService from "../../service/gmoApiService";
 import GmoService from "../../service/gmoService";
 import LineService from "../../service/lineService";
 import LineApiService from "../../service/lineApiService";
-import { ORDER_TYPE, ORDER_SIDE } from "../../service/constants";
+import { ORDER_TYPE } from "../../service/constants";
+import CryptocurrencyStaticOrderService from "../../service/cryptocurrencyStaticOrderService";
 
-jest.mock("../../service/cryptocurrencyOrderService");
+jest.mock("../../service/cryptocurrencyStaticOrderService");
 jest.mock("../../service/gmoService");
 jest.mock("../../service/gmoApiService");
 jest.mock("../../service/lineService");
@@ -23,7 +23,7 @@ describe("autoOrder", () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    (CryptocurrencyOrderService as jest.Mock).mockImplementation(() => ({
+    (CryptocurrencyStaticOrderService as jest.Mock).mockImplementation(() => ({
       list: mockList,
     }));
 

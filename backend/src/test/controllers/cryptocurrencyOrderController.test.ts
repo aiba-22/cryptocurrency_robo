@@ -1,6 +1,6 @@
-import * as controller from "../../controllers/cryptocurrencyOrderController";
-import * as schema from "../../schema/cryptocurrencyOrderSchema";
-import CryptocurrencyOrderService from "../../service/cryptocurrencyOrderService";
+import * as controller from "../../controllers/cryptocurrencyStaticOrderController";
+import * as schema from "../../schema/cryptocurrencyStaticOrderSchema";
+import CryptocurrencyStaticOrderService from "../../service/cryptocurrencyStaticOrderService";
 
 const mockResponse = () => {
   const res = {} as any;
@@ -11,7 +11,7 @@ const mockResponse = () => {
 
 const mockRequest = (body: any) => ({ body });
 
-describe("cryptocurrencyOrderControllerのテスト", () => {
+describe("cryptocurrencyStaticOrderControllerのテスト", () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
@@ -33,7 +33,7 @@ describe("cryptocurrencyOrderControllerのテスト", () => {
       ];
 
       jest
-        .spyOn(CryptocurrencyOrderService.prototype, "list")
+        .spyOn(CryptocurrencyStaticOrderService.prototype, "list")
         .mockResolvedValue(mockResult);
 
       await controller.list(req as any, res);
@@ -46,7 +46,7 @@ describe("cryptocurrencyOrderControllerのテスト", () => {
       const res = mockResponse();
 
       jest
-        .spyOn(CryptocurrencyOrderService.prototype, "list")
+        .spyOn(CryptocurrencyStaticOrderService.prototype, "list")
         .mockImplementation(() => {
           throw new Error();
         });
@@ -69,10 +69,10 @@ describe("cryptocurrencyOrderControllerのテスト", () => {
       const res = mockResponse();
 
       jest
-        .spyOn(schema.createCryptocurrencyOrderSchema, "parse")
+        .spyOn(schema.createCryptocurrencyStaticOrderSchema, "parse")
         .mockReturnValue(validBody);
       jest
-        .spyOn(CryptocurrencyOrderService.prototype, "create")
+        .spyOn(CryptocurrencyStaticOrderService.prototype, "create")
         .mockResolvedValue("success");
 
       await controller.create(req as any, res);
@@ -86,7 +86,7 @@ describe("cryptocurrencyOrderControllerのテスト", () => {
       const res = mockResponse();
 
       jest
-        .spyOn(schema.createCryptocurrencyOrderSchema, "parse")
+        .spyOn(schema.createCryptocurrencyStaticOrderSchema, "parse")
         .mockImplementation(() => {
           throw new Error();
         });
@@ -110,10 +110,10 @@ describe("cryptocurrencyOrderControllerのテスト", () => {
       const res = mockResponse();
 
       jest
-        .spyOn(schema.updateCryptocurrencyOrderSchema, "parse")
+        .spyOn(schema.updateCryptocurrencyStaticOrderSchema, "parse")
         .mockReturnValue(validBody);
       jest
-        .spyOn(CryptocurrencyOrderService.prototype, "update")
+        .spyOn(CryptocurrencyStaticOrderService.prototype, "update")
         .mockResolvedValue("success");
 
       await controller.update(req as any, res);
@@ -127,7 +127,7 @@ describe("cryptocurrencyOrderControllerのテスト", () => {
       const res = mockResponse();
 
       jest
-        .spyOn(schema.updateCryptocurrencyOrderSchema, "parse")
+        .spyOn(schema.updateCryptocurrencyStaticOrderSchema, "parse")
         .mockImplementation(() => {
           throw new Error();
         });

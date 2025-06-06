@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE `CryptocurrencyOrder` (
+CREATE TABLE `CryptocurrencyStaticOrder` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
     `symbol` VARCHAR(20) NOT NULL,
@@ -7,9 +7,6 @@ CREATE TABLE `CryptocurrencyOrder` (
     `volume` INTEGER NOT NULL,
     `type` TINYINT NOT NULL,
     `isEnabled` TINYINT NOT NULL,
-    `priceAdjustmentRate` DECIMAL(3, 2) NULL,
-    `volumeAdjustmentRate` DECIMAL(3, 2) NULL,
-    `repeatCount` INTEGER NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 

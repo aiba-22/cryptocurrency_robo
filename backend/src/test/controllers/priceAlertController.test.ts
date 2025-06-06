@@ -11,7 +11,7 @@ const mockResponse = () => {
 
 const mockRequest = (body: any) => ({ body });
 
-describe("cryptocurrencyOrderControllerのテスト", () => {
+describe("cryptocurrencyStaticOrderControllerのテスト", () => {
   afterEach(() => {
     jest.resetAllMocks();
   });

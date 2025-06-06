@@ -23,10 +23,10 @@ import { sendLineTest } from "./controllers/notificationController";
 import { get as getVirtualCurrencyRateList } from "./controllers/cryptocurrencyRateController";
 
 import {
-  list as listCryptocurrencyOrder,
-  create as createCryptocurrencyOrder,
-  update as updateCryptocurrencyOrder,
-} from "./controllers/cryptocurrencyOrderController";
+  list as listCryptocurrencyStaticOrder,
+  create as createCryptocurrencyStaticOrder,
+  update as updateCryptocurrencyStaticOrder,
+} from "./controllers/cryptocurrencyStaticOrderController";
 
 import { asyncHandler } from "./ utils/asyncHandler";
 
@@ -56,9 +56,18 @@ app.get(
 
 app.post("/api/notification/sendLineTest", asyncHandler(sendLineTest));
 
-app.get("/api/cryptocurrencyOrder/list", asyncHandler(listCryptocurrencyOrder));
-app.post("/api/cryptocurrencyOrder", asyncHandler(createCryptocurrencyOrder));
-app.put("/api/cryptocurrencyOrder", asyncHandler(updateCryptocurrencyOrder));
+app.get(
+  "/api/cryptocurrencyStaticOrder/list",
+  asyncHandler(listCryptocurrencyStaticOrder)
+);
+app.post(
+  "/api/cryptocurrencyStaticOrder",
+  asyncHandler(createCryptocurrencyStaticOrder)
+);
+app.put(
+  "/api/cryptocurrencyStaticOrder",
+  asyncHandler(updateCryptocurrencyStaticOrder)
+);
 
 app.use(
   (

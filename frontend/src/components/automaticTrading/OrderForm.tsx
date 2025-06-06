@@ -1,10 +1,10 @@
 import { Grid, TextField } from "@mui/material";
 import { Controller, type Control } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import type { CryptocurrencyOrderForm } from "./RepeatTrading";
+import type { CryptocurrencyStaticOrderForm } from "./StaticRepeatTrading";
 
 type OrderFormProps = {
-  control: Control<CryptocurrencyOrderForm>;
+  control: Control<CryptocurrencyStaticOrderForm>;
   priceErrorMessage?: string;
   volumeErrorMessage?: string;
   targetPriceField: "buy.targetPrice" | "sell.targetPrice";

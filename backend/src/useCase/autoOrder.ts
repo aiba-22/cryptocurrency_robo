@@ -1,9 +1,9 @@
 import { ORDER_SIDE, ORDER_TYPE } from "../service/constants";
-import CryptocurrencyOrderService from "../service/cryptocurrencyOrderService";
 import GmoService from "../service/gmoService";
 import GmoApiService from "../service/gmoApiService";
 import LineService from "../service/lineService";
 import LineApiService from "../service/lineApiService";
+import CryptocurrencyStaticOrderService from "../service/cryptocurrencyStaticOrderService";
 
 export const autoOrder = async () => {
   const gmoCredentials = await getGmo();
@@ -13,12 +13,13 @@ export const autoOrder = async () => {
   const tradingRateMap = await getTradingRateMap(gmoApiService);
   if (!tradingRateMap) return;
 
-  const orderService = new CryptocurrencyOrderService();
+  const orderService = new CryptocurrencyStaticOrderService();
   const allOrders = await orderService.list();
   if (allOrders.length === 0) return;
 
-  const validOrders = allOrders.filter((order) =>
-    isPriceConditionMet(order, tradingRateMap)
+  const validOrders = allOrders.filter(
+    (order: { symbol: string; targetPrice: number; type: number }) =>
+      isPriceConditionMet(order, tradingRateMap)
   );
   if (validOrders.length === 0) return;
 
