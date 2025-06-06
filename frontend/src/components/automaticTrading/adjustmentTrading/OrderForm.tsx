@@ -54,6 +54,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({
               onChange={(e) =>
                 field.onChange((e.target as HTMLInputElement).valueAsNumber)
               }
+              value={field.value ?? ""}
             />
           )}
         />

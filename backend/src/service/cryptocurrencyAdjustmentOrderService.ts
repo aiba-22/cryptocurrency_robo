@@ -31,8 +31,8 @@ export default class CryptocurrencyAdjustmentOrderService {
       symbol,
       basePrice,
       isEnabled,
-      priceAdjustmentRate,
-      volumeAdjustmentRate,
+      priceAdjustmentRate: Number(priceAdjustmentRate),
+      volumeAdjustmentRate: Number(volumeAdjustmentRate),
     };
   }
 
