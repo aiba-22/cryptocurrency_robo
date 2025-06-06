@@ -1,53 +1,51 @@
 import { PrismaClient } from "@prisma/client";
 import prisma from "../db/prismaClient";
 import { USER_ID } from "./constants";
-import { CryptocurrencyStaticOrderRepository } from "../db/repositories/cryptocurrencyStaticOrderRepository";
+import { CryptocurrencyAdjustmentOrderRepository } from "../db/repositories/cryptocurrencyAdjustmentOrderRepository";
 
-export default class CryptocurrencyStaticOrderService {
+export default class CryptocurrencyAdjustmentOrderService {
   private prisma: PrismaClient;
 
   constructor(prismaClient = prisma) {
     this.prisma = prismaClient;
   }
-  async list() {
-    const orderRepository = new CryptocurrencyStaticOrderRepository(
+  async find() {
+    const orderRepository = new CryptocurrencyAdjustmentOrderRepository(
       this.prisma
     );
-    const orderList = await orderRepository.list(USER_ID);
-    if (orderList.length === 0) return [];
-
-    return orderList.map(
-      (order: {
-        id: number;
-        symbol: string;
-        targetPrice: number;
-        volume: number;
-        type: number;
-        isEnabled: number;
-      }) => {
-        const { id, symbol, targetPrice, volume, type, isEnabled } = order;
-        return {
-          id,
-          symbol,
-          targetPrice,
-          volume,
-          type,
-          isEnabled,
-        };
-      }
-    );
+    const orderList = await orderRepository.findByIdAndUserId({
+      id: USER_ID,
+      userId: USER_ID,
+    });
+    if (!orderList) return;
+    const {
+      id,
+      symbol,
+      basePrice,
+      isEnabled,
+      priceAdjustmentRate,
+      volumeAdjustmentRate,
+    } = orderList;
+    return {
+      id,
+      symbol,
+      basePrice,
+      isEnabled,
+      priceAdjustmentRate,
+      volumeAdjustmentRate,
+    };
   }
 
   async create(data: {
     symbol: string;
-    targetPrice: number;
-    volume: number;
-    type: number;
+    basePrice: number;
     isEnabled: number;
+    priceAdjustmentRate: number;
+    volumeAdjustmentRate: number;
   }) {
     try {
       await this.prisma.$transaction(async (tx) => {
-        const orderRepository = new CryptocurrencyStaticOrderRepository(tx);
+        const orderRepository = new CryptocurrencyAdjustmentOrderRepository(tx);
         return await orderRepository.create({
           userId: USER_ID,
           ...data,
@@ -64,14 +62,14 @@ export default class CryptocurrencyStaticOrderService {
   async update(data: {
     id: number;
     symbol: string;
-    targetPrice: number;
-    volume: number;
-    type: number;
+    basePrice: number;
     isEnabled: number;
+    priceAdjustmentRate: number;
+    volumeAdjustmentRate: number;
   }) {
     try {
       await this.prisma.$transaction(async (tx) => {
-        const orderRepository = new CryptocurrencyStaticOrderRepository(tx);
+        const orderRepository = new CryptocurrencyAdjustmentOrderRepository(tx);
         return await orderRepository.update({
           id: data.id,
           data,

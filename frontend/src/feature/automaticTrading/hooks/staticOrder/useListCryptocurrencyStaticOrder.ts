@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { listCryptocurrencyStaticOrder } from "../../../apiClients/cryptocurrencyStaticOrder";
+import { listCryptocurrencyStaticOrder } from "../../../../apiClients/cryptocurrencyStaticOrder";
 
 export const useListCryptocurrencyStaticOrder = () => {
   const {

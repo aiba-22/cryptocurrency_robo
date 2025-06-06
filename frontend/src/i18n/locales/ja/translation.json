@@ -4,7 +4,7 @@
   },
 
   "repeatTrading": {
-    "title": "固定値繰り返し",
+    "title": "定量トレード",
     "form": {
       "symbolLabel": "対象通貨",
       "buySwitchLabel": "買い注文を設定",
@@ -33,11 +33,11 @@
   },
 
   "adjustmentTrading": {
-    "title": "価格変動繰り返し",
+    "title": "可変トレード",
+
     "form": {
       "symbolLabel": "対象通貨",
-      "buySwitchLabel": "買い注文を設定",
-      "sellSwitchLabel": "売り注文を設定",
+      "enableSwitchLabel": "注文を設定",
       "saveButton": "保存"
     },
     "validation": {
@@ -51,11 +51,12 @@
       "success": "保存に成功しました。"
     },
     "orderForm": {
-      "priceLabel": "価格",
-      "volumeLabel": "数量",
+      "basePriceLabel": "基準価格",
+      "priceAdjustmentRateLabel": "価格調整率",
+      "volumeAdjustmentRateLabel": "数量調整率",
       "validation": {
         "required": "入力必須項目です",
-        "minValue": "0以上を入力してください"
+        "minValue": "1以上を入力してください"
       }
     },
     "systemError": "システムエラー"

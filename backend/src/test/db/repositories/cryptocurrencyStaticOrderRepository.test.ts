@@ -1,4 +1,4 @@
-import { CryptocurrencyStaticOrderRepository } from "../../../db/repositories/cryptocurrencyOrderRepository";
+import { CryptocurrencyStaticOrderRepository } from "../../../db/repositories/cryptocurrencyStaticOrderRepository";
 
 describe("CryptocurrencyStaticOrderRepository", () => {
   describe("list", () => {

@@ -1,7 +1,7 @@
 import { Grid, TextField } from "@mui/material";
 import { Controller, type Control } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import type { CryptocurrencyStaticOrderForm } from "./StaticRepeatTrading";
+import type { CryptocurrencyStaticOrderForm } from "./StaticOrderTradingForm";
 
 type OrderFormProps = {
   control: Control<CryptocurrencyStaticOrderForm>;

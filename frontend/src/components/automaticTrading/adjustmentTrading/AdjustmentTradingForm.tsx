@@ -7,38 +7,36 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Snackbar,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Snackbar } from "../SnackBar";
-import { Rate } from "../Rate";
-import { Loading } from "../Loading";
-import { CRYPTOCURRENCY, CRYPTOCURRENCY_LIST } from "../../feature/constants";
 import { Controller, useForm } from "react-hook-form";
 
-import { IS_ENABLED } from "../../feature/automaticTrading/constants";
-import { OrderForm } from "./OrderForm";
-import ToggleOrderSwitch from "./ToggleOrderSwitch";
 import { useTranslation } from "react-i18next";
-import { useSaveForm } from "../../feature/automaticTrading/hooks/useSaveForm";
-import { mapOrderListToFormValues } from "../../feature/automaticTrading/orderFormMapper.ts";
-import { useListCryptocurrencyStaticOrder } from "../../feature/automaticTrading/hooks/useListCryptocurrencyStaticOrder.ts";
+import {
+  CRYPTOCURRENCY,
+  CRYPTOCURRENCY_LIST,
+} from "../../../feature/constants";
+import { IS_ENABLED } from "../../../feature/automaticTrading/constants";
+import { Loading } from "../../Loading";
+import ToggleOrderSwitch from "../ToggleOrderSwitch";
+import { Rate } from "../../Rate";
+import { OrderForm } from "./OrderForm";
+import { useSaveForm } from "../../../feature/automaticTrading/hooks/AdjustmentOrder/useSaveForm";
+import { useFindCryptocurrencyAdjustmentOrder } from "../../../feature/automaticTrading/hooks/AdjustmentOrder/useFindCryptocurrencyAdjustmentOrder";
 
-type Conditions = {
+export type CryptocurrencyAdjustmentOrderForm = {
   id?: number;
-  targetPrice: number;
-  volume: number;
+  symbol: string;
+  basePrice: number;
+  priceAdjustmentRate: number;
+  volumeAdjustmentRate: number;
   isEnabled: number;
 };
 
-export type CryptocurrencyStaticOrderForm = {
-  symbol: string;
-  buy: Conditions;
-  sell: Conditions;
-};
-
-export const StaticRepeatTrading = () => {
+export const AdjustmentTradingForm = () => {
   const { t } = useTranslation("translation", {
-    keyPrefix: "repeatTrading",
+    keyPrefix: "adjustmentTrading",
   });
 
   const [snackBarMessage, setSnackBarMessage] = useState("");
@@ -49,36 +47,29 @@ export const StaticRepeatTrading = () => {
     watch,
     reset,
     formState: { errors },
-  } = useForm<CryptocurrencyStaticOrderForm>({
+  } = useForm<CryptocurrencyAdjustmentOrderForm>({
     defaultValues: {
       symbol: CRYPTOCURRENCY.BTC,
-      buy: {
-        targetPrice: undefined,
-        volume: undefined,
-        isEnabled: IS_ENABLED.FALSE,
-      },
-      sell: {
-        targetPrice: undefined,
-        volume: undefined,
-        isEnabled: IS_ENABLED.FALSE,
-      },
+      basePrice: undefined,
+      priceAdjustmentRate: undefined,
+      volumeAdjustmentRate: undefined,
+      isEnabled: IS_ENABLED.FALSE,
     },
   });
 
   const {
-    cryptocurrencyStaticOrderList,
+    cryptocurrencyAdjustmentOrderList,
     isOrderListError,
     isOrderListLoading,
-  } = useListCryptocurrencyStaticOrder();
+  } = useFindCryptocurrencyAdjustmentOrder();
 
   useEffect(() => {
-    if (cryptocurrencyStaticOrderList) {
-      reset(mapOrderListToFormValues(cryptocurrencyStaticOrderList));
+    if (cryptocurrencyAdjustmentOrderList) {
+      reset(cryptocurrencyAdjustmentOrderList);
     }
-  }, [cryptocurrencyStaticOrderList, reset]);
+  }, [cryptocurrencyAdjustmentOrderList, reset]);
 
-  const isBuyEnabled = watch("buy.isEnabled");
-  const isSellEnabled = watch("sell.isEnabled");
+  const isEnabled = watch("isEnabled");
   const symbol = watch("symbol");
 
   const { saveOrderForm, orderSaveStatus } = useSaveForm();
@@ -131,12 +122,12 @@ export const StaticRepeatTrading = () => {
           </Box>
           <Box mb={2}>
             <Controller
-              name="buy.isEnabled"
+              name="isEnabled"
               control={control}
               render={({ field }) => (
                 <ToggleOrderSwitch
                   field={field}
-                  label={t("form.buySwitchLabel")}
+                  label={t("form.enableSwitchLabel")}
                 />
               )}
             />
@@ -144,45 +135,19 @@ export const StaticRepeatTrading = () => {
           <Box
             mb={2}
             sx={{
-              opacity: isBuyEnabled === IS_ENABLED.TRUE ? 1 : 0.5,
-              pointerEvents: isBuyEnabled === IS_ENABLED.TRUE ? "auto" : "none",
+              opacity: isEnabled === IS_ENABLED.TRUE ? 1 : 0.5,
+              pointerEvents: isEnabled === IS_ENABLED.TRUE ? "auto" : "none",
             }}
           >
             <OrderForm
               control={control}
-              targetPriceField="buy.targetPrice"
-              volumeField="buy.volume"
-              priceErrorMessage={errors?.buy?.targetPrice?.message}
-              volumeErrorMessage={errors?.buy?.volume?.message}
-            />
-          </Box>
-
-          <Box mb={2} mt={4}>
-            <Controller
-              name="sell.isEnabled"
-              control={control}
-              render={({ field }) => (
-                <ToggleOrderSwitch
-                  field={field}
-                  label={t("form.sellSwitchLabel")}
-                />
-              )}
-            />
-          </Box>
-          <Box
-            mb={2}
-            sx={{
-              opacity: isSellEnabled === IS_ENABLED.TRUE ? 1 : 0.5,
-              pointerEvents:
-                isSellEnabled === IS_ENABLED.TRUE ? "auto" : "none",
-            }}
-          >
-            <OrderForm
-              control={control}
-              targetPriceField="sell.targetPrice"
-              volumeField="sell.volume"
-              priceErrorMessage={errors?.sell?.targetPrice?.message}
-              volumeErrorMessage={errors?.sell?.volume?.message}
+              priceErrorMessage={errors?.basePrice?.message}
+              priceAdjustmentRateErrorMessage={
+                errors?.priceAdjustmentRate?.message
+              }
+              volumeAdjustmentRateErrorMessage={
+                errors?.volumeAdjustmentRate?.message
+              }
             />
           </Box>
 

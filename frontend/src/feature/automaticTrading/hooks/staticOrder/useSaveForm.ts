@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { mapFormToOrderRequests } from "../orderFormMapper.ts";
+import { mapFormToOrderRequests } from "../../orderFormMapper.ts";
 import { useMutation } from "@tanstack/react-query";
 
-import type { CryptocurrencyStaticOrderForm } from "../../../components/automaticTrading/StaticRepeatTrading.tsx";
 import {
   createCryptocurrencyStaticOrder,
   updateCryptocurrencyStaticOrder,
-} from "../../../apiClients/cryptocurrencyStaticOrder.ts";
+} from "../../../../apiClients/cryptocurrencyStaticOrder.ts";
+import type { CryptocurrencyStaticOrderForm } from "../../../../components/automaticTrading/staticTrading/StaticOrderTradingForm.tsx";
 
 type Form = {
   id?: number;

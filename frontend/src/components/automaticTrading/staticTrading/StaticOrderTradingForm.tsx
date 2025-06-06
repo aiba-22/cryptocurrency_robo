@@ -7,21 +7,24 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Snackbar,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Snackbar } from "../SnackBar";
-import { Rate } from "../Rate";
-import { Loading } from "../Loading";
-import { CRYPTOCURRENCY, CRYPTOCURRENCY_LIST } from "../../feature/constants";
 import { Controller, useForm } from "react-hook-form";
 
-import { IS_ENABLED } from "../../feature/automaticTrading/constants";
-import { OrderForm } from "./OrderForm";
-import ToggleOrderSwitch from "./ToggleOrderSwitch";
 import { useTranslation } from "react-i18next";
-import { useSaveForm } from "../../feature/automaticTrading/hooks/useSaveForm";
-import { mapOrderListToFormValues } from "../../feature/automaticTrading/orderFormMapper.ts";
-import { useListCryptocurrencyStaticOrder } from "../../feature/automaticTrading/hooks/useListCryptocurrencyStaticOrder.ts";
+import { IS_ENABLED } from "../../../feature/automaticTrading/constants";
+import { mapOrderListToFormValues } from "../../../feature/automaticTrading/orderFormMapper.ts";
+import { Loading } from "../../Loading.tsx";
+import {
+  CRYPTOCURRENCY,
+  CRYPTOCURRENCY_LIST,
+} from "../../../feature/constants.ts";
+import { OrderForm } from "./OrderForm.tsx";
+import { Rate } from "../../Rate.tsx";
+import ToggleOrderSwitch from "../ToggleOrderSwitch.tsx";
+import { useListCryptocurrencyStaticOrder } from "../../../feature/rate/hooks/useListCryptocurrencyStaticOrder.ts";
+import { useSaveForm } from "../../../feature/automaticTrading/hooks/staticOrder/useSaveForm.ts";
 
 type Conditions = {
   id?: number;
@@ -36,9 +39,9 @@ export type CryptocurrencyStaticOrderForm = {
   sell: Conditions;
 };
 
-export const AdjustmentTrading = () => {
+export const StaticOrderTradingForm = () => {
   const { t } = useTranslation("translation", {
-    keyPrefix: "adjustmentTrading",
+    keyPrefix: "repeatTrading",
   });
 
   const [snackBarMessage, setSnackBarMessage] = useState("");

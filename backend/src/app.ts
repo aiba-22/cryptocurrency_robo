@@ -28,6 +28,11 @@ import {
   update as updateCryptocurrencyStaticOrder,
 } from "./controllers/cryptocurrencyStaticOrderController";
 
+import {
+  create as createCryptocurrencyAdjustmentOrder,
+  update as updateCryptocurrencyAdjustmentOrder,
+  get as getCryptocurrencyStaticOrder,
+} from "./controllers/cryptocurrencyAdjustmentOrderController";
 import { asyncHandler } from "./ utils/asyncHandler";
 
 const app = express();
@@ -67,6 +72,19 @@ app.post(
 app.put(
   "/api/cryptocurrencyStaticOrder",
   asyncHandler(updateCryptocurrencyStaticOrder)
+);
+
+app.get(
+  "/api/cryptocurrencyAdjustmentOrder",
+  asyncHandler(getCryptocurrencyStaticOrder)
+);
+app.post(
+  "/api/cryptocurrencyAdjustmentOrder",
+  asyncHandler(createCryptocurrencyAdjustmentOrder)
+);
+app.put(
+  "/api/cryptocurrencyAdjustmentOrder",
+  asyncHandler(updateCryptocurrencyAdjustmentOrder)
 );
 
 app.use(
