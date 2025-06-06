@@ -26,7 +26,6 @@ model CryptocurrencyAdjustmentOrder {
   userId               Int
   symbol               String   @db.VarChar(20)
   targetPrice          Int
-  type                 Int      @db.TinyInt
   isEnabled            Int      @db.TinyInt
   priceAdjustmentRate  Decimal? @db.Decimal(3, 2)
   volumeAdjustmentRate Decimal? @db.Decimal(3, 2)

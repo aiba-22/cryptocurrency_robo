@@ -7,7 +7,6 @@ CREATE TABLE `CryptocurrencyAdjustmentOrder` (
     `userId` INTEGER NOT NULL,
     `symbol` VARCHAR(20) NOT NULL,
     `targetPrice` INTEGER NOT NULL,
-    `type` TINYINT NOT NULL,
     `isEnabled` TINYINT NOT NULL,
     `priceAdjustmentRate` DECIMAL(3, 2) NOT NULL,
     `volumeAdjustmentRate` DECIMAL(3, 2) NOT NULL,
