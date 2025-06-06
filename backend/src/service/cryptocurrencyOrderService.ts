@@ -32,6 +32,9 @@ export default class CryptocurrencyOrderService {
     targetPrice: number;
     volume: number;
     type: number;
+    priceAdjustmentRate: number;
+    volumeAdjustmentRate: number;
+    repeatCount?: number;
     isEnabled: number;
   }) {
     try {
@@ -56,6 +59,9 @@ export default class CryptocurrencyOrderService {
     targetPrice: number;
     volume: number;
     type: number;
+    priceAdjustmentRate: number;
+    volumeAdjustmentRate: number;
+    repeatCount?: number;
     isEnabled: number;
   }) {
     try {

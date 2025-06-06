@@ -92,6 +92,9 @@ describe("cryptocurrencyOrderService", () => {
         targetPrice: 50000,
         volume: 2,
         type: 1,
+        priceAdjustmentRate: 0.5,
+        volumeAdjustmentRate: 0.5,
+        repeatCount: undefined,
         isEnabled: 1,
       });
 
@@ -106,6 +109,9 @@ describe("cryptocurrencyOrderService", () => {
         targetPrice: 2500,
         volume: 1,
         type: 0,
+        priceAdjustmentRate: 0.5,
+        volumeAdjustmentRate: 0.5,
+        repeatCount: undefined,
         isEnabled: 1,
       });
 
@@ -123,6 +129,9 @@ describe("cryptocurrencyOrderService", () => {
         targetPrice: 50000,
         volume: 2,
         type: 1,
+        priceAdjustmentRate: 0.5,
+        volumeAdjustmentRate: 0.5,
+        repeatCount: undefined,
         isEnabled: 1,
       });
 
@@ -138,6 +147,9 @@ describe("cryptocurrencyOrderService", () => {
         targetPrice: 2500,
         volume: 1,
         type: 0,
+        priceAdjustmentRate: 0.5,
+        volumeAdjustmentRate: 0.5,
+        repeatCount: undefined,
         isEnabled: 1,
       });
 
