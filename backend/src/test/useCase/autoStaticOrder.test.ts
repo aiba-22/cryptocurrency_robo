@@ -1,10 +1,10 @@
-import { autoOrder } from "../../useCase/autoOrder";
 import GmoApiService from "../../service/gmoApiService";
 import GmoService from "../../service/gmoService";
 import LineService from "../../service/lineService";
 import LineApiService from "../../service/lineApiService";
 import { ORDER_TYPE } from "../../service/constants";
 import CryptocurrencyStaticOrderService from "../../service/cryptocurrencyStaticOrderService";
+import { autoStaticOrder } from "../../useCase/autoStaticOrder";
 
 jest.mock("../../service/cryptocurrencyStaticOrderService");
 jest.mock("../../service/gmoService");
@@ -47,7 +47,7 @@ describe("autoOrder", () => {
   it("何も注文がないときは何もしない", async () => {
     mockList.mockResolvedValue(null);
 
-    await autoOrder();
+    await autoStaticOrder();
 
     expect(mockFetchTradingRateList).not.toHaveBeenCalled();
     expect(mockSendMessage).not.toHaveBeenCalled();
@@ -71,7 +71,7 @@ describe("autoOrder", () => {
       },
     ]);
     mockGmoFind.mockResolvedValue(null);
-    await autoOrder();
+    await autoStaticOrder();
     expect(mockSendMessage).not.toHaveBeenCalled();
     expect(mockOrder).not.toHaveBeenCalled();
   });
@@ -86,7 +86,7 @@ describe("autoOrder", () => {
     });
     mockFetchTradingRateList.mockResolvedValue("systemError");
 
-    await autoOrder();
+    await autoStaticOrder();
 
     expect(mockSendMessage).not.toHaveBeenCalled();
     expect(mockOrder).not.toHaveBeenCalled();
@@ -122,7 +122,7 @@ describe("autoOrder", () => {
 
     mockOrder.mockResolvedValue("success");
 
-    await expect(autoOrder()).resolves.not.toThrow();
+    await expect(autoStaticOrder()).resolves.not.toThrow();
   });
 
   it("SELL条件を満たし、注文成功する", async () => {
@@ -155,7 +155,7 @@ describe("autoOrder", () => {
       channelAccessToken: "testChannelAccessToken",
     });
 
-    await expect(autoOrder()).resolves.not.toThrow();
+    await expect(autoStaticOrder()).resolves.not.toThrow();
   });
 
   it("注文条件を満たさない場合は何もしない", async () => {
@@ -176,7 +176,7 @@ describe("autoOrder", () => {
       },
     ]);
 
-    await autoOrder();
+    await autoStaticOrder();
 
     expect(mockSendMessage).not.toHaveBeenCalled();
     expect(mockOrder).not.toHaveBeenCalled();

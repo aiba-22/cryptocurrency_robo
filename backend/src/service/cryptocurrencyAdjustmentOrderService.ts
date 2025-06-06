@@ -61,11 +61,11 @@ export default class CryptocurrencyAdjustmentOrderService {
 
   async update(data: {
     id: number;
-    symbol: string;
-    basePrice: number;
-    isEnabled: number;
-    priceAdjustmentRate: number;
-    volumeAdjustmentRate: number;
+    symbol?: string;
+    basePrice?: number;
+    isEnabled?: number;
+    priceAdjustmentRate?: number;
+    volumeAdjustmentRate?: number;
   }) {
     try {
       await this.prisma.$transaction(async (tx) => {
