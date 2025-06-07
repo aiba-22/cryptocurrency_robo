@@ -31,10 +31,8 @@
     },
     "systemError": "システムエラー"
   },
-
   "adjustmentTrading": {
     "title": "可変トレード",
-
     "form": {
       "symbolLabel": "対象通貨",
       "enableSwitchLabel": "注文を設定",
@@ -51,9 +49,13 @@
       "success": "保存に成功しました。"
     },
     "orderForm": {
-      "basePriceLabel": "基準価格",
-      "priceAdjustmentRateLabel": "価格調整率",
-      "volumeAdjustmentRateLabel": "数量調整率",
+      "basePriceLabel": "基準価格（※売買成立した価格に都度更新されます）",
+      "buySectionLabel": "買い",
+      "buyPriceAdjustmentRateLabel": "下落率",
+      "buyVolumeAdjustmentRateLabel": "数量率",
+      "sellSectionLabel": "売り",
+      "sellPriceAdjustmentRateLabel": "上昇率",
+      "sellVolumeAdjustmentRateLabel": "数量率",
       "validation": {
         "required": "入力必須項目です",
         "minValue": "1以上を入力してください"

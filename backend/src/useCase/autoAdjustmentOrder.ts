@@ -6,45 +6,62 @@ import LineApiService from "../service/lineApiService";
 import CryptocurrencyAdjustmentOrderService from "../service/cryptocurrencyAdjustmentOrderService";
 
 export const autoAdjustmentOrder = async () => {
-  const gmo = await FileSystemDirectoryHandleGmo();
+  const gmo = await findGmo();
   if (!gmo) return;
-
   const gmoApiService = new GmoApiService(gmo);
-  const tradingRateMap = await mapTradingRate(gmoApiService);
+  const tradingRateMap = await fetchTradingRateMap(gmoApiService);
   if (!tradingRateMap) return;
 
   const orderService = new CryptocurrencyAdjustmentOrderService();
   const order = await orderService.find();
   if (!order || !order.isEnabled) return;
 
-  const line = await findLine();
-  if (!line) return;
-  const lineApiService = new LineApiService(line);
-
   const currentRate = tradingRateMap.get(order.symbol);
   if (!currentRate) return;
 
-  const side = orderSide(order, currentRate);
+  const side = getOrderSide(order, currentRate);
   if (!side) return;
 
-  const result = processAdjustmentOrder(
-    order,
-    currentRate,
-    side,
-    gmoApiService,
-    lineApiService,
-    orderService
-  );
-  if (!result) return;
+  const assets = await gmoApiService.fetchAssets();
+  const availableBySymbolMap = new Map<string, number>();
+  if (assets.status !== "success" || !assets.data) {
+    return;
+  }
+  assets.data?.forEach((asset) => {
+    availableBySymbolMap.set(asset.symbol, asset.available);
+  });
+  if (!availableBySymbolMap) return;
+  const availableAssets = availableBySymbolMap.get(order.symbol);
+  if (!availableAssets) return;
 
-  await orderService.update({
-    id: order.id,
+  const adjustVolume =
+    side === ORDER_SIDE.BUY
+      ? order.buyVolumeAdjustmentRate
+      : order.sellVolumeAdjustmentRate;
+
+  const volume = adjustVolume * availableAssets;
+  const result = await gmoApiService.order({
     symbol: order.symbol,
-    basePrice: currentRate,
+    side,
+    price: currentRate,
+    size: volume,
+  });
+  if (result) {
+    await orderService.update({
+      id: order.id,
+      symbol: order.symbol,
+      basePrice: currentRate,
+    });
+  }
+  await sendMessage({
+    symbol: order.symbol,
+    side,
+    price: currentRate,
+    volume,
   });
 };
 
-const FileSystemDirectoryHandleGmo = async () => {
+const findGmo = async () => {
   const gmoService = new GmoService();
   const gmo = await gmoService.find();
   if (!gmo?.apiKey || !gmo?.secretKey) return null;
@@ -61,59 +78,51 @@ const findLine = async () => {
   };
 };
 
-const mapTradingRate = async (gmoApiService: GmoApiService) => {
+const fetchTradingRateMap = async (gmoApiService: GmoApiService) => {
   const { status, rateList } = await gmoApiService.fetchTradingRateList();
   if (status !== "success" || !rateList) return null;
 
-  const rateMap = new Map<string, number>();
-  for (const { symbol, last } of rateList) {
-    rateMap.set(symbol, parseFloat(last));
-  }
-  return rateMap;
+  return new Map(
+    rateList.map(({ symbol, last }) => [symbol, parseFloat(last)])
+  );
 };
 
-const orderSide = (
-  order: { basePrice: number; priceAdjustmentRate: number },
+const getOrderSide = (
+  order: {
+    basePrice: number;
+    buyPriceAdjustmentRate: number;
+    sellPriceAdjustmentRate: number;
+  },
   currentRate: number
 ): string | undefined => {
-  const thresholdUp = order.basePrice * (1 + order.priceAdjustmentRate);
-  const thresholdDown = order.basePrice * (1 - order.priceAdjustmentRate);
+  const targetBuy = order.basePrice * (1 - order.buyPriceAdjustmentRate);
+  const targetSell = order.basePrice * (1 + order.sellPriceAdjustmentRate);
 
-  if (currentRate <= thresholdDown) return ORDER_SIDE.BUY;
-  if (currentRate >= thresholdUp) return ORDER_SIDE.SELL;
+  if (currentRate <= targetBuy) return ORDER_SIDE.BUY;
+  if (currentRate >= targetSell) return ORDER_SIDE.SELL;
   return undefined;
 };
 
-const processAdjustmentOrder = async (
-  order: {
-    id: number;
-    symbol: string;
-    basePrice: number;
-    volumeAdjustmentRate: number;
-  },
-  price: number,
-  side: string,
-  gmoApiService: GmoApiService,
-  lineApiService: LineApiService,
-  orderService: CryptocurrencyAdjustmentOrderService
-) => {
-  const volume = price * order.volumeAdjustmentRate;
-  // const result = await gmoApiService.order({
-  //   symbol: order.symbol,
-  //   side,
-  //   price,
-  //   size: volume,
-  // });
-  console.log(
-    `注文処理: ${order.symbol}, 価格: ${price}, ボリューム: ${volume}, サイド: ${side}`
-  );
-
-  const result = { status: "success" };
-  const resultMessage = result.status === "success" ? "成功" : "失敗";
+const sendMessage = async ({
+  symbol,
+  side,
+  price,
+  volume,
+}: {
+  symbol: string;
+  side: string;
+  price: number;
+  volume: number;
+}) => {
   const orderType = side === ORDER_SIDE.BUY ? "買い" : "売り";
+
+  const line = await findLine();
+  if (!line) return false;
+  const lineApiService = new LineApiService(line);
+
   await lineApiService.sendMessage(
-    `${order.symbol}の${orderType}注文（${price.toFixed(2)}円, ${volume.toFixed(
+    `${symbol}の${orderType}注文（${price.toFixed(2)}円, ${volume.toFixed(
       4
-    )}）が${resultMessage}しました。`
+    )}）を行いました。`
   );
 };

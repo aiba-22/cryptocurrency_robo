@@ -13,26 +13,30 @@ export default class CryptocurrencyAdjustmentOrderService {
     const orderRepository = new CryptocurrencyAdjustmentOrderRepository(
       this.prisma
     );
-    const orderList = await orderRepository.findByIdAndUserId({
+    const order = await orderRepository.findByIdAndUserId({
       id: USER_ID,
       userId: USER_ID,
     });
-    if (!orderList) return;
+    if (!order) return;
     const {
       id,
       symbol,
       basePrice,
       isEnabled,
-      priceAdjustmentRate,
-      volumeAdjustmentRate,
-    } = orderList;
+      buyPriceAdjustmentRate,
+      buyVolumeAdjustmentRate,
+      sellPriceAdjustmentRate,
+      sellVolumeAdjustmentRate,
+    } = order;
     return {
       id,
       symbol,
       basePrice,
       isEnabled,
-      priceAdjustmentRate: Number(priceAdjustmentRate),
-      volumeAdjustmentRate: Number(volumeAdjustmentRate),
+      buyPriceAdjustmentRate: Number(buyPriceAdjustmentRate),
+      buyVolumeAdjustmentRate: Number(buyVolumeAdjustmentRate),
+      sellPriceAdjustmentRate: Number(sellPriceAdjustmentRate),
+      sellVolumeAdjustmentRate: Number(sellVolumeAdjustmentRate),
     };
   }
 
@@ -40,8 +44,10 @@ export default class CryptocurrencyAdjustmentOrderService {
     symbol: string;
     basePrice: number;
     isEnabled: number;
-    priceAdjustmentRate: number;
-    volumeAdjustmentRate: number;
+    buyPriceAdjustmentRate: number;
+    buyVolumeAdjustmentRate: number;
+    sellPriceAdjustmentRate: number;
+    sellVolumeAdjustmentRate: number;
   }) {
     try {
       await this.prisma.$transaction(async (tx) => {
@@ -64,8 +70,10 @@ export default class CryptocurrencyAdjustmentOrderService {
     symbol?: string;
     basePrice?: number;
     isEnabled?: number;
-    priceAdjustmentRate?: number;
-    volumeAdjustmentRate?: number;
+    buyPriceAdjustmentRate?: number;
+    buyVolumeAdjustmentRate?: number;
+    sellPriceAdjustmentRate?: number;
+    sellVolumeAdjustmentRate?: number;
   }) {
     try {
       await this.prisma.$transaction(async (tx) => {

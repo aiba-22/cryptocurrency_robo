@@ -17,8 +17,10 @@ export const findCryptocurrencyAdjustmentOrder = async (): Promise<{
 export const createCryptocurrencyAdjustmentOrder = async (request: {
   symbol: string;
   basePrice: number;
-  priceAdjustmentRate: number;
-  volumeAdjustmentRate: number;
+  buyPriceAdjustmentRate: number;
+  buyVolumeAdjustmentRate: number;
+  sellPriceAdjustmentRate: number;
+  sellVolumeAdjustmentRate: number;
   isEnabled: number;
 }) => {
   const response = await axios.post(
@@ -32,8 +34,10 @@ export const updateCryptocurrencyAdjustmentOrder = async (request: {
   id: number;
   symbol: string;
   basePrice: number;
-  priceAdjustmentRate: number;
-  volumeAdjustmentRate: number;
+  buyPriceAdjustmentRate: number;
+  buyVolumeAdjustmentRate: number;
+  sellPriceAdjustmentRate: number;
+  sellVolumeAdjustmentRate: number;
   isEnabled: number;
 }) => {
   const response = await axios.put(

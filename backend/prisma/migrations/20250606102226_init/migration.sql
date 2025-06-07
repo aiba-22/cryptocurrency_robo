@@ -8,8 +8,10 @@ CREATE TABLE `CryptocurrencyAdjustmentOrder` (
     `symbol` VARCHAR(20) NOT NULL,
     `basePrice` INTEGER NOT NULL,
     `isEnabled` TINYINT NOT NULL,
-    `priceAdjustmentRate` DECIMAL(3, 2) NOT NULL,
-    `volumeAdjustmentRate` DECIMAL(3, 2) NOT NULL,
+    `buyPriceAdjustmentRate` DECIMAL(3, 2) NOT NULL,
+    `buyVolumeAdjustmentRate` DECIMAL(3, 2) NOT NULL,
+    `sellPriceAdjustmentRate` DECIMAL(3, 2) NOT NULL,
+    `sellVolumeAdjustmentRate` DECIMAL(3, 2) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 

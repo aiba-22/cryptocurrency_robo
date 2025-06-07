@@ -27,8 +27,10 @@ model CryptocurrencyAdjustmentOrder {
   symbol               String   @db.VarChar(20)
   basePrice            Int
   isEnabled            Int      @db.TinyInt
-  priceAdjustmentRate  Decimal? @db.Decimal(3, 2)
-  volumeAdjustmentRate Decimal? @db.Decimal(3, 2)
+  buyPriceAdjustmentRate  Decimal @db.Decimal(3, 2)
+  buyVolumeAdjustmentRate Decimal @db.Decimal(3, 2)
+  sellPriceAdjustmentRate  Decimal @db.Decimal(3, 2)
+  sellVolumeAdjustmentRate Decimal @db.Decimal(3, 2)
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 }

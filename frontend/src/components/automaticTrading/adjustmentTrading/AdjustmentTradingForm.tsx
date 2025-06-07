@@ -1,36 +1,40 @@
 import {
-  Container,
-  Typography,
-  Button,
   Box,
+  Button,
+  Container,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
   Snackbar,
+  Typography,
 } from "@mui/material";
+
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-
 import { useTranslation } from "react-i18next";
+
 import {
   CRYPTOCURRENCY,
   CRYPTOCURRENCY_LIST,
 } from "../../../feature/constants";
 import { IS_ENABLED } from "../../../feature/automaticTrading/constants";
-import { Loading } from "../../Loading";
-import ToggleOrderSwitch from "../ToggleOrderSwitch";
-import { Rate } from "../../Rate";
-import { OrderForm } from "./OrderForm";
-import { useSaveForm } from "../../../feature/automaticTrading/hooks/AdjustmentOrder/useSaveForm";
 import { useFindCryptocurrencyAdjustmentOrder } from "../../../feature/automaticTrading/hooks/AdjustmentOrder/useFindCryptocurrencyAdjustmentOrder";
+import { useSaveForm } from "../../../feature/automaticTrading/hooks/AdjustmentOrder/useSaveForm";
+
+import { Loading } from "../../Loading";
+import { Rate } from "../../Rate";
+import ToggleOrderSwitch from "../ToggleOrderSwitch";
+import { OrderForm } from "./OrderForm";
 
 export type CryptocurrencyAdjustmentOrderForm = {
   id?: number;
   symbol: string;
   basePrice: number;
-  priceAdjustmentRate: number;
-  volumeAdjustmentRate: number;
+  buyPriceAdjustmentRate: number;
+  buyVolumeAdjustmentRate: number;
+  sellPriceAdjustmentRate: number;
+  sellVolumeAdjustmentRate: number;
   isEnabled: number;
 };
 
@@ -51,8 +55,10 @@ export const AdjustmentTradingForm = () => {
     defaultValues: {
       symbol: CRYPTOCURRENCY.BTC,
       basePrice: undefined,
-      priceAdjustmentRate: undefined,
-      volumeAdjustmentRate: undefined,
+      buyPriceAdjustmentRate: undefined,
+      buyVolumeAdjustmentRate: undefined,
+      sellPriceAdjustmentRate: undefined,
+      sellVolumeAdjustmentRate: undefined,
       isEnabled: IS_ENABLED.FALSE,
     },
   });
@@ -95,6 +101,7 @@ export const AdjustmentTradingForm = () => {
       <Typography variant="h4" gutterBottom>
         {t("title")}
       </Typography>
+
       {isOrderListLoading ? (
         <Loading />
       ) : (
@@ -120,6 +127,7 @@ export const AdjustmentTradingForm = () => {
               )}
             />
           </Box>
+
           <Box mb={2}>
             <Controller
               name="isEnabled"
@@ -132,6 +140,7 @@ export const AdjustmentTradingForm = () => {
               )}
             />
           </Box>
+
           <Box
             mb={2}
             sx={{
@@ -139,16 +148,7 @@ export const AdjustmentTradingForm = () => {
               pointerEvents: isEnabled === IS_ENABLED.TRUE ? "auto" : "none",
             }}
           >
-            <OrderForm
-              control={control}
-              priceErrorMessage={errors?.basePrice?.message}
-              priceAdjustmentRateErrorMessage={
-                errors?.priceAdjustmentRate?.message
-              }
-              volumeAdjustmentRateErrorMessage={
-                errors?.volumeAdjustmentRate?.message
-              }
-            />
+            <OrderForm control={control} errors={errors} />
           </Box>
 
           <Box mt={4} display="flex" justifyContent="flex-end">
@@ -158,7 +158,9 @@ export const AdjustmentTradingForm = () => {
           </Box>
         </form>
       )}
-      {snackBarMessage && <Snackbar message={snackBarMessage} />}{" "}
+
+      {snackBarMessage && <Snackbar message={snackBarMessage} />}
+
       <Rate symbol={symbol} />
     </Container>
   );

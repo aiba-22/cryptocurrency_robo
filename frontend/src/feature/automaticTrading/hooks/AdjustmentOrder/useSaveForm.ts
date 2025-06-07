@@ -9,8 +9,10 @@ type Form = {
   id?: number;
   symbol: string;
   basePrice: number;
-  priceAdjustmentRate: number;
-  volumeAdjustmentRate: number;
+  buyPriceAdjustmentRate: number;
+  buyVolumeAdjustmentRate: number;
+  sellPriceAdjustmentRate: number;
+  sellVolumeAdjustmentRate: number;
   isEnabled: number;
 };
 

@@ -67,16 +67,41 @@ export default class GmoApiService {
     };
   }
 
-  async fetchAssets() {
+  async fetchAssets(): Promise<{
+    status: "success" | "systemError" | "missingKey";
+    data?: {
+      amount: number;
+      available: number;
+      conversionRate: number;
+      symbol: string;
+    }[];
+  }> {
     if (!this.apiKey || !this.secretKey) {
-      return;
+      return { status: "missingKey" };
     }
+
     const path = "/v1/account/assets";
     const headers = this.generateHeaders("GET", path);
+
     try {
       const response = await axios.get(BASE_PRIVATE + path, { headers });
-      return response.data;
+      console.log("response", JSON.stringify(response.data.messages));
+      if (!response?.data) {
+        return { status: "systemError" };
+      }
+      const convertedData = response.data.data.map((item: any) => ({
+        amount: parseFloat(item.amount),
+        available: parseFloat(item.available),
+        conversionRate: parseFloat(item.conversionRate),
+        symbol: item.symbol,
+      }));
+
+      return {
+        status: "success",
+        data: convertedData,
+      };
     } catch (error) {
+      console.error("Error fetching assets:", error);
       return { status: "systemError" };
     }
   }
