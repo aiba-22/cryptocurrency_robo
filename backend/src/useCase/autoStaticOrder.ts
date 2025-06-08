@@ -17,22 +17,41 @@ export const autoStaticOrder = async () => {
   const orderList = await orderService.list();
   if (orderList.length === 0) return;
 
-  const validOrderList = orderList.filter((order) =>
-    order.type === ORDER_TYPE.BUY
-      ? isTargetBuyPrice(order.symbol, order.targetPrice, tradingRateMap)
-      : isTargetSellPrice(order.symbol, order.targetPrice, tradingRateMap)
-  );
-
-  if (validOrderList.length === 0) return;
-
   const line = await findLine();
   if (!line) return;
 
   const lineApiService = new LineApiService(line);
 
-  for (const order of validOrderList) {
-    await processOrder({ order, gmoApiService, lineApiService });
+  for (const order of orderList) {
+    const rate = tradingRateMap.get(order.symbol);
+    if (rate === undefined) continue;
+
+    const shouldExecute =
+      (order.type === ORDER_TYPE.BUY && rate > order.targetPrice) ||
+      (order.type === ORDER_TYPE.SELL && rate < order.targetPrice);
+
+    if (!shouldExecute) continue;
+
+    const result = await executeOrder(gmoApiService, order);
+    if (result.status === "success") {
+      await lineApiService.sendMessage(
+        `${order.symbol}の注文（${order.targetPrice}円, ${order.volume}）が成功しました。`
+      );
+      continue;
+    }
   }
+};
+
+const executeOrder = async (
+  gmoApiService: GmoApiService,
+  order: { symbol: string; type: number; targetPrice: number; volume: number }
+) => {
+  return gmoApiService.order({
+    symbol: order.symbol,
+    side: order.type === ORDER_TYPE.BUY ? ORDER_SIDE.BUY : ORDER_SIDE.SELL,
+    price: order.targetPrice,
+    size: order.volume,
+  });
 };
 
 const findGmo = async () => {
@@ -46,11 +65,9 @@ const mapTradingRate = async (gmoApiService: GmoApiService) => {
   const { status, rateList } = await gmoApiService.fetchTradingRateList();
   if (status !== "success" || !rateList) return null;
 
-  const rateMap = new Map<string, number>();
-  for (const { symbol, last } of rateList) {
-    rateMap.set(symbol, parseFloat(last));
-  }
-  return rateMap;
+  return new Map(
+    rateList.map(({ symbol, last }) => [symbol, parseFloat(last)])
+  );
 };
 
 const findLine = async () => {
@@ -61,55 +78,4 @@ const findLine = async () => {
     lineUserId: line.lineUserId,
     channelAccessToken: line.channelAccessToken,
   };
-};
-
-const isTargetBuyPrice = (
-  symbol: string,
-  targetPrice: number,
-  tradingRateMap: Map<string, number>
-): boolean => {
-  const rate = tradingRateMap.get(symbol);
-  if (rate === undefined) return false;
-  return rate <= targetPrice;
-};
-
-const isTargetSellPrice = (
-  symbol: string,
-  targetPrice: number,
-  tradingRateMap: Map<string, number>
-): boolean => {
-  const rate = tradingRateMap.get(symbol);
-  if (rate === undefined) return false;
-  return rate >= targetPrice;
-};
-
-const processOrder = async ({
-  order,
-  gmoApiService,
-  lineApiService,
-}: {
-  order: {
-    symbol: string;
-    targetPrice: number;
-    volume: number;
-    type: number;
-  };
-  gmoApiService: GmoApiService;
-  lineApiService: LineApiService;
-}) => {
-  const side = order.type === ORDER_TYPE.BUY ? ORDER_SIDE.BUY : ORDER_SIDE.SELL;
-
-  const result = await gmoApiService.order({
-    symbol: order.symbol,
-    side,
-    price: order.targetPrice,
-    size: order.volume,
-  });
-
-  const orderType = side === ORDER_SIDE.BUY ? "買い" : "売り";
-  const resultMessage = result.status === "success" ? "成功" : "失敗";
-
-  await lineApiService.sendMessage(
-    `${order.symbol}の${orderType}注文（${order.targetPrice}円, ${order.volume}）が${resultMessage}しました。`
-  );
 };

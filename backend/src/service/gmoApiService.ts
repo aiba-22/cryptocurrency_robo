@@ -134,7 +134,6 @@ export default class GmoApiService {
     const headers = this.generateHeaders("POST", path, body);
     try {
       const result = await axios.post(BASE_PRIVATE + path, body, { headers });
-      console.log("Order result:", result.data);
       const status = result?.data?.status === 0 ? "success" : "failure";
       return { status };
     } catch (error) {

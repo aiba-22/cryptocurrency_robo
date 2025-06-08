@@ -78,7 +78,7 @@ export const autoAdjustmentOrder = async () => {
 const findGmo = async () => {
   const gmoService = new GmoService();
   const gmo = await gmoService.find();
-  if (!gmo?.apiKey || !gmo?.secretKey) return null;
+  if (!gmo?.apiKey || !gmo?.secretKey) return;
   return { apiKey: gmo.apiKey, secretKey: gmo.secretKey };
 };
 

@@ -9,7 +9,16 @@ export default class CryptocurrencyStaticOrderService {
   constructor(prismaClient = prisma) {
     this.prisma = prismaClient;
   }
-  async list() {
+  async list(): Promise<
+    Array<{
+      id: number;
+      symbol: string;
+      targetPrice: number;
+      volume: number;
+      type: number;
+      isEnabled: number;
+    }>
+  > {
     const orderRepository = new CryptocurrencyStaticOrderRepository(
       this.prisma
     );
