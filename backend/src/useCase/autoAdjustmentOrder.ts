@@ -9,8 +9,21 @@ export const autoAdjustmentOrder = async () => {
   const gmo = await findGmo();
   if (!gmo) return;
   const gmoApiService = new GmoApiService(gmo);
-  const tradingRateMap = await fetchTradingRateMap(gmoApiService);
-  if (!tradingRateMap) return;
+
+  const { status, rateList } = await gmoApiService.fetchTradingRateList();
+  if (status !== "success" || !rateList) return null;
+
+  const tradingRateMap = new Map<
+    string,
+    { last: number; ask: number; bid: number }
+  >();
+  rateList.forEach(({ symbol, last, ask, bid }) => {
+    tradingRateMap.set(symbol, {
+      last: parseFloat(last),
+      ask: parseFloat(ask),
+      bid: parseFloat(bid),
+    });
+  });
 
   const orderService = new CryptocurrencyAdjustmentOrderService();
   const order = await orderService.find();
@@ -19,7 +32,7 @@ export const autoAdjustmentOrder = async () => {
   const currentRate = tradingRateMap.get(order.symbol);
   if (!currentRate) return;
 
-  const side = getOrderSide(order, currentRate);
+  const side = getOrderSide(order, currentRate.last);
   if (!side) return;
 
   const assets = await gmoApiService.fetchAssets();
@@ -43,20 +56,21 @@ export const autoAdjustmentOrder = async () => {
   const result = await gmoApiService.order({
     symbol: order.symbol,
     side,
-    price: currentRate,
-    size: volume,
+    price: side === ORDER_SIDE.BUY ? currentRate.ask : currentRate.bid,
+    size: Math.floor(volume),
   });
-  if (result) {
-    await orderService.update({
-      id: order.id,
-      symbol: order.symbol,
-      basePrice: currentRate,
-    });
-  }
+  if (result.status !== "success") return;
+
+  await orderService.update({
+    id: order.id,
+    symbol: order.symbol,
+    basePrice: currentRate.last,
+  });
+
   await sendMessage({
     symbol: order.symbol,
     side,
-    price: currentRate,
+    price: currentRate.last,
     volume,
   });
 };
@@ -76,15 +90,6 @@ const findLine = async () => {
     lineUserId: line.lineUserId,
     channelAccessToken: line.channelAccessToken,
   };
-};
-
-const fetchTradingRateMap = async (gmoApiService: GmoApiService) => {
-  const { status, rateList } = await gmoApiService.fetchTradingRateList();
-  if (status !== "success" || !rateList) return null;
-
-  return new Map(
-    rateList.map(({ symbol, last }) => [symbol, parseFloat(last)])
-  );
 };
 
 const getOrderSide = (

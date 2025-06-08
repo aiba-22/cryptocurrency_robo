@@ -85,7 +85,6 @@ export default class GmoApiService {
 
     try {
       const response = await axios.get(BASE_PRIVATE + path, { headers });
-      console.log("response", JSON.stringify(response.data.messages));
       if (!response?.data) {
         return { status: "systemError" };
       }
@@ -101,7 +100,6 @@ export default class GmoApiService {
         data: convertedData,
       };
     } catch (error) {
-      console.error("Error fetching assets:", error);
       return { status: "systemError" };
     }
   }
@@ -136,7 +134,8 @@ export default class GmoApiService {
     const headers = this.generateHeaders("POST", path, body);
     try {
       const result = await axios.post(BASE_PRIVATE + path, body, { headers });
-      const status = result?.data?.status === 1 ? "success" : "failure";
+      console.log("Order result:", result.data);
+      const status = result?.data?.status === 0 ? "success" : "failure";
       return { status };
     } catch (error) {
       return {

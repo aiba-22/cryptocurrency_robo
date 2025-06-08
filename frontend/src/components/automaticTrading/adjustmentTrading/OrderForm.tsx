@@ -179,7 +179,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ control, errors }) => {
           />
         </Grid>
       </Grid>
-      ;
     </>
   );
 };
