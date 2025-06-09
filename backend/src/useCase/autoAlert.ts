@@ -10,6 +10,39 @@ type PriceAlertCondition = {
   price: number;
 };
 
+export const autoAlert = async () => {
+  const priceAlertService = new PriceAlertService();
+  const priceAlert = await priceAlertService.find();
+  if (!priceAlert) return;
+
+  const { conditions } = priceAlert;
+  if (!isPriceAlertCondition(conditions)) return;
+  const { isUpperLimit, symbol, price: targetPrice } = conditions;
+
+  const gmoApiService = new GmoApiService();
+  const tradingPrice = await gmoApiService.fetchTradingPrice(symbol);
+  const { status, price: currentPrice } = tradingPrice;
+  if (status !== "success" || !currentPrice) return;
+
+  if (
+    !isShouldNotify({
+      currentPrice,
+      isUpperLimit,
+      targetPrice,
+    })
+  )
+    return;
+
+  const lineService = new LineService();
+  const line = await lineService.find();
+  if (!line?.channelAccessToken || !line?.lineUserId) return null;
+
+  const lineApi = new LineApiService(line);
+  await lineApi.sendMessage(
+    `アラート通知です。${symbol}の価格が${currentPrice}になりました。`
+  );
+};
+
 const isPriceAlertCondition = (
   data: JsonValue
 ): data is PriceAlertCondition => {
@@ -22,72 +55,17 @@ const isPriceAlertCondition = (
   );
 };
 
-export const autoAlert = async () => {
-  const priceAlertCondition = await getPriceAlertCondition();
-  if (!priceAlertCondition) return;
-
-  const tradingPrice = await fetchCurrentPrice(priceAlertCondition.symbol);
-  if (!tradingPrice) return;
-
-  if (!shouldNotify(tradingPrice, priceAlertCondition)) return;
-
-  const lineCredentials = await getLine();
-  if (!lineCredentials) return;
-
-  await notifyLine(lineCredentials, priceAlertCondition.symbol, tradingPrice);
-};
-
-const getPriceAlertCondition = async (): Promise<
-  PriceAlertCondition | undefined
-> => {
-  const service = new PriceAlertService();
-  const alert = await service.find();
-  if (!alert) return;
-
-  const conditions = alert.conditions;
-  return isPriceAlertCondition(conditions) ? conditions : undefined;
-};
-
-const fetchCurrentPrice = async (symbol: string): Promise<number | null> => {
-  const gmoApiService = new GmoApiService({
-    apiKey: "apiKey",
-    secretKey: "secretKey",
-  });
-
-  const result = await gmoApiService.fetchTradingPrice(symbol);
-  return result.status === "success" && result.price ? result.price : null;
-};
-
-const shouldNotify = (
-  currentPrice: number,
-  condition: PriceAlertCondition
-): boolean => {
-  return condition.isUpperLimit
-    ? currentPrice > condition.price
-    : currentPrice < condition.price;
-};
-
-const getLine = async (): Promise<{
-  lineUserId: string;
-  channelAccessToken: string;
-} | null> => {
-  const service = new LineService();
-  const line = await service.find();
-  if (!line?.channelAccessToken || !line?.lineUserId) return null;
-
-  return {
-    lineUserId: line.lineUserId,
-    channelAccessToken: line.channelAccessToken,
-  };
-};
-
-const notifyLine = async (
-  creds: { lineUserId: string; channelAccessToken: string },
-  symbol: string,
-  price: number
-) => {
-  const lineApi = new LineApiService(creds);
-  await lineApi.sendMessage(
-    `アラート通知です。${symbol}の価格が${price}になりました。`
-  );
+const isShouldNotify = ({
+  currentPrice,
+  isUpperLimit,
+  targetPrice,
+}: {
+  currentPrice: number;
+  isUpperLimit: boolean;
+  targetPrice: number;
+}): boolean => {
+  const isShouldNotify = isUpperLimit
+    ? currentPrice > targetPrice
+    : currentPrice < targetPrice;
+  return isShouldNotify;
 };
