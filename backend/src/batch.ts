@@ -4,5 +4,5 @@ import { autoStaticOrder } from "./useCase/autoStaticOrder";
 import { autoAdjustmentOrder } from "./useCase/autoAdjustmentOrder";
 
 cron.schedule("*/30 * * * *", autoAlert);
-cron.schedule("*/30 * * * *", autoStaticOrder);
+cron.schedule("*/5 * * * *", autoStaticOrder);
 cron.schedule("*/5 * * * *", autoAdjustmentOrder);
