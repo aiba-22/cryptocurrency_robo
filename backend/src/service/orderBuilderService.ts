@@ -56,21 +56,22 @@ export class OrderBuilderService {
     const assetMap = this.mapAvailableBySymbol(assets);
 
     const rate = rateMap.get(orderConditions.symbol);
-    const available = assetMap.get(orderConditions.symbol) ?? 0;
+    if (!rate) return;
+    const available = assetMap.get(orderConditions.symbol);
+    if (!available) return;
 
-    const targetPrice =
-      orderConditions.basePrice * (1 - orderConditions.sellPriceAdjustmentRate);
+    const targetSellPrice =
+      orderConditions.basePrice * (1 + orderConditions.sellPriceAdjustmentRate);
+    if (rate.bid <= targetSellPrice) return;
 
-    if (!rate || rate.bid <= targetPrice || available <= 0) return;
-
-    const volume = orderConditions.sellVolumeAdjustmentRate * available;
-    if (volume <= 0) return;
+    const sellVolume = orderConditions.sellVolumeAdjustmentRate * available;
+    if (sellVolume <= 0) return;
 
     return this.createOrder(
       orderConditions.symbol,
       ORDER_SIDE.SELL,
       rate.bid,
-      volume
+      sellVolume
     );
   }
 
@@ -89,17 +90,20 @@ export class OrderBuilderService {
     const assetMap = this.mapAvailableBySymbol(assets);
 
     const rate = rateMap.get(orderConditions.symbol);
-    const availableJPY = assetMap.get("JPY") ?? 0;
+    if (!rate) return;
+
+    const availableJPY = assetMap.get("JPY");
+    if (!availableJPY) return;
 
     const targetPrice =
-      orderConditions.basePrice * (1 + orderConditions.buyPriceAdjustmentRate);
+      orderConditions.basePrice * (1 - orderConditions.buyPriceAdjustmentRate);
 
-    if (!rate || rate.ask >= targetPrice || availableJPY <= 0) return;
+    if (rate.ask >= targetPrice) return;
 
     const buyAmount = orderConditions.buyVolumeAdjustmentRate * availableJPY;
-    if (buyAmount <= 0) return;
 
     const size = buyAmount / rate.ask;
+    if (size <= 0) return;
 
     return this.createOrder(
       orderConditions.symbol,
@@ -174,7 +178,7 @@ export class OrderBuilderService {
   private isConditionEnabled(conditions?: {
     isEnabled: number;
   }): conditions is { isEnabled: number } {
-    if (!conditions || conditions.isEnabled === 1) return false;
+    if (!conditions || conditions.isEnabled === 0) return false;
     return true;
   }
 
