@@ -70,29 +70,9 @@
 - TypeScript
 
 ### バックエンド
-- Node.js
+- Express.js
 - TypeScript
 
-
-
-# 仮想通貨通知システム
-
-## 機能
-
-- 暗号通貨のレート情報表示
-- 価格アラート
-- 自動取引
-
-## 使用技術
-
-- **フロントエンド**
-
-  - **React**
-  - **TypeScript**
-
-- **バックエンド**
-  - **Node.js**
-  - **TypeScript**
 
 ## 開始手順
 
