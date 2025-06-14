@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { createLine, updateLine } from "../../../apiClients/line";
+import { createLineAccount, updateLineAccount } from "../../../apiClients/line";
 
 type LineSetting = {
   id?: number;
@@ -15,9 +15,9 @@ export const useSaveLineSetting = () => {
       const { id, channelAccessToken, lineUserId } = lineSetting;
 
       if (id) {
-        return await updateLine({ id, channelAccessToken, lineUserId });
+        return await updateLineAccount({ id, channelAccessToken, lineUserId });
       } else {
-        return await createLine({ channelAccessToken, lineUserId });
+        return await createLineAccount({ channelAccessToken, lineUserId });
       }
     },
     onSuccess: () => {

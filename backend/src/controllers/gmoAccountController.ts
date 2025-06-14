@@ -3,7 +3,6 @@ import GmoService from "../service/gmoService";
 import { createGmoSchema, updateGmoSchema } from "../schema/gmoSchema";
 
 export const get = async (req: Request, res: Response) => {
-  console.log("GMO GET request received");
   const gmoService = new GmoService();
   const result = await gmoService.find();
   res.json(result);

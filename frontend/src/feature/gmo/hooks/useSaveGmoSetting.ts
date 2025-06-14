@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { createGmo, updateGmo } from "../../../apiClients/gmo";
+import { createGmoAccount, updateGmoAccount } from "../../../apiClients/gmo";
 
 type GmoSetting = { id?: number; apiKey: string; secretKey: string };
 
@@ -10,9 +10,9 @@ export const useSaveGmoSetting = () => {
     mutationFn: async (gmoSetting: GmoSetting) => {
       const { id, apiKey, secretKey } = gmoSetting;
       if (id) {
-        return await updateGmo({ id, apiKey, secretKey });
+        return await updateGmoAccount({ id, apiKey, secretKey });
       } else {
-        return await createGmo({ apiKey, secretKey });
+        return await createGmoAccount({ apiKey, secretKey });
       }
     },
 

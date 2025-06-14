@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const findLine = async (): Promise<
+export const findLineAccount = async (): Promise<
   | {
       id: number;
       channelAccessToken: string;
@@ -8,24 +8,30 @@ export const findLine = async (): Promise<
     }
   | undefined
 > => {
-  const response = await axios.get(`http://localhost:3001/api/line`);
+  const response = await axios.get(`http://localhost:3001/api/lineAccount`);
   return response.data;
 };
 
-export const createLine = async (request: {
+export const createLineAccount = async (request: {
   channelAccessToken: string;
   lineUserId: string;
 }): Promise<string> => {
-  const result = await axios.post("http://localhost:3001/api/line", request);
+  const result = await axios.post(
+    "http://localhost:3001/api/lineAccount",
+    request
+  );
   return result.data;
 };
 
-export const updateLine = async (request: {
+export const updateLineAccount = async (request: {
   id: number;
   channelAccessToken: string;
   lineUserId: string;
 }): Promise<string> => {
-  const result = await axios.put("http://localhost:3001/api/line", request);
+  const result = await axios.put(
+    "http://localhost:3001/api/lineAccount",
+    request
+  );
   return result.data;
 };
 

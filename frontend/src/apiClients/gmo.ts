@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const findGmo = async (): Promise<
+export const findGmoAccount = async (): Promise<
   | {
       id: number;
       apiKey: string;
@@ -8,26 +8,26 @@ export const findGmo = async (): Promise<
     }
   | undefined
 > => {
-  const response = await axios.get(`http://localhost:3001/api/gmo`);
+  const response = await axios.get(`http://localhost:3001/api/gmoAccount`);
   return response.data;
 };
 
-export const createGmo = async (request: {
+export const createGmoAccount = async (request: {
   apiKey: string;
   secretKey: string;
 }) => {
-  const response = await axios.post("http://localhost:3001/api/gmo", {
+  const response = await axios.post("http://localhost:3001/api/gmoAccount", {
     ...request,
   });
   return response.data;
 };
 
-export const updateGmo = async (request: {
+export const updateGmoAccount = async (request: {
   id: number;
   apiKey: string;
   secretKey: string;
 }) => {
-  const response = await axios.put("http://localhost:3001/api/gmo", {
+  const response = await axios.put("http://localhost:3001/api/gmoAccount", {
     ...request,
   });
   return response.data;
@@ -47,7 +47,7 @@ export const listCryptocurrencyRate = async (): Promise<{
   }[];
 }> => {
   const response = await axios.get(
-    `http://localhost:3001/api/virtualCurrencyRateList`
+    `http://localhost:3001/api/cryptocurrencyRateList`
   );
   return response.data;
 };

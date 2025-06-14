@@ -1,7 +1,7 @@
 import LineService from "../service/lineService";
 import LineApiService from "../service/lineApiService";
 
-export const sendTestNotification = async (message: string) => {
+export const sendLineNotification = async (message: string) => {
   const lineService = new LineService();
   const line = await lineService.find();
 

@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { lineNotificationSchema } from "../schema/lineSchema";
-import { sendTestNotification } from "../useCase/sendLineNotification";
+import { sendLineNotification } from "../useCase/sendLineNotification";
 
-export const sendLineTest = async (req: Request, res: Response) => {
+export const sendToLine = async (req: Request, res: Response) => {
   const { message } = lineNotificationSchema.parse(req.body);
-  const result = await sendTestNotification(message);
+  const result = await sendLineNotification(message);
   res.status(200).json(result);
 };

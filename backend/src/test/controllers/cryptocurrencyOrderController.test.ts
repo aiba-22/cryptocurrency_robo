@@ -40,7 +40,6 @@ describe("cryptocurrencyStaticOrderControllerのテスト", () => {
 
       expect(res.json).toHaveBeenCalledWith(mockResult);
     });
-
     it("例外発生時は例外がthrowされる", async () => {
       const req = mockRequest({});
       const res = mockResponse();
